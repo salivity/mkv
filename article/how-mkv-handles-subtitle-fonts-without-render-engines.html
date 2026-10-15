@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Handles Subtitle Fonts Without Render Engines - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format frequently packages custom font files directly alongside advanced subtitle tracks—such as SubStation Alpha (SSA/ASS)—to preserve precise typography, positioning, and styling. However, when a client device or media playe">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-handles-subtitle-fonts-without-render-engines">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Handles Subtitle Fonts Without Render Engines - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-handles-subtitle-fonts-without-render-engines" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format frequently packages custom font files directly alongside advanced subtitle tracks—such as SubStation Alpha (SSA/ASS)—to preserve precise typography, positioning, and styling. However, when a client device or media playe" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-handles-subtitle-fonts-without-render-engines">How MKV
+Handles Subtitle Fonts Without Render Engines</h1>
+<p>The Matroska (MKV) container format frequently packages custom font
+files directly alongside advanced subtitle tracks—such as SubStation
+Alpha (SSA/ASS)—to preserve precise typography, positioning, and
+styling. However, when a client device or media player lacks a dedicated
+subtitle font rendering engine (such as libass or FreeType), it cannot
+interpret or apply these embedded attachments. In such cases, the client
+must rely on specific fallback behaviors, including system font
+substitution, stripping subtitle styling tags, or requesting server-side
+video transcoding to display the text.</p>
+<h3 id="how-fonts-are-stored-in-mkv-containers">How Fonts Are Stored in
+MKV Containers</h3>
+<p>MKV containers do not merge fonts directly into the video stream.
+Instead, TrueType (<code>.ttf</code>) or OpenType (<code>.otf</code>)
+files are muxed as separate attachment streams with MIME types such as
+<code>application/x-truetype-font</code> or <code>font/sfnt</code>. The
+subtitle track references these fonts by their family names within style
+definitions and inline override tags. Under standard conditions, a
+compatible rendering engine extracts these attachments to temporary
+memory and uses them to draw the vector glyphs over the video
+frames.</p>
+<h3 id="client-fallback-behaviors-without-a-font-engine">Client Fallback
+Behaviors Without a Font Engine</h3>
+<p>When a client device lacks the architecture to extract attachments or
+rasterize custom typography, it typically handles the subtitle stream
+through one of four methods:</p>
+<h4 id="1-system-font-substitution">1. System Font Substitution</h4>
+<p>If the player can interpret basic subtitle timing and text but cannot
+load MKV font attachments, it falls back to the host operating system's
+default typeface (commonly Arial, Roboto, or a generic sans-serif).
+While dialogue remains readable, visual typesetting breaks: text may
+overflow the screen, obscure vital on-screen elements, or misalign with
+on-screen graphics designed for specific font metrics.</p>
+<h4 id="2-tag-stripping-and-plain-text-fallback">2. Tag Stripping and
+Plain Text Fallback</h4>
+<p>Many basic hardware players (such as smart TV native media players or
+legacy set-top boxes) lack support for advanced SSA/ASS scripts
+altogether. These clients often strip all styling metadata, including
+font calls (<code>\fn</code>), color codes (<code>\c</code>), and
+positioning coordinates (<code>\pos</code>). The subtitle is downgraded
+to plain text, centered at the bottom of the display, identical to a
+basic SubRip (<code>.srt</code>) track.</p>
+<h4 id="3-literal-tag-rendering-syntax-errors">3. Literal Tag Rendering
+(Syntax Errors)</h4>
+<p>If a minimalist player attempts to parse the subtitle format without
+the proper interpreter, it may fail to distinguish between dialogue and
+formatting commands. In this scenario, users see raw styling code
+printed directly onto the screen (for example,
+<code>{\fnCustomFont\b1}Hello{\b0}</code>), resulting in cluttered and
+unreadable text.</p>
+<h4 id="4-server-side-transcoding-burn-in">4. Server-Side Transcoding
+(Burn-in)</h4>
+<p>In networked media ecosystems like Plex, Jellyfin, or Emby, the
+playback client communicates its rendering capabilities to the media
+server. If the client reports that it cannot natively render SSA/ASS
+subtitles or embedded MKV fonts, the server bypasses client-side
+rendering entirely. The server extracts the embedded fonts, renders the
+subtitles directly onto the video frames via CPU or GPU processing, and
+streams a fully transcoded, "burned-in" video feed to the client
+device.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

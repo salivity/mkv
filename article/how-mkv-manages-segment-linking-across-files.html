@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Manages Segment Linking Across Files - mkv</title>
+    <meta name="description" content="Matroska (MKV) container files manage segment linking across multiple independent video files by using unique mathematical identifiers and metadata headers rather than physically concatenating media streams. Through a combination of 128-bit Segment Unique">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-manages-segment-linking-across-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Manages Segment Linking Across Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-manages-segment-linking-across-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Matroska (MKV) container files manage segment linking across multiple independent video files by using unique mathematical identifiers and metadata headers rather than physically concatenating media streams. Through a combination of 128-bit Segment Unique" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-manages-segment-linking-across-files">How MKV Manages
+Segment Linking Across Files</h1>
+<p>Matroska (MKV) container files manage segment linking across multiple
+independent video files by using unique mathematical identifiers and
+metadata headers rather than physically concatenating media streams.
+Through a combination of 128-bit Segment Unique Identifiers (UIDs),
+sequence pointers, and ordered chapter systems, an MKV-compliant media
+player can dynamically load, synchronize, and play disparate files
+consecutively or conditionally as a single, uninterrupted stream.</p>
+<h3 id="the-foundation-segment-uids">The Foundation: Segment UIDs</h3>
+<p>Every Matroska segment contains a <code>SegmentUID</code> element
+within its Info header. This is a randomly generated 128-bit number
+(UUID) that acts as a globally unique fingerprint for that specific
+segment. When independent files need to reference one another, they rely
+on these UIDs rather than local file names or paths, making the linking
+resilient to file renaming.</p>
+<h3 id="hard-segment-linking">Hard Segment Linking</h3>
+<p>Hard linking establishes a direct, linear sequence between two or
+more independent MKV files. This method uses two specific elements in
+the segment header:</p>
+<ul>
+<li><strong><code>PrevUID</code>:</strong> Stores the
+<code>SegmentUID</code> of the preceding file in the sequence.</li>
+<li><strong><code>NextUID</code>:</strong> Stores the
+<code>SegmentUID</code> of the subsequent file in the sequence.</li>
+</ul>
+<p>When a media player reaches the end of a file with a
+<code>NextUID</code> defined, it scans the directory or playlist for a
+file matching that UID and immediately transitions playback without user
+intervention. Hard linking is typically used to split large continuous
+recordings into smaller files while preserving timeline continuity.</p>
+<h3 id="soft-linking-via-ordered-chapters">Soft Linking via Ordered
+Chapters</h3>
+<p>Soft linking is a more advanced and flexible method that uses MKV's
+chapter structure rather than sequential header flags. It enables
+non-linear assembly, reordering, and the reuse of shared segments across
+multiple files (commonly used to reference standard opening or ending
+sequences in multi-episode series).</p>
+<ol type="1">
+<li><strong>Ordered Chapter Flag:</strong> The main MKV file contains a
+chapter edition marked as "ordered," signaling to the player that
+chapters define the actual playback timeline rather than just navigation
+markers.</li>
+<li><strong><code>ChapterSegmentUID</code>:</strong> Individual chapters
+specify the <code>SegmentUID</code> of an external MKV file.</li>
+<li><strong><code>ChapterSegmentEditionUID</code> (Optional):</strong>
+Points to a specific edition within the linked external file if that
+file has multiple cuts.</li>
+<li><strong><code>ChapterTimeStart</code> and
+<code>ChapterTimeEnd</code>:</strong> Define the precise timecode range
+to extract from the external segment.</li>
+</ol>
+<p>During playback, the media player follows the master file's chapter
+timeline, seamlessly jumping to external segments at defined timestamps
+and returning to the base file when that chapter ends.</p>
+<h3 id="synchronization-and-codec-constraints">Synchronization and Codec
+Constraints</h3>
+<p>For segment linking to work seamlessly without playback artifacts or
+crashes, the linked segments must maintain compatibility:</p>
+<ul>
+<li><strong>Codec and Track Matching:</strong> Linked files generally
+need matching video/audio codecs, dimensions, color spaces, and channel
+layouts to prevent the rendering pipeline from resetting or failing
+during transitions.</li>
+<li><strong>Timestamp Alignment:</strong> The player recalculates
+presentation timestamps (PTS) dynamically, masking internal timecode
+resets from the user interface and ensuring continuous audio/video
+synchronization across segment boundaries.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

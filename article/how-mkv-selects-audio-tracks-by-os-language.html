@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Selects Audio Tracks by OS Language - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format manages multi-language audio by embedding standardized metadata tags into each stream, allowing compatible media players to automatically match the audio output to the user&#39;s operating system language. While the MKV fil">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-selects-audio-tracks-by-os-language">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Selects Audio Tracks by OS Language - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-selects-audio-tracks-by-os-language" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format manages multi-language audio by embedding standardized metadata tags into each stream, allowing compatible media players to automatically match the audio output to the user&#39;s operating system language. While the MKV fil" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-selects-audio-tracks-by-os-language">How MKV Selects
+Audio Tracks by OS Language</h1>
+<p>The Matroska (MKV) container format manages multi-language audio by
+embedding standardized metadata tags into each stream, allowing
+compatible media players to automatically match the audio output to the
+user's operating system language. While the MKV file itself acts as a
+passive storage mechanism containing language-tagged tracks, it relies
+on playback software to query the host operating system's locale
+settings and select the corresponding audio track based on predefined
+priority rules and container flags.</p>
+<h3 id="1-embedded-metadata-in-the-mkv-container">1. Embedded Metadata
+in the MKV Container</h3>
+<p>Inside an MKV file, each audio track contains specific header
+elements defined by the Matroska specification:</p>
+<ul>
+<li><strong>Language Tags:</strong> Tracks are tagged using standard ISO
+639-2 or BCP 47 language codes (such as <code>eng</code> for English,
+<code>spa</code> for Spanish, or <code>jpn</code> for Japanese).</li>
+<li><strong>Track Flags:</strong> Headers include boolean flags such as
+<code>FlagDefault</code> (indicating a track that should play if no
+other criteria are met) and <code>FlagForced</code> (used primarily for
+forced subtitles or audio cues).</li>
+</ul>
+<h3 id="2-the-role-of-the-media-player-and-os-locale">2. The Role of the
+Media Player and OS Locale</h3>
+<p>The MKV container does not execute code or actively detect software
+environments. Instead, the media player (e.g., VLC, MPC-HC, MPV, or
+OS-native media frameworks) performs the detection:</p>
+<ol type="1">
+<li><strong>OS Locale Query:</strong> Upon launch or file load, the
+media player queries the host operating system (Windows, macOS, Linux,
+Android, iOS) for its current display language and regional locale
+settings.</li>
+<li><strong>Track Matching:</strong> The player parses the MKV header to
+read all available audio tracks and compares their ISO language codes
+against the retrieved OS language code.</li>
+</ol>
+<h3 id="3-track-selection-priority-order">3. Track Selection Priority
+Order</h3>
+<p>When an MKV file is opened, media players generally resolve track
+selection using the following hierarchy:</p>
+<ol type="1">
+<li><strong>Explicit User Preference:</strong> If the user has manually
+set a preferred audio language in the player’s settings, this overrides
+system-level defaults.</li>
+<li><strong>OS Language Match:</strong> If no explicit player override
+exists, the player searches the MKV header for an audio track matching
+the operating system's active language code.</li>
+<li><strong>Default Flag Fallback:</strong> If no track matches the OS
+language, the player selects the track marked with the
+<code>FlagDefault</code> element set to true.</li>
+<li><strong>First Available Track:</strong> If no language matches and
+no track is flagged as default, the player falls back to the first audio
+stream (Track 1) listed in the container.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

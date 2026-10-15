@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store Multiple Video Tracks with Different FPS? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports storing multiple video streams with different frame rates simultaneously within a single file. This capability stems from the flexible architecture of the Matroska format, which treats each media stre">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-multiple-video-tracks-with-different-fps">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store Multiple Video Tracks with Different FPS? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-multiple-video-tracks-with-different-fps" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports storing multiple video streams with different frame rates simultaneously within a single file. This capability stems from the flexible architecture of the Matroska format, which treats each media stre" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-multiple-video-tracks-with-different-fps">Can MKV
+Store Multiple Video Tracks with Different FPS?</h1>
+<p>The Matroska (MKV) multimedia container fully supports storing
+multiple video streams with different frame rates simultaneously within
+a single file. This capability stems from the flexible architecture of
+the Matroska format, which treats each media stream as an independent
+track with its own distinct timing, resolution, and codec parameters.
+This guide explains how MKV handles multiple video tracks, how frame
+rate independence works, and what to consider regarding playback and
+compatibility.</p>
+<h2 id="independent-track-architecture">Independent Track
+Architecture</h2>
+<p>Matroska is an open-standard container format designed to hold an
+unlimited number of video, audio, picture, and subtitle tracks. When an
+MKV file is created, each video stream is encapsulated in its own
+separate <code>TrackEntry</code> element.</p>
+<p>Because each track header is entirely independent, properties such as
+the following can vary across tracks:</p>
+<ul>
+<li><strong>Frame Rate:</strong> One video track can run at 24 fps (film
+standard), while a second track runs at 60 fps (high frame rate).</li>
+<li><strong>Resolution and Aspect Ratio:</strong> Different streams can
+have different resolutions (e.g., 4K and 720p).</li>
+<li><strong>Compression Codec:</strong> Different tracks can use
+entirely different codecs (e.g., H.264/AVC, H.265/HEVC, AV1, or
+VP9).</li>
+</ul>
+<h2 id="how-matroska-manages-frame-rates">How Matroska Manages Frame
+Rates</h2>
+<p>MKV files do not enforce a single global frame rate clock across the
+entire file. Instead, the format uses a timestamp-based system to
+display frames accurately:</p>
+<ol type="1">
+<li><strong>Nanosecond Timecodes:</strong> Every individual frame
+(block) inside an MKV track carries a relative timestamp based on the
+container's internal timecode scale (typically measured in nanoseconds
+or milliseconds).</li>
+<li><strong>Variable Frame Rate (VFR) Support:</strong> Because timing
+is handled per frame via timestamps rather than a fixed container rate,
+MKV natively supports both Constant Frame Rate (CFR) and Variable Frame
+Rate (VFR) streams across different tracks.</li>
+<li><strong>No Synchronization Conflicts:</strong> Because the demuxer
+reads the timing for each track independently, a 23.976 fps primary
+video and a 29.97 fps secondary video will each present their frames at
+the correct time intervals without interfering with one another.</li>
+</ol>
+<h2 id="practical-use-cases">Practical Use Cases</h2>
+<p>Storing multiple video streams with differing frame rates in one MKV
+file is commonly used for:</p>
+<ul>
+<li><strong>Multi-Angle Video:</strong> Offering different camera
+perspectives of a live event or sports broadcast, where some angles
+might be recorded at higher capture rates.</li>
+<li><strong>Director's Commentary / Picture-in-Picture:</strong>
+Including a secondary video track (e.g., the director talking in the
+corner) encoded at a lower frame rate (such as 15 or 24 fps) to save
+file size, while the main feature plays at 60 fps.</li>
+<li><strong>Mixed-Format Releases:</strong> Packaging archival footage
+(e.g., 25 fps PAL or 29.97 fps NTSC) alongside remastered modern footage
+(e.g., 24 fps or 48 fps HFR) in a single archival container.</li>
+</ul>
+<h2 id="playback-and-compatibility-considerations">Playback and
+Compatibility Considerations</h2>
+<p>While the MKV container itself easily accommodates multiple video
+tracks with varying frame rates, playback behavior depends on the
+software or hardware decoder:</p>
+<ul>
+<li><strong>Track Switching:</strong> Most standard media players (such
+as VLC, MPV, and MPC-HC) allow users to toggle between available video
+streams seamlessly. The player adapts its rendering rate to match
+whichever stream is currently selected.</li>
+<li><strong>Simultaneous Playback:</strong> If you intend to play both
+video tracks at the same time (e.g., dual-screen or Picture-in-Picture),
+the player must support multi-stream decoding.</li>
+<li><strong>Hardware Limitations:</strong> Some hardware media players
+and Smart TVs only decode the default primary video track and may not
+recognize or switch to secondary video tracks within an MKV file.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Containers Store EIA-608 Closed Captions? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container can store EIA-608 closed captioning streams, but primarily as embedded data within the video stream rather than as a standalone, dedicated subtitle track. While MKV natively supports various text and bitmap subtitle formats li">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-containers-store-eia-608-closed-captions">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Containers Store EIA-608 Closed Captions? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-containers-store-eia-608-closed-captions" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container can store EIA-608 closed captioning streams, but primarily as embedded data within the video stream rather than as a standalone, dedicated subtitle track. While MKV natively supports various text and bitmap subtitle formats li" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-containers-store-eia-608-closed-captions">Can MKV
+Containers Store EIA-608 Closed Captions?</h1>
+<p>The Matroska (MKV) container can store EIA-608 closed captioning
+streams, but primarily as embedded data within the video stream rather
+than as a standalone, dedicated subtitle track. While MKV natively
+supports various text and bitmap subtitle formats like SRT, ASS, and
+PGS, standard EIA-608 (Line 21) captions are preserved within the
+container by remaining encoded inside the video stream’s user data or
+Supplemental Enhancement Information (SEI) NAL units.</p>
+<h3 id="embedded-storage-in-video-streams">Embedded Storage in Video
+Streams</h3>
+<p>EIA-608 captions were originally designed for analog broadcast
+television and embedded into Line 21 of the vertical blanking interval.
+In modern digital video, EIA-608 byte pairs are carried directly inside
+the video stream:</p>
+<ul>
+<li><strong>H.264 / AVC and H.265 / HEVC:</strong> Captions reside
+within SEI user data packets.</li>
+<li><strong>MPEG-2:</strong> Captions are stored within the MPEG-2
+picture user data.</li>
+</ul>
+<p>When you remux or package these video streams into an MKV container
+using tools like MKVToolNix or FFmpeg, the container encapsulates the
+entire video bitstream. Consequently, the EIA-608 caption data is
+preserved completely intact inside the video track.</p>
+<h3 id="standalone-subtitle-track-limitations">Standalone Subtitle Track
+Limitations</h3>
+<p>The Matroska specification does not feature a widely adopted, native
+Codec ID dedicated solely to raw, standalone EIA-608/708 binary streams
+(such as raw <code>.scc</code> or <code>.mcc</code> data tracks). Unlike
+MP4 (which can use <code>c608</code> or <code>c708</code> sample
+entries), MKV relies on standard text or timed-text formats for separate
+subtitle tracks.</p>
+<p>If you attempt to demux EIA-608 captions out of the video stream and
+add them back into an MKV file as an independent subtitle track, they
+must typically be converted into a native Matroska subtitle format, such
+as:</p>
+<ul>
+<li><strong>UTF-8 Plain Text (<code>S_TEXT/UTF8</code> /
+SRT)</strong></li>
+<li><strong>SubStation Alpha (<code>S_TEXT/ASS</code>)</strong></li>
+<li><strong>WebVTT (<code>S_TEXT/WEBVTT</code>)</strong></li>
+</ul>
+<h3 id="playback-and-compatibility">Playback and Compatibility</h3>
+<p>Media players handle EIA-608 data stored in MKV containers in two
+different ways:</p>
+<ol type="1">
+<li><strong>Hardware/Software Decoders with CC Support:</strong>
+Advanced media players (such as VLC, MPV, or specific broadcast-grade
+decoders) can inspect the video bitstream's SEI/user data within the
+MKV, extract the EIA-608 closed captions in real time, and render them
+over the video.</li>
+<li><strong>Standard Player Fallback:</strong> Basic players that only
+scan for dedicated MKV subtitle tracks will not automatically detect
+embedded EIA-608 captions unless their internal video decoder explicitly
+parses caption packets.</li>
+</ol>
+<p>For maximum compatibility across all consumer devices and software
+players, the standard practice when working with MKV files is using
+tools like CCExtractor or FFmpeg to extract embedded EIA-608 streams and
+convert them into standard SRT or ASS subtitle tracks within the
+container.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

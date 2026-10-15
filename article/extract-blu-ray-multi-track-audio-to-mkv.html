@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Blu-ray Multi-Track Audio to MKV - mkv</title>
+    <meta name="description" content="Automated Blu-ray ripping applications extract multi-track audio into MKV containers by decrypting the disc, reading the playlist architecture to map out all available streams, demultiplexing the raw audio packets from the transport stream, and remultiple">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/extract-blu-ray-multi-track-audio-to-mkv">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Extract Blu-ray Multi-Track Audio to MKV - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/extract-blu-ray-multi-track-audio-to-mkv" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Automated Blu-ray ripping applications extract multi-track audio into MKV containers by decrypting the disc, reading the playlist architecture to map out all available streams, demultiplexing the raw audio packets from the transport stream, and remultiple" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="extract-blu-ray-multi-track-audio-to-mkv">Extract Blu-ray
+Multi-Track Audio to MKV</h1>
+<p>Automated Blu-ray ripping applications extract multi-track audio into
+MKV containers by decrypting the disc, reading the playlist architecture
+to map out all available streams, demultiplexing the raw audio packets
+from the transport stream, and remultiplexing those tracks alongside
+video and subtitles into a single Matroska file. This process preserves
+the original bit-for-bit quality of advanced formats like Dolby TrueHD,
+DTS-HD Master Audio, and multi-channel LPCM without requiring lossy
+transcoding.</p>
+<h3 id="1-decryption-and-disc-authentication">1. Decryption and Disc
+Authentication</h3>
+<p>Before any media data can be accessed, the ripping software must
+bypass the digital rights management (DRM) layers present on commercial
+Blu-rays.</p>
+<ul>
+<li><strong>AACS and BD+ Handling:</strong> The software utilizes volume
+keys, processing keys, or key databases to decrypt the Advanced Access
+Content System (AACS) and reverse the BD+ virtual machine
+transformations.</li>
+<li><strong>LibreDrive / Direct Hardware Access:</strong> Modern ripping
+tools bypass hardware-level drive restrictions to read the raw encrypted
+blocks directly, preventing the optical drive firmware from altering or
+blocking access to specific sectors.</li>
+</ul>
+<h3 id="2-parsing-the-bdmv-playlist-architecture">2. Parsing the BDMV
+Playlist Architecture</h3>
+<p>Blu-ray discs store content inside a structured folder hierarchy
+called <code>BDMV</code>. Rather than storing movies as single
+contiguous files, Blu-ray splits data into multiple <code>.m2ts</code>
+(MPEG-2 Transport Stream) files controlled by playlist files
+(<code>.mpls</code>).</p>
+<ul>
+<li>The software parses the <code>.mpls</code> playlist files to
+identify the main feature runtime and avoid "playlist obfuscation"
+(false playlists used as copy protection).</li>
+<li>It maps the sequence of <code>.m2ts</code> clips required to
+construct the full audio-video timeline seamlessly.</li>
+<li>The tool identifies all elementary streams within the transport
+stream, including the primary audio (director's mix, native language),
+secondary tracks (commentaries, alternative languages), and descriptive
+audio.</li>
+</ul>
+<h3 id="3-demultiplexing-multi-track-audio-streams">3. Demultiplexing
+Multi-Track Audio Streams</h3>
+<p>The transport streams combine video, audio, and subtitle packets into
+a single interleaved data feed. Automated applications separate (demux)
+these packets on the fly.</p>
+<ul>
+<li><strong>PID Filtering:</strong> Every stream inside an
+<code>.m2ts</code> file has a unique Packet Identifier (PID). The
+demuxer filters and extracts specific PIDs corresponding to each audio
+track.</li>
+<li><strong>Handling Nested Audio Formats:</strong> Many Blu-ray audio
+formats are structured in layers. For example:
+<ul>
+<li><strong>Dolby TrueHD:</strong> Contains an embedded Dolby Digital
+(AC-3) core for backwards compatibility.</li>
+<li><strong>DTS-HD Master Audio:</strong> Contains a lossy DTS Digital
+Surround core alongside high-resolution extension packets.</li>
+</ul></li>
+<li>Ripping software allows users to either extract the full lossless
+stream (extension + core), split the audio into separate tracks
+(extracting the lossless track and standard lossy core independently),
+or extract only the lossy core to save file space.</li>
+</ul>
+<h3 id="4-direct-remuxing-into-the-matroska-mkv-container">4. Direct
+Remuxing into the Matroska (MKV) Container</h3>
+<p>Unlike traditional video conversion software, automated lossless
+rippers do not decode the audio into uncompressed PCM and re-encode it.
+Instead, they perform direct stream copying (remuxing).</p>
+<ul>
+<li><strong>Header Generation:</strong> The application creates a
+Matroska container structure, writing the essential track headers for
+each audio stream.</li>
+<li><strong>Timestamp Synchronization:</strong> The software
+synchronizes the Presentation Time Stamps (PTS) from the original
+transport stream to ensure multi-track audio aligns perfectly with the
+video frame rate, eliminating audio delay issues.</li>
+<li><strong>Packet Encapsulation:</strong> The raw audio packets
+(lossless TrueHD, DTS-HD MA, or multi-channel LPCM) are encapsulated
+directly into Matroska audio blocks.</li>
+</ul>
+<h3 id="5-metadata-and-language-tagging">5. Metadata and Language
+Tagging</h3>
+<p>During the final multiplexing phase, the application reads the
+language and configuration attributes defined in the disc's playlist
+metadata and applies them to the MKV file:</p>
+<ul>
+<li><strong>Language Tags:</strong> Tracks are assigned ISO 639-2
+language codes (e.g., <code>eng</code>, <code>spa</code>,
+<code>jpn</code>).</li>
+<li><strong>Channel Layouts:</strong> Specific channel configurations
+(e.g., 7.1, 5.1, Stereo) and spatial flags (such as Dolby Atmos or DTS:X
+metadata) are embedded directly into the track headers.</li>
+<li><strong>Track Flags:</strong> Default and forced track flags are
+assigned, determining which audio stream media players prioritize upon
+playback.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores CFR Video Frame Duration - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format manages frame durations for constant frame rate (CFR) video by combining header metadata with individual block timestamps. Although Matroska is natively designed around a timecode-based (variable frame rate) architectur">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-cfr-video-frame-duration">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores CFR Video Frame Duration - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-cfr-video-frame-duration" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format manages frame durations for constant frame rate (CFR) video by combining header metadata with individual block timestamps. Although Matroska is natively designed around a timecode-based (variable frame rate) architectur" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-cfr-video-frame-duration">How MKV Stores CFR
+Video Frame Duration</h1>
+<p>The Matroska (MKV) container format manages frame durations for
+constant frame rate (CFR) video by combining header metadata with
+individual block timestamps. Although Matroska is natively designed
+around a timecode-based (variable frame rate) architecture, it signals
+and maintains CFR playback using the <code>DefaultDuration</code> track
+header element in conjunction with the segment's
+<code>TimestampScale</code> and sequential <code>SimpleBlock</code>
+timestamps.</p>
+<h3 id="the-defaultduration-element">The <code>DefaultDuration</code>
+Element</h3>
+<p>In a Matroska container, frame rate is not explicitly declared as a
+traditional ratio (such as 30000/1001). Instead, the container defines
+the expected duration of each frame using the
+<code>DefaultDuration</code> element located within the
+<code>TrackEntry</code> for that specific video track.</p>
+<ul>
+<li>The <code>DefaultDuration</code> value is stored as an integer
+representing the duration of a single frame in nanoseconds.</li>
+<li>For a standard 24 fps video, the <code>DefaultDuration</code> is set
+to <code>41666666</code> nanoseconds (<span
+class="math inline">\(1,000,000,000 / 24\)</span>).</li>
+<li>For a 29.97 fps (NTSC) video, it is set to approximately
+<code>33366666</code> nanoseconds.</li>
+</ul>
+<p>Media players and decoders read <code>DefaultDuration</code> to
+determine the native display frame rate and to calculate the default
+length of time each video frame should be displayed on screen.</p>
+<h3 id="timestampscale-and-block-timestamps"><code>TimestampScale</code>
+and Block Timestamps</h3>
+<p>Matroska organizes media payloads into units called
+<code>Cluster</code> elements, which contain either
+<code>SimpleBlock</code> or <code>BlockGroup</code> elements holding the
+compressed frame data.</p>
+<p>Timing within clusters relies on two factors:</p>
+<ol type="1">
+<li><strong><code>TimestampScale</code></strong>: Located in the MKV
+<code>Info</code> segment, this global value defines the base time unit
+for timestamps in nanoseconds (defaulting to 1,000,000 ns, or 1
+millisecond).</li>
+<li><strong>Block Timestamps</strong>: Each <code>SimpleBlock</code>
+carries a relative timestamp indicating when that frame should be
+rendered relative to the cluster's base timestamp.</li>
+</ol>
+<h3 id="calculating-frame-duration-for-cfr">Calculating Frame Duration
+for CFR</h3>
+<p>For a video to remain constant in frame rate inside an MKV
+container:</p>
+<ul>
+<li>Each consecutive <code>SimpleBlock</code> is written with a
+timestamp that increases by a fixed interval equal to the frame duration
+(adjusted to the <code>TimestampScale</code>).</li>
+<li>Players calculate the effective frame duration either by calculating
+the delta between consecutive block timestamps (<span
+class="math inline">\(Timestamp_{n+1} - Timestamp_n\)</span>) or by
+defaulting to the <code>DefaultDuration</code> set in the track
+header.</li>
+<li>While <code>BlockGroup</code> elements support an explicit
+<code>BlockDuration</code> element for individual frames, CFR streams
+generally omit this per-frame tag to reduce container overhead, relying
+entirely on the linear timestamp increments and the track's
+<code>DefaultDuration</code>.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store Subtitles in Multiple Encodings? - mkv</title>
+    <meta name="description" content="This article examines how the Matroska (MKV) container handles embedded text subtitles across multiple tracks and whether distinct character encodings can coexist within a single file. While an MKV file can store an unlimited number of subtitle tracks rep">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-subtitles-in-multiple-encodings">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store Subtitles in Multiple Encodings? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-subtitles-in-multiple-encodings" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article examines how the Matroska (MKV) container handles embedded text subtitles across multiple tracks and whether distinct character encodings can coexist within a single file. While an MKV file can store an unlimited number of subtitle tracks rep" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-subtitles-in-multiple-encodings">Can MKV Store
+Subtitles in Multiple Encodings?</h1>
+<p>This article examines how the Matroska (MKV) container handles
+embedded text subtitles across multiple tracks and whether distinct
+character encodings can coexist within a single file. While an MKV file
+can store an unlimited number of subtitle tracks representing different
+languages and writing systems, the official Matroska container
+specification requires all standard text-based subtitles to be encoded
+in UTF-8, preventing the coexistence of disparate legacy character
+encodings in playable text streams.</p>
+<h3 id="the-matroska-specification-and-utf-8-requirement">The Matroska
+Specification and UTF-8 Requirement</h3>
+<p>The Matroska multimedia container format relies on the Extensible
+Binary Meta Language (EBML). Under the official specification, all
+text-based subtitle formats (such as SubRip <code>S_TEXT/UTF8</code> and
+Advanced SubStation Alpha <code>S_TEXT/ASS</code>) must be stored using
+UTF-8 encoding.</p>
+<p>Because UTF-8 is a universal character encoding capable of encoding
+every valid code point in Unicode, there is no technical necessity
+within the container to support competing legacy character encodings
+(such as ISO-8859-1, Windows-1252, Shift-JIS, or GB2312).</p>
+<h3 id="how-muxers-handle-multiple-source-encodings">How Muxers Handle
+Multiple Source Encodings</h3>
+<p>When creating an MKV file using standard muxing tools like
+<code>mkvmerge</code> (part of MKVToolNix) or FFmpeg, the software
+processes input subtitle files that may originate in various distinct
+encodings:</p>
+<ol type="1">
+<li><strong>Source Detection:</strong> The user or muxing tool specifies
+or detects the character set of each input subtitle file (for example,
+Track 1 in Windows-1256 for Arabic, and Track 2 in Shift-JIS for
+Japanese).</li>
+<li><strong>Transcoding to UTF-8:</strong> During the multiplexing
+process, the muxer decodes each source file from its native character
+set and transcodes the text into standardized UTF-8.</li>
+<li><strong>Storage:</strong> The final MKV file stores both subtitle
+tracks as individual streams, but both are encoded strictly in
+UTF-8.</li>
+</ol>
+<p>As a result, while the original source files may have had distinct
+encodings, the embedded text subtitle tracks within the resulting MKV
+file do not retain those separate encodings.</p>
+<h3 id="supporting-diverse-scripts-simultaneously">Supporting Diverse
+Scripts Simultaneously</h3>
+<p>Although an MKV file cannot store standard text subtitle streams in
+varying legacy encodings, it fully supports multiple tracks displaying
+completely different alphabets and scripts simultaneously.</p>
+<p>Because UTF-8 encompasses global character sets, an MKV container can
+store:</p>
+<ul>
+<li>Track 1: English (Latin script)</li>
+<li>Track 2: Greek (Greek script)</li>
+<li>Track 3: Russian (Cyrillic script)</li>
+<li>Track 4: Chinese (Simplified/Traditional Hanzi)</li>
+</ul>
+<p>All tracks exist side-by-side in harmony, unified under the UTF-8
+standard, ensuring consistent rendering across modern media players
+without character corruption (mojibake).</p>
+<h3 id="non-text-and-attachment-exceptions">Non-Text and Attachment
+Exceptions</h3>
+<ul>
+<li><strong>Bitmap Subtitles:</strong> Image-based subtitle tracks, such
+as DVD VobSub (<code>S_VOBSUB</code>) or Blu-ray PGS
+(<code>S_HDMV/PGS</code>), store graphical representations of text
+rather than character-encoded strings. These tracks do not use character
+encodings at all.</li>
+<li><strong>File Attachments:</strong> MKV allows arbitrary files to be
+embedded as attachments. If subtitle files are attached as raw binary
+payloads rather than multiplexed as active subtitle tracks, they can
+retain their original, distinct legacy character encodings, though media
+players will not display them automatically as switchable subtitles
+during playback.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores HDR10 Plus Dynamic Metadata - mkv</title>
+    <meta name="description" content="MKV (Matroska) stores HDR10+ dynamic parameters directly within the elementary video bitstream rather than in the container’s high-level track headers. While static HDR10 metadata can be stored in the Matroska container&#39;s native Colour elements, the frame">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-hdr-10-plus-dynamic-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores HDR10 Plus Dynamic Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-hdr-10-plus-dynamic-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="MKV (Matroska) stores HDR10+ dynamic parameters directly within the elementary video bitstream rather than in the container’s high-level track headers. While static HDR10 metadata can be stored in the Matroska container&#39;s native Colour elements, the frame" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-hdr10-plus-dynamic-metadata">How MKV Stores HDR10
+Plus Dynamic Metadata</h1>
+<p>MKV (Matroska) stores HDR10+ dynamic parameters directly within the
+elementary video bitstream rather than in the container’s high-level
+track headers. While static HDR10 metadata can be stored in the Matroska
+container's native <code>Colour</code> elements, the frame-by-frame
+dynamic metadata required for HDR10+ (SMPTE ST 2094-40) is embedded
+inside the video codec layer as ITU-T T.35 Supplemental Enhancement
+Information (SEI) messages for HEVC or Metadata Open Bitstream Units
+(OBUs) for AV1.</p>
+<h3 id="static-vs-dynamic-metadata-in-matroska">Static vs. Dynamic
+Metadata in Matroska</h3>
+<p>To understand how HDR10+ works in MKV, it is essential to distinguish
+between static and dynamic metadata:</p>
+<ul>
+<li><strong>Static Metadata (HDR10):</strong> Fixed values—such as
+Mastering Display Color Volume (MDCV) and Content Light Level
+(CLL/MaxFALL/MaxCLL)—apply to the entire video. The Matroska
+specification natively supports these in the
+<code>Track/Video/Colour</code> container elements
+(<code>MasteringMetadata</code>, <code>MaxCLL</code>,
+<code>MaxFALL</code>).</li>
+<li><strong>Dynamic Metadata (HDR10+):</strong> Scene-by-scene or
+frame-by-frame luminance adjustments defined by SMPTE ST 2094-40.
+Because these values change continuously, storing them in static
+container-level headers is insufficient.</li>
+</ul>
+<h3 id="bitstream-level-integration-itu-t-t35">Bitstream-Level
+Integration (ITU-T T.35)</h3>
+<p>Because the Matroska format does not define per-frame container tags
+for dynamic metadata, HDR10+ relies on the underlying video compression
+standard:</p>
+<ol type="1">
+<li><strong>HEVC (H.265) Streams:</strong> HDR10+ metadata is packed
+into "User Data Registered by ITU-T Recommendation T.35" SEI NAL
+(Network Abstraction Layer) units.
+<ul>
+<li>The SEI message contains a specific country code (<code>0xB5</code>
+for the United States) and terminal provider code assigned to SMPTE ST
+2094-40 (Application Identifier <code>4</code>).</li>
+<li>These SEI messages precede the video slice data for the
+corresponding frames, ensuring synchronized rendering.</li>
+</ul></li>
+<li><strong>AV1 Streams:</strong> In AV1 video tracks, HDR10+ parameters
+are encapsulated within <code>METADATA_TYPE_HDR_PLUS</code> Metadata
+OBUs, which also carry the ITU-T T.35 payload defining the ST 2094-40
+dynamic curves.</li>
+</ol>
+<h3 id="the-role-of-the-mkv-container">The Role of the MKV
+Container</h3>
+<p>The MKV container acts as a transparent carrier:</p>
+<ul>
+<li><strong>Block Encapsulation:</strong> The video packets containing
+the SEI NAL units or OBUs are packaged into standard Matroska
+<code>SimpleBlock</code> or <code>Block</code> structures without
+modification.</li>
+<li><strong>Demuxing and Decoding:</strong> When an MKV demuxer reads
+the file, it passes the raw video packets—including the embedded HDR10+
+SEI data—directly to the video decoder.</li>
+<li><strong>Display Mapping:</strong> The video decoder or tone-mapping
+processor parses the T.35 metadata from the decoded frames and
+dynamically adjusts brightness and contrast according to the target
+display's capabilities.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

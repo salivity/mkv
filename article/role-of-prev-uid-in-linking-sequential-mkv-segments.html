@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role of PrevUID in Linking Sequential MKV Segments - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format supports segment linking, a feature that connects separate video files into a continuous presentation without physically merging them. This article explains the role of the PrevUID element in this architecture, detailin">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/role-of-prev-uid-in-linking-sequential-mkv-segments">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Role of PrevUID in Linking Sequential MKV Segments - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/role-of-prev-uid-in-linking-sequential-mkv-segments" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format supports segment linking, a feature that connects separate video files into a continuous presentation without physically merging them. This article explains the role of the PrevUID element in this architecture, detailin" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="role-of-prevuid-in-linking-sequential-mkv-segments">Role of
+PrevUID in Linking Sequential MKV Segments</h1>
+<p>The Matroska (MKV) container format supports segment linking, a
+feature that connects separate video files into a continuous
+presentation without physically merging them. This article explains the
+role of the <code>PrevUID</code> element in this architecture, detailing
+how it identifies preceding file segments, enables seamless playback
+transitions, and maintains chronological integrity across split media
+files.</p>
+<h3 id="what-is-the-prevuid-element">What is the PrevUID Element?</h3>
+<p>In the Matroska container hierarchy, every file segment can have a
+globally unique identifier called the <code>SegmentUID</code>, which is
+a 128-bit (16-byte) random value located in the <code>Info</code>
+element. The <code>PrevUID</code> (Previous Unique Identifier) is a
+companion element placed within the same <code>Info</code> header. Its
+primary function is to store the exact <code>SegmentUID</code> of the
+MKV file that directly precedes the current file in a sequence.</p>
+<h3 id="facilitating-seamless-sequential-playback">Facilitating Seamless
+Sequential Playback</h3>
+<p>When a large video—such as a feature-length film or an episodic
+series—is split into multiple MKV files, media players require a
+standardized method to determine file order. <code>PrevUID</code>
+provides this reference mechanism:</p>
+<ol type="1">
+<li><strong>Chain Identification:</strong> By reading the
+<code>PrevUID</code> in the current file, an MKV-compliant media player
+can verify if it has access to the preceding part of the video.</li>
+<li><strong>Reverse Seeking and Navigation:</strong> While the
+<code>NextUID</code> element tells a player which file comes next,
+<code>PrevUID</code> allows players to handle backward navigation,
+rewind operations, and chronological verification across split
+media.</li>
+<li><strong>Timeline Continuity:</strong> Media players use the
+combination of <code>SegmentUID</code>, <code>PrevUID</code>, and
+<code>NextUID</code> to construct a unified timeline. This ensures that
+timestamps, subtitles, audio tracks, and chapter markers transition
+smoothly across file boundaries without audio drops or visual
+stutter.</li>
+</ol>
+<h3 id="role-in-ordered-chapters-and-linked-segments">Role in Ordered
+Chapters and Linked Segments</h3>
+<p>Matroska supports two primary forms of linking: Hard Linking and
+Medium Linking (often utilized with Ordered Chapters).</p>
+<ul>
+<li><strong>Hard Linking:</strong> In basic multi-part files,
+<code>PrevUID</code> and <code>NextUID</code> form a linear chain where
+segments are played strictly end-to-end.</li>
+<li><strong>Ordered Chapters:</strong> In more complex setups, chapters
+within one MKV file can reference content in an external MKV file (such
+as a shared opening or ending sequence across an entire season of a
+television show). The <code>PrevUID</code> ensures the playback engine
+preserves the correct hierarchical and temporal relationship when
+returning from or navigating between these external segments.</li>
+</ul>
+<h3 id="integrity-and-file-verification">Integrity and File
+Verification</h3>
+<p>Because <code>PrevUID</code> references a 128-bit hash rather than a
+standard file path, the linking is not broken if the previous file is
+renamed. Media players scan the directory for an MKV file containing the
+matching <code>SegmentUID</code>. This makes the sequential chain robust
+against superficial changes to filenames, relying purely on the
+structural metadata embedded inside the files.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Hold Multiple Frame Rates in One Stream? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container natively supports multiple distinct frame rates within a single video stream through a technology known as Variable Frame Rate (VFR). Unlike traditional container formats that enforce a single Constant Frame Rate (CFR), MKV re">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-hold-multiple-frame-rates-in-one-stream">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Hold Multiple Frame Rates in One Stream? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-hold-multiple-frame-rates-in-one-stream" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container natively supports multiple distinct frame rates within a single video stream through a technology known as Variable Frame Rate (VFR). Unlike traditional container formats that enforce a single Constant Frame Rate (CFR), MKV re" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-hold-multiple-frame-rates-in-one-stream">Can MKV Hold
+Multiple Frame Rates in One Stream?</h1>
+<p>The Matroska (MKV) container natively supports multiple distinct
+frame rates within a single video stream through a technology known as
+Variable Frame Rate (VFR). Unlike traditional container formats that
+enforce a single Constant Frame Rate (CFR), MKV relies on independent
+timecodes for each frame. This article explains how MKV handles dynamic
+frame rates within one stream, the mechanisms that make it possible,
+practical applications, and considerations for playback and editing.</p>
+<h3 id="how-mkv-implements-variable-frame-rates">How MKV Implements
+Variable Frame Rates</h3>
+<p>MKV does not require a fixed frame rate to be defined at the
+container header level. Instead, the format structures video data using
+timestamped packets:</p>
+<ul>
+<li><strong>Presentation Timestamps (PTS):</strong> Every individual
+video frame (stored in Matroska <code>Block</code> or
+<code>SimpleBlock</code> elements) has its own distinct timestamp
+relative to the track's timecode scale.</li>
+<li><strong>Independent Frame Durations:</strong> Because each frame
+specifies precisely when it should be displayed, the duration between
+consecutive frames can vary dynamically throughout the video.</li>
+<li><strong>Timecode Formats:</strong> When encoding or muxing, Matroska
+commonly utilizes timecode files (such as Timecode Format v1 or v2).
+Format v1 specifies frame rate ranges for particular frame numbers,
+while Format v2 defines the exact millisecond timestamp for every single
+frame.</li>
+</ul>
+<h3 id="common-use-cases-for-multi-framerate-streams">Common Use Cases
+for Multi-Framerate Streams</h3>
+<p>Embedding multiple frame rates within a single video stream serves
+several practical purposes:</p>
+<ol type="1">
+<li><strong>Mixed Content in Animation and Film:</strong> Media often
+combines film scenes (typically 23.976 fps or 24 fps) with native video
+effects, scrolling credits, or CGI rendered at 29.97 fps or 59.94 fps.
+MKV preserves the native frame rate of each segment without requiring
+frame duplication or telecine artifacts.</li>
+<li><strong>Inverse Telecine (IVTC) Corrections:</strong> Restoring
+telecined broadcast content often yields variable cadences. MKV allows
+true 24 fps progressive frames to coexist with 30 fps interlaced or
+progressive sequences.</li>
+<li><strong>Screen Recording and Live Captures:</strong> Screen
+recording software dynamically drops frame rates during static scenes
+(reducing the rate down to 1–5 fps to save bandwidth) and increases them
+during fast motion (up to 60 fps or 120 fps).</li>
+<li><strong>Efficiency and File Size Reduction:</strong> By lowering the
+frame rate during low-motion scenes or static slides, the encoder avoids
+processing redundant frames, significantly lowering overall file
+size.</li>
+</ol>
+<h3 id="codec-and-container-compatibility">Codec and Container
+Compatibility</h3>
+<p>MKV acts as the envelope, but the underlying video codec must also
+allow dynamic timing:</p>
+<ul>
+<li>Modern video codecs such as H.264 (AVC), H.265 (HEVC), VP9, and AV1
+fully support variable timing information alongside MKV.</li>
+<li>Legacy codecs designed strictly around constant rates (such as raw
+MPEG-2 elementary streams) can still be packaged with variable
+timestamps in MKV, though encoder and decoder support may vary.</li>
+</ul>
+<h3 id="playback-and-editing-considerations">Playback and Editing
+Considerations</h3>
+<ul>
+<li><strong>Media Players:</strong> Modern software players like VLC,
+MPV, and MPC-HC read Matroska frame timestamps accurately, adjusting
+their display refresh and render cycles dynamically without
+stutter.</li>
+<li><strong>Video Editing Software (NLEs):</strong> Professional editing
+suites (such as Adobe Premiere Pro, DaVinci Resolve, or Final Cut Pro)
+are designed around fixed timeline frame rates. Importing a
+multi-framerate MKV can lead to audio/video desynchronization or dropped
+frames, often requiring conversion to a constant frame rate before
+editing.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Chapter Edition UIDs for Branching Media - mkv</title>
+    <meta name="description" content="Matroska (MKV) containers manage non-linear and branching narrative media through an advanced, hierarchical chapter structure governed by Extensible Binary Meta Language (EBML). By using unique identification elements—specifically the EditionUID within an">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-chapter-edition-ui-ds-for-branching-media">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Chapter Edition UIDs for Branching Media - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-chapter-edition-ui-ds-for-branching-media" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Matroska (MKV) containers manage non-linear and branching narrative media through an advanced, hierarchical chapter structure governed by Extensible Binary Meta Language (EBML). By using unique identification elements—specifically the EditionUID within an" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-chapter-edition-uids-for-branching-media">MKV Chapter
+Edition UIDs for Branching Media</h1>
+<p>Matroska (MKV) containers manage non-linear and branching narrative
+media through an advanced, hierarchical chapter structure governed by
+Extensible Binary Meta Language (EBML). By using unique identification
+elements—specifically the <code>EditionUID</code> within an
+<code>EditionEntry</code>—the MKV container allows content creators to
+package multiple narrative paths, such as alternate endings, director's
+cuts, or interactive storylines, within a single file or across linked
+files without duplicating media streams.</p>
+<h2 id="the-chapter-hierarchy-and-editionentry">The Chapter Hierarchy
+and EditionEntry</h2>
+<p>The MKV chapter system is structured hierarchically under the root
+<code>Chapters</code> element. Inside, content is organized into one or
+more <code>EditionEntry</code> master elements. Each
+<code>EditionEntry</code> represents an independent, complete version or
+timeline of the media.</p>
+<p>Within every <code>EditionEntry</code>, the key metadata elements
+include:</p>
+<ul>
+<li><strong><code>EditionUID</code></strong>: A unique 64-bit unsigned
+integer that identifies that specific narrative path or edition.</li>
+<li><strong><code>EditionFlagOrdered</code></strong>: A 1-bit boolean
+flag. When set to <code>1</code>, it signals to the media player that
+the edition is an "Ordered Chapter" set, meaning the player must
+construct a virtual timeline strictly following the defined sequence of
+chapter segments rather than playing the file linearly from start to
+finish.</li>
+<li><strong><code>EditionFlagDefault</code></strong>: Specifies which
+<code>EditionUID</code> the player should load automatically if the user
+makes no selection.</li>
+<li><strong><code>EditionFlagHidden</code></strong>: Flags whether the
+edition should be exposed in standard player menus (useful for internal
+branching logic).</li>
+</ul>
+<h2 id="defining-narrative-paths-with-chapter-atoms">Defining Narrative
+Paths with Chapter Atoms</h2>
+<p>Each <code>EditionEntry</code> contains a sequence of
+<code>ChapterAtom</code> elements that construct the timeline for that
+specific <code>EditionUID</code>.</p>
+<ol type="1">
+<li><strong>Virtual Splicing:</strong> Each <code>ChapterAtom</code>
+specifies a <code>ChapterTimeStart</code> and
+<code>ChapterTimeEnd</code>. In an ordered edition, the player plays
+only the designated time ranges in sequence, seamlessly jumping over
+unreferenced sections of the video file.</li>
+<li><strong>Timeline Assembly:</strong> For branching media contained
+within a single file, two different editions (e.g.,
+<code>EditionUID: 1001</code> for the Theatrical Cut and
+<code>EditionUID: 1002</code> for the Alternate Ending Cut) will share
+the initial identical <code>ChapterAtom</code> segments. At the branch
+point, <code>EditionUID: 1001</code> directs the player to timestamp
+block A, while <code>EditionUID: 1002</code> directs playback to
+timestamp block B.</li>
+</ol>
+<h2 id="multi-file-branching-via-segment-linking">Multi-File Branching
+via Segment Linking</h2>
+<p>For complex branching media where branch assets are stored in
+separate MKV files to optimize distribution, the container uses EBML
+segment linking:</p>
+<ul>
+<li><strong><code>ChapterSegmentUID</code></strong>: Stored inside a
+<code>ChapterAtom</code>, this 128-bit binary UID references an external
+Matroska file's <code>SegmentUID</code>.</li>
+<li><strong><code>ChapterSegmentEditionUID</code></strong>: Points to a
+specific <code>EditionUID</code> inside the targeted external
+segment.</li>
+</ul>
+<p>When the playback engine reaches a <code>ChapterAtom</code>
+configured with an external <code>ChapterSegmentUID</code>, it pauses
+the current stream, opens the referenced MKV segment, reads the
+specified <code>ChapterSegmentEditionUID</code>, and renders the
+external audio/video seamlessly before returning to the parent
+timeline.</p>
+<h2 id="player-parsing-and-execution">Player Parsing and Execution</h2>
+<p>When a compatible player opens an MKV file containing branching
+media:</p>
+<ol type="1">
+<li>It parses the <code>Chapters</code> master tag and enumerates all
+<code>EditionEntry</code> elements.</li>
+<li>It reads each <code>EditionUID</code> and any associated localized
+strings in <code>ChapterDisplay</code> (e.g., "Narrative Path A",
+"Director's Cut").</li>
+<li>Once an edition is selected, the playback engine builds an internal
+seek table corresponding solely to the <code>ChapterAtom</code> sequence
+listed under that specific <code>EditionUID</code>.</li>
+<li>During playback, the player utilizes the chapter timecodes to
+execute gapless seeks across internal tracks or external segment links,
+delivering a continuous viewing experience tailored to the chosen
+storyline.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

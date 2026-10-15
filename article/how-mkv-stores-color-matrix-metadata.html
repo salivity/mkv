@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Color Matrix Metadata - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container ensures accurate color reproduction by storing standardized colorimetry parameters directly within its track headers using Extensible Binary Meta Language (EBML) elements. By defining properties such as Matrix Coefficients, Co">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-color-matrix-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Color Matrix Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-color-matrix-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container ensures accurate color reproduction by storing standardized colorimetry parameters directly within its track headers using Extensible Binary Meta Language (EBML) elements. By defining properties such as Matrix Coefficients, Co" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-color-matrix-metadata">How MKV Stores Color
+Matrix Metadata</h1>
+<p>The Matroska (MKV) container ensures accurate color reproduction by
+storing standardized colorimetry parameters directly within its track
+headers using Extensible Binary Meta Language (EBML) elements. By
+defining properties such as Matrix Coefficients, Color Primaries,
+Transfer Characteristics, and Range at the container level, MKV provides
+media demuxers and video renderers with the precise mathematical
+instructions required to convert encoded color data (typically
+YUV/YCbCr) into display-ready RGB signals, preventing common playback
+issues like washed-out colors, crushed blacks, or hue shifts.</p>
+<p>Inside an MKV file, video configuration is structured hierarchically.
+The top-level <code>Segment</code> contains a <code>Tracks</code> master
+element, which holds individual <code>TrackEntry</code> elements for
+each stream. Within a video <code>TrackEntry</code>, MKV defines a
+dedicated <code>Video</code> master element containing a child element
+called <code>Colour</code> (EBML ID <code>0x55B0</code>). The
+<code>Colour</code> element houses all container-level colorimetry
+metadata.</p>
+<p>The primary elements stored within the <code>Colour</code> container
+include:</p>
+<ul>
+<li><strong>MatrixCoefficients (<code>0x55B1</code>):</strong> Specifies
+the matrix coefficients used to derive luma and chroma signals from the
+green, blue, and red primaries. Common values correspond to ITU-R
+standards, such as BT.709 (for standard HD content), BT.601 (for SD
+content), and BT.2020 non-constant luminance (for Ultra HD/HDR
+content).</li>
+<li><strong>Primaries (<code>0x55B2</code>):</strong> Defines the
+chromaticity coordinates of the source color primaries. It dictates the
+source color gamut (e.g., BT.709, DCI-P3, or BT.2020), ensuring that
+colors are mapped accurately to the target display's native gamut.</li>
+<li><strong>TransferCharacteristics (<code>0x55B3</code>):</strong>
+Identifies the opto-electronic transfer function (gamma curve or EOTF)
+of the video, such as BT.709/BT.1886 for Standard Dynamic Range (SDR),
+SMPTE ST 2084 (Perceptual Quantizer) for HDR10, or ARIB STD-B67 for
+Hybrid Log-Gamma (HLG).</li>
+<li><strong>Range (<code>0x55B9</code>):</strong> Indicates the clipping
+limits of the luma and chroma samples, differentiating between
+broadcast/limited range (16–235 for 8-bit luma) and full range
+(0–255).</li>
+<li><strong>MasteringMetadata (<code>0x55D0</code>):</strong> For High
+Dynamic Range (HDR) video, this sub-element stores the display
+primaries, white point, and maximum/minimum luminance of the mastering
+monitor, alongside elements for Maximum Content Light Level
+(<code>MaxCLL</code>) and Maximum Frame-Average Light Level
+(<code>MaxFALL</code>).</li>
+</ul>
+<p>When an MKV file is opened, the media demuxer reads the
+<code>Colour</code> element before decoding video frames. This allows
+the playback pipeline to configure the color conversion matrices in
+hardware or software shaders prior to rendering.</p>
+<p>While modern video bitstreams (such as H.264, HEVC, and AV1) can also
+carry this information internally via Video Usability Information (VUI)
+or Sequence Header parameters, MKV's container-level metadata serves as
+an explicit, easily accessible descriptor. This enables decoders and
+renderers to establish the correct color processing pipeline immediately
+during initialization without parsing deep into the encoded bitstream,
+ensuring consistent and color-accurate playback across diverse media
+players.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBML Elements for Default MKV Language Tracks - mkv</title>
+    <meta name="description" content="In a Matroska (MKV) multimedia container, determining which audio or subtitle track plays by default relies on specific Extensible Binary Meta Language (EBML) elements embedded within track headers. This article details the core EBML elements responsible">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/ebml-elements-for-default-mkv-language-tracks">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="EBML Elements for Default MKV Language Tracks - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/ebml-elements-for-default-mkv-language-tracks" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In a Matroska (MKV) multimedia container, determining which audio or subtitle track plays by default relies on specific Extensible Binary Meta Language (EBML) elements embedded within track headers. This article details the core EBML elements responsible" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="ebml-elements-for-default-mkv-language-tracks">EBML Elements for
+Default MKV Language Tracks</h1>
+<p>In a Matroska (MKV) multimedia container, determining which audio or
+subtitle track plays by default relies on specific Extensible Binary
+Meta Language (EBML) elements embedded within track headers. This
+article details the core EBML elements responsible for defining track
+language, default playback status, and track priority in MKV files.</p>
+<h2 id="the-trackentry-container">The TrackEntry Container</h2>
+<p>All track configuration elements reside inside the
+<code>Tracks</code> master element (<code>0x1654AE6B</code>), nested
+within individual <code>TrackEntry</code> elements (<code>0xAE</code>).
+Each <code>TrackEntry</code> represents an independent stream (video,
+audio, or subtitle) and contains metadata describing its language and
+default behavior.</p>
+<h2 id="key-ebml-elements-determining-default-tracks">Key EBML Elements
+Determining Default Tracks</h2>
+<h3 id="1-flagdefault-0x88">1. FlagDefault (<code>0x88</code>)</h3>
+<ul>
+<li><strong>Data Type:</strong> Unsigned Integer (Boolean:
+<code>0</code> or <code>1</code>)</li>
+<li><strong>Default Value:</strong> <code>1</code> (if omitted)</li>
+<li><strong>Function:</strong> Informs media players that the track is
+eligible for automatic selection upon opening the file. When set to
+<code>1</code> (True), the player treats this stream as the default
+choice for its specific <code>TrackType</code>, unless user preferences
+or forced flags override it.</li>
+</ul>
+<h3 id="2-languagebcp47-0x22b59d">2. LanguageBCP47
+(<code>0x22B59D</code>)</h3>
+<ul>
+<li><strong>Data Type:</strong> UTF-8 String</li>
+<li><strong>Function:</strong> Contains the IETF BCP 47 language tag
+(e.g., <code>en</code>, <code>en-US</code>, <code>ja</code>,
+<code>pt-BR</code>) identifying the track's language. Media players
+match this value against the user's preferred playback language to
+decide if a track marked as <code>FlagDefault</code> should be
+used.</li>
+</ul>
+<h3 id="3-language-0x22b59c">3. Language (<code>0x22B59C</code>)</h3>
+<ul>
+<li><strong>Data Type:</strong> String (Legacy)</li>
+<li><strong>Default Value:</strong> <code>und</code> (Undetermined)</li>
+<li><strong>Function:</strong> Contains the 3-letter ISO 639-2 language
+code (e.g., <code>eng</code>, <code>jpn</code>, <code>fre</code>).
+Modern specifications recommend <code>LanguageBCP47</code>, but legacy
+players rely on this element to detect track language for default
+selection.</li>
+</ul>
+<h3 id="4-flagforced-0x55aa">4. FlagForced (<code>0x55AA</code>)</h3>
+<ul>
+<li><strong>Data Type:</strong> Unsigned Integer (Boolean:
+<code>0</code> or <code>1</code>)</li>
+<li><strong>Default Value:</strong> <code>0</code> (if omitted)</li>
+<li><strong>Function:</strong> Primarily used for subtitles. When set to
+<code>1</code>, it signals that the track contains essential context
+(such as translations for foreign-language dialogue in an otherwise
+native-language track) and should be rendered regardless of whether
+subtitles are generally disabled by the user.</li>
+</ul>
+<h3 id="5-tracktype-0x83">5. TrackType (<code>0x83</code>)</h3>
+<ul>
+<li><strong>Data Type:</strong> Unsigned Integer</li>
+<li><strong>Function:</strong> Identifies the media type (e.g.,
+<code>1</code> for Video, <code>2</code> for Audio, <code>17</code> for
+Subtitles). Default flag evaluation is isolated per
+<code>TrackType</code>, allowing one default track per category.</li>
+</ul>
+<h2 id="player-evaluation-logic">Player Evaluation Logic</h2>
+<p>When an MKV file is opened, media players generally resolve default
+tracks using the following hierarchy:</p>
+<ol type="1">
+<li><strong>User Preference:</strong> The player checks if a track's
+<code>LanguageBCP47</code> or <code>Language</code> matches the user's
+configured preferred language.</li>
+<li><strong>FlagDefault Priority:</strong> Among matching language
+tracks (or if no preference is set), the player selects the track where
+<code>FlagDefault</code> is set to <code>1</code>.</li>
+<li><strong>Track Order Fallback:</strong> If multiple tracks share the
+same language and default flags, or if no default flag is set, players
+typically fall back to the track with the lowest
+<code>TrackNumber</code> (<code>0xD7</code>).</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

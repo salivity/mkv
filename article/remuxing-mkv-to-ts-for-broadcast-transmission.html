@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remuxing MKV to TS for Broadcast Transmission - mkv</title>
+    <meta name="description" content="Remuxing MKV (Matroska) files into TS (MPEG Transport Stream) format is a critical workflow in digital broadcasting that changes a video&#39;s container format without re-encoding the underlying audio and video streams. This article explains how video convert">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/remuxing-mkv-to-ts-for-broadcast-transmission">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Remuxing MKV to TS for Broadcast Transmission - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/remuxing-mkv-to-ts-for-broadcast-transmission" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Remuxing MKV (Matroska) files into TS (MPEG Transport Stream) format is a critical workflow in digital broadcasting that changes a video&#39;s container format without re-encoding the underlying audio and video streams. This article explains how video convert" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="remuxing-mkv-to-ts-for-broadcast-transmission">Remuxing MKV to
+TS for Broadcast Transmission</h1>
+<p>Remuxing MKV (Matroska) files into TS (MPEG Transport Stream) format
+is a critical workflow in digital broadcasting that changes a video's
+container format without re-encoding the underlying audio and video
+streams. This article explains how video converters perform this
+process, transforming modern, file-based MKV media into broadcast-ready,
+packetized transport streams designed for error-resilient television
+transmission and real-time streaming networks.</p>
+<h3 id="what-is-remuxing">What is Remuxing?</h3>
+<p>Remuxing, short for multiplexing modification, extracts elementary
+streams (video, audio, and subtitles) from one container format and
+places them into another without altering the original codecs or
+applying lossy compression. Because the media data is simply copied
+rather than decoded and re-encoded, the process is instantaneous, uses
+minimal processing power, and preserves 100% of the original audiovisual
+quality.</p>
+<h3 id="the-container-shift-mkv-vs-mpeg-ts">The Container Shift: MKV vs.
+MPEG-TS</h3>
+<p>MKV is a highly flexible, open-standard container designed for local
+storage, media players, and high-efficiency indexing. However, it is not
+optimized for linear, continuous transmission.</p>
+<p>MPEG-TS (Transport Stream), defined by the MPEG-2 systems standard,
+is specifically engineered for unreliable broadcast channels such as
+terrestrial (DVB-T/ATSC), satellite (DVB-S), cable (DVB-C), and IP
+multicast. It organizes data into fixed-size packets that can be decoded
+on the fly, even if a receiver tunes into the middle of a transmission
+or encounters network packet loss.</p>
+<h3 id="the-technical-steps-of-the-remuxing-process">The Technical Steps
+of the Remuxing Process</h3>
+<p>When a converter converts MKV to TS, it executes four fundamental
+stages:</p>
+<ol type="1">
+<li><p><strong>Demultiplexing (Demuxing):</strong> The converter parses
+the MKV container headers, clusters, and cues. It separates the
+interlaced data tracks into raw Elementary Streams (ES)—typically
+H.264/AVC, H.265/HEVC for video, and AAC or AC-3 (Dolby Digital) for
+audio.</p></li>
+<li><p><strong>Packetization into PES (Packetized Elementary
+Stream):</strong> The continuous elementary streams are segmented into
+variable-length PES packets. The converter adds PES headers containing
+vital synchronization data, including:</p>
+<ul>
+<li><strong>PTS (Presentation Time Stamp):</strong> Dictates when a
+frame or audio sample must be displayed.</li>
+<li><strong>DTS (Decode Time Stamp):</strong> Dictates when a frame must
+be decoded (critical for modern video formats with out-of-order
+B-frames).</li>
+</ul></li>
+<li><p><strong>TS Packet Generation (188-Byte Packets):</strong> The PES
+packets are further chopped into standard, fixed-size 188-byte TS
+packets. Each packet receives a 4-byte header that includes:</p>
+<ul>
+<li><strong>PID (Packet Identifier):</strong> A unique tag that
+identifies which stream (e.g., video, primary audio, secondary audio)
+the packet belongs to.</li>
+<li><strong>Continuity Counter:</strong> A 4-bit sequence counter (0–15)
+used by broadcast receivers to detect dropped packets.</li>
+<li><strong>Payload Unit Start Indicator (PUSI):</strong> Signals the
+beginning of a new PES packet.</li>
+</ul></li>
+<li><p><strong>Generating PSI/SI Tables (Metadata &amp;
+Timing):</strong> Unlike MKV, which relies on a single header at the
+start of the file, a TS stream must allow broadcast tuners to instantly
+identify channels and streams at any moment. The converter injects
+Program Specific Information (PSI) tables at regular intervals:</p>
+<ul>
+<li><strong>PAT (Program Association Table):</strong> Always on PID 0,
+this points to the available programs and their respective PMT
+locations.</li>
+<li><strong>PMT (Program Map Table):</strong> Defines the PIDs assigned
+to the video, audio, and subtitle streams within a specific
+program.</li>
+<li><strong>PCR (Program Clock Reference):</strong> Precision timing
+markers inserted directly into TS packet adaptation fields to
+synchronize the broadcaster's clock with the receiver's hardware
+clock.</li>
+</ul></li>
+<li><p><strong>Multiplexing and Output:</strong> The TS packets from all
+streams, alongside the PSI tables and PCR markers, are interleaved based
+on their time stamps. If required for fixed-bandwidth broadcast
+standards, the converter inserts null packets (PID 8191) to maintain a
+constant bitrate (CBR). The resulting output is a standardized
+<code>.ts</code> file ready for broadcast playout servers and
+transmission hardware.</p></li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

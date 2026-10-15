@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Files Encapsulate VVC and H.266 Video? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format fully supports the encapsulation of Versatile Video Coding (VVC), officially standardized as ITU-T H.266 and ISO/IEC 23090-3. Thanks to updates in the Matroska specifications and leading open-source multiplex">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-files-encapsulate-vvc-and-h-266-video">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Files Encapsulate VVC and H.266 Video? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-files-encapsulate-vvc-and-h-266-video" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format fully supports the encapsulation of Versatile Video Coding (VVC), officially standardized as ITU-T H.266 and ISO/IEC 23090-3. Thanks to updates in the Matroska specifications and leading open-source multiplex" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-files-encapsulate-vvc-and-h266-video">Can MKV Files
+Encapsulate VVC and H.266 Video?</h1>
+<p>The Matroska (MKV) multimedia container format fully supports the
+encapsulation of Versatile Video Coding (VVC), officially standardized
+as ITU-T H.266 and ISO/IEC 23090-3. Thanks to updates in the Matroska
+specifications and leading open-source multiplexing software, users can
+package VVC elementary streams alongside modern audio and subtitle
+formats inside an MKV container. This article explains how MKV handles
+H.266/VVC video, the technical requirements for muxing, and current
+playback compatibility.</p>
+<h2 id="how-mkv-handles-vvch266-codecs">How MKV Handles VVC/H.266
+Codecs</h2>
+<p>Matroska is a flexible, format-agnostic container designed to hold
+virtually any audio, video, or subtitle format. To support VVC, the
+Matroska specifications define standard codec identifiers—primarily
+<code>V_MPEGH/ISO/VVC</code>—which allow the container to identify the
+stream and properly read its parameter sets, frame rates, and bitstream
+structure.</p>
+<p>MKV encapsulates VVC in a packetized NAL unit format (similar to how
+it stores H.264/AVC and H.265/HEVC). This ensures that keyframes,
+timestamps, aspect ratios, and color metadata (such as HDR10 or Dolby
+Vision metadata carried within VVC) are mapped properly within the
+Matroska header block structure.</p>
+<h2 id="muxing-vvc-into-mkv">Muxing VVC into MKV</h2>
+<p>Leading open-source video processing and container management tools
+support remuxing VVC elementary bitstreams (typically files with
+<code>.vvc</code> or <code>.266</code> extensions) into
+<code>.mkv</code> files:</p>
+<ul>
+<li><strong>MKVToolNix:</strong> Modern releases of MKVToolNix support
+reading raw VVC/H.266 video streams and packaging them into MKV files
+with custom tracks, tags, and chapters.</li>
+<li><strong>FFmpeg:</strong> Recent builds of FFmpeg compiled with VVC
+bitstream parsing capabilities can remux or encode VVC streams directly
+into an MKV output file using standard command-line operations.</li>
+<li><strong>GPAC / MP4Box to MKV:</strong> Users who have VVC content in
+MP4 containers can extract or directly remux those streams into MKV
+containers without re-encoding the underlying video.</li>
+</ul>
+<h2 id="benefits-of-using-mkv-for-vvc-content">Benefits of Using MKV for
+VVC Content</h2>
+<p>Using MKV for H.266/VVC video offers several practical
+advantages:</p>
+<ul>
+<li><strong>Broad Audio Support:</strong> MKV can pair highly efficient
+VVC video with high-end or lossless audio formats such as Dolby TrueHD,
+DTS-HD Master Audio, FLAC, and Opus.</li>
+<li><strong>Advanced Subtitles:</strong> Unlike some competing
+containers, MKV allows styling-heavy subtitle formats like SSA/ASS, PGS,
+and SRT to be embedded seamlessly with VVC video.</li>
+<li><strong>Future-Proofing:</strong> As VVC delivers up to 50% better
+compression efficiency compared to HEVC at equivalent visual quality,
+packaging it in an extensible container like MKV ensures long-term media
+preservation.</li>
+</ul>
+<h2 id="current-playback-support">Current Playback Support</h2>
+<p>While the MKV container supports VVC, decoding the video stream
+inside requires media players equipped with compatible software decoders
+(such as <code>vvdec</code> or the native FFmpeg VVC decoder). Players
+such as <code>mpv</code> and modern developer builds of VLC are capable
+of demuxing and playing VVC-in-MKV files, though high-resolution
+playback (such as 4K or 8K) currently depends on CPU power until
+dedicated hardware decoding becomes standard in consumer GPUs and
+processors.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

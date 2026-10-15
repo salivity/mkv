@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores High-Res Audio Bit Depth - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format utilizes a structured, hierarchical metadata system based on Extensible Binary Meta Language (EBML) to store audio stream parameters. This article explains how the MKV container defines and stores audio sampl">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-high-res-audio-bit-depth">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores High-Res Audio Bit Depth - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-high-res-audio-bit-depth" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format utilizes a structured, hierarchical metadata system based on Extensible Binary Meta Language (EBML) to store audio stream parameters. This article explains how the MKV container defines and stores audio sampl" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-high-res-audio-bit-depth">How MKV Stores High-Res
+Audio Bit Depth</h1>
+<p>The Matroska (MKV) multimedia container format utilizes a structured,
+hierarchical metadata system based on Extensible Binary Meta Language
+(EBML) to store audio stream parameters. This article explains how the
+MKV container defines and stores audio sample bit depth for
+high-resolution audio formats, outlining the specific EBML container
+elements used for lossless audio streams and explaining how bit depth
+resolution is handled across different high-resolution codec
+architectures.</p>
+<h3 id="the-ebml-bitdepth-element">The EBML BitDepth Element</h3>
+<p>At the container level, Matroska organizes stream definitions inside
+the <code>Tracks</code> master element. Each audio track contains an
+<code>Audio</code> settings master element that defines stream-specific
+properties such as sample rate, channel count, and bit depth.</p>
+<p>The specific element used to store the audio sample resolution
+is:</p>
+<ul>
+<li><strong>Element Name:</strong> <code>BitDepth</code></li>
+<li><strong>Element ID:</strong> <code>[62][64]</code></li>
+<li><strong>Type:</strong> Unsigned Integer (<code>uinteger</code>)</li>
+</ul>
+<p>For high-resolution uncompressed or lossless codecs—such as Linear
+PCM, FLAC, and WavPack—this element explicitly defines the exact number
+of bits per audio sample (typically <code>24</code> or <code>32</code>
+for high-resolution audio). Demuxers read this value to configure the
+audio output buffer size before sending the raw decoded samples to the
+operating system's audio engine.</p>
+<h3 id="handling-uncompressed-and-open-lossless-codecs">Handling
+Uncompressed and Open Lossless Codecs</h3>
+<p>For codecs where the container dictates the packaging of raw audio
+data:</p>
+<ul>
+<li><strong>Linear PCM (<code>A_PCM/INT/LIT</code>,
+<code>A_PCM/INT/BIG</code>, <code>A_PCM/FLOAT/IEEE</code>):</strong> The
+<code>BitDepth</code> element is mandatory. Because raw PCM contains no
+internal header data per frame, the demuxer relies entirely on the
+<code>BitDepth</code> element alongside <code>SamplingFrequency</code>
+and <code>Channels</code> to parse the byte boundaries of individual
+samples.</li>
+<li><strong>FLAC (<code>A_FLAC</code>):</strong> While FLAC stores its
+native bit depth inside the <code>STREAMINFO</code> metadata block
+within the <code>CodecPrivate</code> element, the MKV
+<code>BitDepth</code> element is also populated to allow player
+interfaces to display stream technical details without reading the codec
+initialization data.</li>
+</ul>
+<h3 id="bitstream-decoded-high-resolution-formats">Bitstream-Decoded
+High-Resolution Formats</h3>
+<p>For proprietary, packetized high-resolution audio codecs such as
+Dolby TrueHD (<code>A_TRUEHD</code>), DTS-HD Master Audio
+(<code>A_DTS</code>), or Dolby Atmos over TrueHD, bit depth management
+functions differently:</p>
+<ol type="1">
+<li><strong>Internal Frame Headers:</strong> Advanced surround and
+object-based codecs encode bit depth, sample rates, and channel layouts
+directly within the elementary bitstream frames (such as the TrueHD
+major sync header or the DTS-HD extension substream header).</li>
+<li><strong>CodecPrivate Data:</strong> Initialization parameters are
+stored in the MKV <code>CodecPrivate</code> binary element. This allows
+decoders to initialize the decoding pipeline according to the codec
+manufacturer's specification.</li>
+<li><strong>Container-Level Metadata:</strong> In an MKV file containing
+TrueHD or DTS-HD MA, the <code>BitDepth</code> element is frequently set
+to <code>24</code> to reflect the maximum decoded bit resolution.
+However, the external MKV <code>BitDepth</code> value is primarily
+informational for the player; the audio decoder hardware or software
+derives the true bit depth dynamically from the elementary stream
+packets during decompression.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

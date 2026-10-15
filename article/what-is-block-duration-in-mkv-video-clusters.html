@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is BlockDuration in MKV Video Clusters? - mkv</title>
+    <meta name="description" content="The BlockDuration element in a Matroska (MKV) video container defines the exact length of time a specific data block should be displayed or played before moving to the next frame. Located inside the BlockGroup element within a container&#39;s Cluster, it play">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/what-is-block-duration-in-mkv-video-clusters">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What is BlockDuration in MKV Video Clusters? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/what-is-block-duration-in-mkv-video-clusters" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The BlockDuration element in a Matroska (MKV) video container defines the exact length of time a specific data block should be displayed or played before moving to the next frame. Located inside the BlockGroup element within a container&#39;s Cluster, it play" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="what-is-blockduration-in-mkv-video-clusters">What is
+BlockDuration in MKV Video Clusters?</h1>
+<p>The <code>BlockDuration</code> element in a Matroska (MKV) video
+container defines the exact length of time a specific data block should
+be displayed or played before moving to the next frame. Located inside
+the <code>BlockGroup</code> element within a container's
+<code>Cluster</code>, it plays a vital role in media synchronization,
+managing variable frame rates (VFR), and controlling the visibility
+duration of non-continuous streams such as subtitles.</p>
+<h3 id="purpose-and-location-in-the-matroska-specification">Purpose and
+Location in the Matroska Specification</h3>
+<p>In the Matroska EBML structure, multimedia data is divided into
+<code>Clusters</code>, which contain one or more <code>BlockGroup</code>
+or <code>SimpleBlock</code> structures. While a <code>SimpleBlock</code>
+includes basic timestamping data to save overhead, a
+<code>BlockGroup</code> allows for additional metadata. Inside a
+<code>BlockGroup</code>, the <code>BlockDuration</code> element
+explicitly specifies the duration of the associated <code>Block</code>
+in track timecode units.</p>
+<h3 id="key-functions-and-significance">Key Functions and
+Significance</h3>
+<ul>
+<li><strong>Variable Frame Rate (VFR) Support:</strong> While Constant
+Frame Rate (CFR) media can rely on a track-level
+<code>DefaultDuration</code> to dictate the time between frames, VFR
+video requires dynamic timing. <code>BlockDuration</code> enables the
+container to define unique display durations for individual frames,
+preventing synchronization drift.</li>
+<li><strong>Subtitle Display Timing:</strong> Unlike continuous audio or
+video streams, subtitles appear and disappear at irregular intervals.
+<code>BlockDuration</code> specifies precisely how long a subtitle line
+or graphic must remain visible on the screen before being cleared by the
+renderer.</li>
+<li><strong>Audio Packet Length Definition:</strong> In cases where
+audio codecs use variable sample sizes or frames without internal
+duration headers, <code>BlockDuration</code> informs the demuxer of the
+exact temporal length of the audio payload.</li>
+<li><strong>Seamless Seeking and Buffering:</strong> Media players and
+demuxers use <code>BlockDuration</code> to accurately calculate playback
+position, manage decoding buffers, and perform precise timeline
+scrubbing without needing to decode subsequent frames to determine when
+the current frame ends.</li>
+</ul>
+<h3 id="relationship-with-defaultduration">Relationship with
+DefaultDuration</h3>
+<p>If a track maintains a fixed frame rate, the
+<code>DefaultDuration</code> element in the <code>TrackEntry</code>
+header usually handles frame timing to minimize file overhead. However,
+when <code>BlockDuration</code> is explicitly present in a
+<code>BlockGroup</code>, it overrides default assumptions, ensuring
+accurate rendering for streams with irregular or non-standard frame
+intervals.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

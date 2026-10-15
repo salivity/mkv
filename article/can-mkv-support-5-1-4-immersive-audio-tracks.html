@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Support 5.1.4 Immersive Audio Tracks? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports multichannel audio streams configured for 5.1.4 immersive audio setups. This article explains how the MKV format handles object-based and multichannel audio, the specific codecs used to achieve a 5.1.">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-support-5-1-4-immersive-audio-tracks">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Support 5.1.4 Immersive Audio Tracks? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-support-5-1-4-immersive-audio-tracks" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports multichannel audio streams configured for 5.1.4 immersive audio setups. This article explains how the MKV format handles object-based and multichannel audio, the specific codecs used to achieve a 5.1." />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-support-514-immersive-audio-tracks">Can MKV Support
+5.1.4 Immersive Audio Tracks?</h1>
+<p>The Matroska (MKV) multimedia container fully supports multichannel
+audio streams configured for 5.1.4 immersive audio setups. This article
+explains how the MKV format handles object-based and multichannel audio,
+the specific codecs used to achieve a 5.1.4 configuration, and the
+necessary playback chain required to render 3D height channels
+properly.</p>
+<h2 id="how-mkv-containers-handle-immersive-audio">How MKV Containers
+Handle Immersive Audio</h2>
+<p>MKV is a container format designed to hold virtually any type and
+number of video, audio, and subtitle streams. It does not compress or
+modify audio data on its own; instead, it encapsulates standard surround
+sound tracks along with the spatial metadata required for immersive
+speaker configurations.</p>
+<p>A 5.1.4 layout consists of five ear-level surround speakers, one
+subwoofer, and four overhead or height speakers. MKV supports this
+configuration primarily through object-based audio codecs rather than
+ten raw, discrete channels.</p>
+<h2 id="supported-codecs-for-514-playback">Supported Codecs for 5.1.4
+Playback</h2>
+<p>To output sound to a 5.1.4 system, the MKV file must contain an audio
+stream encoded in an immersive audio format:</p>
+<ul>
+<li><strong>Dolby TrueHD with Dolby Atmos:</strong> A lossless audio
+codec commonly found on Blu-ray discs. The base 7.1 or 5.1 channel bed
+is combined with spatial audio objects that your audio receiver renders
+to the four height channels.</li>
+<li><strong>Dolby Digital Plus (E-AC-3) with Dolby Atmos:</strong> A
+lossy, higher-efficiency format commonly used by streaming services. It
+contains metadata that maps audio to height channels in a 5.1.4
+setup.</li>
+<li><strong>DTS-HD Master Audio with DTS:X:</strong> A lossless
+alternative to Dolby Atmos. DTS:X uses an object-based system to
+dynamically place sounds into overhead channels.</li>
+<li><strong>Multichannel LPCM:</strong> While MKV can hold uncompressed,
+discrete 10-channel LPCM audio tracks, standard consumer AV receivers
+typically require Dolby Atmos or DTS:X bitstreams to accurately assign
+audio to overhead height speakers.</li>
+</ul>
+<h2 id="playback-requirements-for-514-audio">Playback Requirements for
+5.1.4 Audio</h2>
+<p>Playing a 5.1.4 audio track from an MKV file requires a compatible
+hardware and software chain:</p>
+<ol type="1">
+<li><strong>Software Player:</strong> The media player (such as Kodi,
+Plex, MPC-HC with LAV Filters, or VLC) must be set to "audio
+passthrough" or "bitstreaming." This allows the raw audio stream to
+bypass software decoding and reach the receiver untouched.</li>
+<li><strong>Connection:</strong> The playback device must connect to the
+sound system via HDMI (HDMI 2.0 or higher, or HDMI eARC) to support
+high-bandwidth formats like TrueHD and DTS-HD MA. Optical (TOSLink)
+cables do not possess enough bandwidth for immersive audio.</li>
+<li><strong>AV Receiver or Processor:</strong> The audio processor must
+support Dolby Atmos or DTS:X decoding and be configured with nine
+listener-level/height channels and one subwoofer output.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Chapter Timecodes and Seek Preview Thumbnails - mkv</title>
+    <meta name="description" content="Media players generate seek preview thumbnails by reading Matroska (MKV) chapter timecodes and index data, allowing background decoders to quickly locate, extract, and render representative video frames. This process relies on container-level metadata, ke">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-chapter-timecodes-and-seek-preview-thumbnails">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Chapter Timecodes and Seek Preview Thumbnails - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-chapter-timecodes-and-seek-preview-thumbnails" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Media players generate seek preview thumbnails by reading Matroska (MKV) chapter timecodes and index data, allowing background decoders to quickly locate, extract, and render representative video frames. This process relies on container-level metadata, ke" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-chapter-timecodes-and-seek-preview-thumbnails">MKV Chapter
+Timecodes and Seek Preview Thumbnails</h1>
+<p>Media players generate seek preview thumbnails by reading Matroska
+(MKV) chapter timecodes and index data, allowing background decoders to
+quickly locate, extract, and render representative video frames. This
+process relies on container-level metadata, keyframe indexing, and
+efficient memory caching to display instant visual cues above the
+playback timeline without interrupting the main video stream.</p>
+<h3 id="1-reading-the-mkv-chapter-metadata">1. Reading the MKV Chapter
+Metadata</h3>
+<p>The Matroska container stores chapters inside structured elements
+known as <code>ChapterAtom</code> entries. Each chapter contains a
+<code>ChapterTimeStart</code> timestamp formatted in nanoseconds. When a
+media file is loaded, the player’s demuxer parses these chapter elements
+along with the container's <code>Cues</code> element, which acts as an
+internal index mapping timestamps to precise byte offsets in the video
+stream.</p>
+<h3 id="2-identifying-target-keyframes-i-frames">2. Identifying Target
+Keyframes (I-Frames)</h3>
+<p>Video streams rely on temporal compression, meaning most frames
+(P-frames and B-frames) cannot be decoded independently. To display a
+thumbnail instantly at a specific chapter timecode, the media player
+uses the MKV index to locate the nearest preceding Intra-frame (I-frame
+or keyframe). Keyframes contain complete visual data and can be decoded
+immediately without referencing previous or future frames, minimizing
+CPU and GPU overhead during seeking.</p>
+<h3 id="3-background-demuxing-and-frame-extraction">3. Background
+Demuxing and Frame Extraction</h3>
+<p>Preview generation runs on a separate, lightweight decoding pipeline
+isolated from the primary playback thread. The process works as
+follows:</p>
+<ul>
+<li><strong>Seek Request:</strong> When the user hovers over a timeline
+chapter point, the interface sends the chapter’s timestamp to the
+background worker.</li>
+<li><strong>Stream Seeking:</strong> The secondary demuxer jumps
+directly to the byte offset of the corresponding keyframe using the MKV
+cue table.</li>
+<li><strong>Decoding:</strong> A low-priority hardware or software
+decoder decodes the single frame at that exact timestamp (or the nearest
+keyframe).</li>
+<li><strong>Scaling:</strong> The decoded raw frame is scaled down to a
+small thumbnail resolution (typically 160x90 or 320x180) to preserve
+memory.</li>
+</ul>
+<h3 id="4-handling-embedded-thumbnail-attachments">4. Handling Embedded
+Thumbnail Attachments</h3>
+<p>In addition to dynamic decoding, MKV containers support embedded
+attachments and external metadata. Some advanced media configurations
+include pre-rendered image attachments (such as JPEG/PNG frames) or
+auxiliary chapter tracks directly tied to chapter timestamps. When
+embedded chapter images are present, the media player bypasses video
+decoding entirely, reading the pre-rendered image asset directly from
+the MKV container for zero-latency thumbnail rendering.</p>
+<h3 id="5-caching-for-smooth-user-interaction">5. Caching for Smooth
+User Interaction</h3>
+<p>To maintain a responsive UI, media players implement a caching layer
+for generated thumbnails. Once a chapter's thumbnail is extracted or
+rendered, it is stored in volatile memory (RAM) or a temporary disk
+cache. Subsequent hovers over the same chapter timecodes retrieve the
+pre-rendered image instantly, avoiding repeated seek and decode
+operations.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Segment UIDs Create Virtual Discs - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format utilizes unique 128-bit Segment Unique Identifiers (Segment UIDs) combined with ordered chapters to construct complex virtual disc environments from separate physical media files. By referencing external Segment UIDs wi">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-segment-ui-ds-create-virtual-discs">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Segment UIDs Create Virtual Discs - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-segment-ui-ds-create-virtual-discs" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format utilizes unique 128-bit Segment Unique Identifiers (Segment UIDs) combined with ordered chapters to construct complex virtual disc environments from separate physical media files. By referencing external Segment UIDs wi" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-segment-uids-create-virtual-discs">How MKV Segment UIDs
+Create Virtual Discs</h1>
+<p>The Matroska (MKV) container format utilizes unique 128-bit Segment
+Unique Identifiers (Segment UIDs) combined with ordered chapters to
+construct complex virtual disc environments from separate physical media
+files. By referencing external Segment UIDs within its chapter metadata,
+a single master MKV file can instruct media splitters to seamlessly
+branch, reorder, and assemble audio, video, and subtitle streams
+dynamically on playback without requiring redundant data storage or
+physical file concatenation.</p>
+<h2 id="understanding-the-segment-uid">Understanding the Segment
+UID</h2>
+<p>Every MKV file contains a Segment Information element at its root
+level. Within this block resides the <code>SegmentUID</code>, a randomly
+generated, 128-bit (16-byte) value designed to uniquely identify that
+specific file among any collection of files.</p>
+<p>Because the <code>SegmentUID</code> is independent of the file name,
+file paths, or file size, media demuxers identify files based on their
+intrinsic metadata. When authoring complex media architectures, these
+UIDs serve as absolute pointers across a local library.</p>
+<h2 id="the-role-of-ordered-chapters-and-segment-linking">The Role of
+Ordered Chapters and Segment Linking</h2>
+<p>To build a virtual disc environment—such as an interactive structure
+with shared opening sequences, alternate angles, or multiple cut
+editions—the Matroska specification employs two distinct methods of
+segment linking:</p>
+<h3 id="1-hard-linking-prevuid-and-nextuid">1. Hard Linking (PrevUID and
+NextUID)</h3>
+<p>In basic segment linking, an MKV container includes
+<code>PrevUID</code> and <code>NextUID</code> fields within its Segment
+Information header. When a media player finishes rendering the current
+segment, it reads the <code>NextUID</code>, finds the matching file in
+the same directory or playback scope, and seamlessly transitions
+playback to the next segment. This functions linearly, similar to
+continuous tracks on a CD or DVD.</p>
+<h3 id="2-soft-linking-via-ordered-chapters">2. Soft Linking via Ordered
+Chapters</h3>
+<p>The core mechanism for emulating complex DVD or Blu-ray virtual
+structures is Ordered Chapters. Standard MKV chapters simply mark
+timestamps within a single file. Ordered chapters, however, define a
+complete virtual timeline where each entry specifies:</p>
+<ul>
+<li>A start and end timestamp on the virtual timeline.</li>
+<li>A target <code>ChapterSegmentUID</code> matching an external MKV's
+<code>SegmentUID</code>.</li>
+<li>Source start and end timestamps indicating which slice of the
+referenced file to play.</li>
+</ul>
+<p>When ordered chapters are enabled, the player ignores the physical
+linear timeline of the file and strictly follows the structured chapter
+list.</p>
+<h2 id="how-the-splitter-processes-the-virtual-environment">How the
+Splitter Processes the Virtual Environment</h2>
+<p>When a user opens a master MKV file, compatible demuxers and
+splitters process the Segment UIDs through a distinct execution
+pipeline:</p>
+<ol type="1">
+<li><strong>Header Parsing</strong>: The splitter reads the master
+file's chapter table and flags the presence of the
+<code>ChapterFlagOrdered</code> attribute along with external
+<code>ChapterSegmentUID</code> values.</li>
+<li><strong>Directory Indexing</strong>: The splitter scans the current
+directory and indexed folders, reading only the header blocks of
+adjacent <code>.mkv</code> files to build a lookup table mapping each
+<code>SegmentUID</code> to a physical file path.</li>
+<li><strong>Timeline Construction</strong>: The player synthesizes a
+virtual duration by summing the durations of each ordered chapter block,
+regardless of which physical file hosts the content.</li>
+<li><strong>Stream Pre-buffering and Codec Synchronization</strong>: For
+seamless switching, splitters ensure that the video and audio codecs,
+resolutions, and track layouts between linked files match. The demuxer
+initializes decoders capable of switching input streams at defined
+keyframes without dropping frames.</li>
+<li><strong>Dynamic Branching</strong>: As the playback position
+approaches the end of a chapter, the demuxer opens the linked file
+corresponding to the upcoming <code>ChapterSegmentUID</code>, seeks to
+the specified in-point, and transitions the packet delivery pipeline to
+the video and audio decoders.</li>
+</ol>
+<h2 id="practical-virtual-disc-applications">Practical Virtual Disc
+Applications</h2>
+<p>This architecture enables several advanced media environments without
+physical disc media:</p>
+<ul>
+<li><strong>Shared Sequences (De-duplication)</strong>: Episodic
+television series can store recurring intros and credits in individual,
+standalone MKV files. Each episode contains only unique story content
+and an ordered chapter map linking to the shared sequences, saving
+substantial storage space.</li>
+<li><strong>Multi-Cut Master Files (Seamless Branching)</strong>: A
+single distribution can include both Theatrical and Director's Cuts. The
+master file references exclusive scenes and shared scenes from separate
+component files, playing alternate timelines based on user edition
+selection.</li>
+<li><strong>Complex Menu and Extra Replication</strong>: By linking
+short segment clips, commentary audio tracks, and supplementary
+featurettes via chapter indices, authoring tools can mimic the
+non-linear interactive features of physical optical discs within
+standard file systems.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

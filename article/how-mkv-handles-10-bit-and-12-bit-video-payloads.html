@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Handles 10-Bit and 12-Bit Video Payloads - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container represents 10-bit and 12-bit color depth video payloads through a combination of dedicated container-level metadata and transparent bitstream encapsulation. By utilizing its Extensible Binary Meta Language (EBML) ar">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-handles-10-bit-and-12-bit-video-payloads">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Handles 10-Bit and 12-Bit Video Payloads - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-handles-10-bit-and-12-bit-video-payloads" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container represents 10-bit and 12-bit color depth video payloads through a combination of dedicated container-level metadata and transparent bitstream encapsulation. By utilizing its Extensible Binary Meta Language (EBML) ar" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-handles-10-bit-and-12-bit-video-payloads">How MKV
+Handles 10-Bit and 12-Bit Video Payloads</h1>
+<p>The Matroska (MKV) multimedia container represents 10-bit and 12-bit
+color depth video payloads through a combination of dedicated
+container-level metadata and transparent bitstream encapsulation. By
+utilizing its Extensible Binary Meta Language (EBML) architecture, MKV
+provides explicit header fields to declare high bit-depth color
+properties while simultaneously preserving the native bitstream syntax
+of modern video codecs like HEVC, AV1, VP9, and AVC.</p>
+<h2
+id="container-level-signaling-the-matroska-colour-element">Container-Level
+Signaling: The Matroska <code>Colour</code> Element</h2>
+<p>Matroska defines video color parameters at the container level inside
+the <code>TrackEntry</code> hierarchy. Under <code>TrackEntry</code>
+-&gt; <code>Video</code>, MKV specifications include a dedicated master
+element called <code>Colour</code> (EBML ID: <code>0x55B0</code>).</p>
+<p>Within the <code>Colour</code> master element, bit depth is
+explicitly defined by:</p>
+<ul>
+<li><strong><code>BitsPerChannel</code> (EBML ID:
+<code>0x55B2</code>):</strong> An unsigned integer indicating the bit
+depth of the luma and chroma components. For 10-bit video, this value is
+set to <code>10</code>; for 12-bit video, it is set to <code>12</code>
+(defaulting to <code>8</code> if absent).</li>
+</ul>
+<p>The <code>Colour</code> element also houses accompanying metadata
+necessary for correctly interpreting high bit-depth and High Dynamic
+Range (HDR) pipelines:</p>
+<ul>
+<li><strong><code>MatrixCoefficients</code>
+(<code>0x55B1</code>):</strong> Specifies color space matrix
+transformations (e.g., BT.2020 non-constant luminance).</li>
+<li><strong><code>ColourPrimaries</code> (<code>0x55B9</code>):</strong>
+Defines the chromaticity coordinates of the source primaries (e.g.,
+ITU-R BT.2020).</li>
+<li><strong><code>TransferCharacteristics</code>
+(<code>0x55BA</code>):</strong> Identifies the opto-electronic transfer
+function (e.g., SMPTE ST 2084 / PQ or ARIB STD-B67 / HLG).</li>
+<li><strong><code>Range</code> (<code>0x55B7</code>):</strong>
+Explicitly signals limited (broadcast) or full (PC) quantization
+ranges.</li>
+<li><strong><code>MasteringMetadata</code>
+(<code>0x55D0</code>):</strong> Contains sub-elements for SMPTE 2086
+mastering display color volume and luminance bounds.</li>
+</ul>
+<p>This container-level signaling allows demuxers and media players to
+configure rendering pipelines, swap surface formats (e.g., P010 for
+10-bit YUV 4:2:0), and establish hardware overlay planes without needing
+to decode the underlying video frames first.</p>
+<h2 id="bitstream-level-encapsulation">Bitstream-Level
+Encapsulation</h2>
+<p>While MKV provides container-level metadata, the actual 10-bit or
+12-bit pixel data resides entirely within the payload bitstream inside
+<code>SimpleBlock</code> or <code>Block</code> structures. MKV operates
+as a transparent wrapper, preserving the exact bitstream formats
+required by specific codecs:</p>
+<ul>
+<li><strong>H.264 / AVC:</strong> High bit-depth video is identified via
+high profiles such as High 10 Profile or High 4:2:2/4:4:4 Predictive
+profiles, where the Sequence Parameter Set (SPS) contains
+<code>bit_depth_luma_minus8</code> and
+<code>bit_depth_chroma_minus8</code> set to <code>2</code> (for 10-bit)
+or <code>4</code> (for 12-bit).</li>
+<li><strong>H.265 / HEVC:</strong> Stored typically using the
+<code>V_MPEGH/ISO/HEVC</code> track type. The bit depth is signaled
+inside the Profile Tier Level (PTL) syntax and SPS structures
+(<code>bit_depth_luma_minus8 = 2</code> for Main 10, or up to
+<code>4</code> for Main 12).</li>
+<li><strong>AV1:</strong> Stored as <code>V_AV1</code>. Bit depth is
+carried inside the AV1 Sequence Header via <code>seq_profile</code> and
+the <code>bit_depth</code> syntax element (Profile 0 supports 8-bit and
+10-bit, Profile 2 supports 12-bit).</li>
+<li><strong>VP9:</strong> Stored as <code>V_VP9</code>. Profile 2
+(10-bit/12-bit 4:2:0) and Profile 3 (10-bit/12-bit 4:2:2/4:4:4) carry
+the bit-depth configuration in the frame header.</li>
+</ul>
+<h2 id="synchronization-between-container-and-codec">Synchronization
+Between Container and Codec</h2>
+<p>MKV maintains a decoupled structure where the container metadata
+complements the elementary bitstream:</p>
+<ol type="1">
+<li><strong>Parser Efficiency:</strong> Fast-seeking parsers read the
+MKV header's <code>BitsPerChannel</code> to prepare the display pipeline
+before initializing hardware decoders.</li>
+<li><strong>Decoder Authority:</strong> During playback, hardware and
+software decoders primarily parse the in-band codec headers (SPS, VPS,
+Sequence Headers) to construct the internal decoding arrays.</li>
+<li><strong>Collision Handling:</strong> If a discrepancy occurs between
+the MKV <code>BitsPerChannel</code> element and the internal codec
+bitstream, compliant decoders prioritize the in-band elementary
+bitstream to decode the frames, while renderers may rely on the
+container's <code>Colour</code> element for display tone mapping and
+color space conversion.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

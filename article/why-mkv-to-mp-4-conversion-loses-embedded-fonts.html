@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why MKV to MP4 Conversion Loses Embedded Fonts - mkv</title>
+    <meta name="description" content="Converting video files from Matroska (MKV) to MP4 often results in the loss of custom subtitle styling and embedded fonts. This issue is primarily caused by fundamental differences in container specifications, incompatible subtitle formats between the two">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-mkv-to-mp-4-conversion-loses-embedded-fonts">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why MKV to MP4 Conversion Loses Embedded Fonts - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-mkv-to-mp-4-conversion-loses-embedded-fonts" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Converting video files from Matroska (MKV) to MP4 often results in the loss of custom subtitle styling and embedded fonts. This issue is primarily caused by fundamental differences in container specifications, incompatible subtitle formats between the two" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-mkv-to-mp4-conversion-loses-embedded-fonts">Why MKV to MP4
+Conversion Loses Embedded Fonts</h1>
+<p>Converting video files from Matroska (MKV) to MP4 often results in
+the loss of custom subtitle styling and embedded fonts. This issue is
+primarily caused by fundamental differences in container specifications,
+incompatible subtitle formats between the two containers, and the
+default stream-handling behavior of transcoding software.</p>
+<h3 id="container-architecture-differences">Container Architecture
+Differences</h3>
+<p>The Matroska (MKV) container was designed with an open and flexible
+specification that natively supports arbitrary binary attachments. It
+allows creators to embed TrueType (.ttf) and OpenType (.otf) font files
+directly alongside video, audio, and subtitle tracks. In contrast, the
+MP4 container (based on the ISO Base Media File Format) is strictly
+standardized and does not include a universal mechanism for carrying
+arbitrary font attachments intended for soft subtitle rendering.</p>
+<h3 id="subtitle-format-incompatibilities">Subtitle Format
+Incompatibilities</h3>
+<p>Embedded fonts in MKV files are almost exclusively paired with
+Advanced SubStation Alpha (ASS/SSA) subtitle tracks. ASS scripts rely on
+specific font families to position, scale, and style text accurately.
+When transcoders convert a file to MP4, they cannot retain the native
+ASS stream because standard MP4 players typically only support basic
+text formats like <code>mov_text</code> (3GPP Timed Text) or WebVTT.
+During this conversion, rich styling instructions and links to embedded
+font assets are stripped down to raw, unstyled text.</p>
+<h3 id="transcoder-multiplexing-limitations">Transcoder Multiplexing
+Limitations</h3>
+<p>When transcoders like FFmpeg, HandBrake, or consumer conversion tools
+process an MKV file, they identify embedded fonts as individual
+attachment streams (e.g., <code>codec_type: attachment</code>). Because
+the standard MP4 multiplexer (muxer) does not recognize or permit these
+attachment streams, the transcoder must drop them to generate a valid,
+standard-compliant MP4 file. Unless the transcoder is explicitly
+instructed to "burn" (hardcode) the styled subtitles directly into the
+video pixels, the styling and font metadata are omitted entirely from
+the final output.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

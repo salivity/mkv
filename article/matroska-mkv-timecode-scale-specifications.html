@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matroska MKV Timecode Scale Specifications - mkv</title>
+    <meta name="description" content="This article provides an overview of how the Matroska multimedia container specification defines and utilizes timecode scale elements inside MKV files. It breaks down the role of the segment-level TimestampScale (historically known as TimecodeScale), expl">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/matroska-mkv-timecode-scale-specifications">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Matroska MKV Timecode Scale Specifications - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/matroska-mkv-timecode-scale-specifications" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides an overview of how the Matroska multimedia container specification defines and utilizes timecode scale elements inside MKV files. It breaks down the role of the segment-level TimestampScale (historically known as TimecodeScale), expl" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="matroska-mkv-timecode-scale-specifications">Matroska MKV
+Timecode Scale Specifications</h1>
+<p>This article provides an overview of how the Matroska multimedia
+container specification defines and utilizes timecode scale elements
+inside MKV files. It breaks down the role of the segment-level
+<code>TimestampScale</code> (historically known as
+<code>TimecodeScale</code>), explains the mathematical formula used to
+calculate absolute playback time, and outlines the legacy track-level
+scaling parameters.</p>
+<h3 id="the-role-of-timestampscale-in-the-info-element">The Role of
+TimestampScale in the Info Element</h3>
+<p>In the Matroska specification, timestamps are not stored as raw,
+absolute nanosecond values in every single data block. Storing large
+64-bit nanosecond integers throughout a file would create unnecessary
+container overhead. Instead, Matroska uses a base scaling factor defined
+inside the <code>Info</code> (Segment Information) EBML element.</p>
+<p>The primary element governing timing is <code>TimestampScale</code>
+(EBML ID: <code>0x2AD7B1</code>):</p>
+<ul>
+<li><strong>Data Type:</strong> Unsigned integer.</li>
+<li><strong>Default Value:</strong> <code>1,000,000</code> (representing
+1,000,000 nanoseconds, or 1 millisecond).</li>
+<li><strong>Function:</strong> It establishes the base multiplier (in
+nanoseconds) applied to all relative timestamps found in the file's
+clusters and blocks.</li>
+</ul>
+<p>With the default value of 1,000,000, a relative timestamp integer of
+<code>1</code> inside a cluster or block corresponds exactly to 1
+millisecond of playback time.</p>
+<h3 id="calculating-absolute-timestamps">Calculating Absolute
+Timestamps</h3>
+<p>Matroska structures media data into <code>Cluster</code> elements,
+which contain individual <code>SimpleBlock</code> or
+<code>BlockGroup</code> elements. Timestamps at these levels are
+expressed as integer offsets:</p>
+<ol type="1">
+<li><strong>Cluster Timestamp:</strong> Each Cluster contains an integer
+timestamp representing the base time of that specific cluster relative
+to the start of the Segment.</li>
+<li><strong>Block Timestamp:</strong> Each Block within a Cluster
+contains a signed 16-bit integer representing a relative offset from the
+parent Cluster’s timestamp.</li>
+</ol>
+<p>To compute the absolute presentation time (in nanoseconds) of any
+given frame, demuxers apply the following formula:</p>
+<p><span class="math display">\[\text{Time (in nanoseconds)} =
+(\text{Cluster Timestamp} + \text{Block Timestamp}) \times
+\text{TimestampScale}\]</span></p>
+<h3 id="track-level-scaling-tracktimestampscale">Track-Level Scaling
+(TrackTimestampScale)</h3>
+<p>The Matroska specification also historically provided a track-level
+modifier known as <code>TrackTimestampScale</code> (EBML ID:
+<code>0x23314F</code>, previously <code>TrackTimecodeScale</code>):</p>
+<ul>
+<li><strong>Location:</strong> Located within individual
+<code>TrackEntry</code> elements.</li>
+<li><strong>Data Type:</strong> Floating-point number.</li>
+<li><strong>Default Value:</strong> <code>1.0</code>.</li>
+<li><strong>Function:</strong> It acts as a secondary multiplier applied
+to the resulting timestamp of that specific track, calculated as:</li>
+</ul>
+<p><span class="math display">\[\text{Final Track Time} = \text{Time (in
+nanoseconds)} \times \text{TrackTimestampScale}\]</span></p>
+<p>In modern revisions of the Matroska specification (version 4 and
+later), the use of <code>TrackTimestampScale</code> is deprecated.
+Demuxers and muxers are encouraged to maintain a single global
+<code>TimestampScale</code> across all tracks to avoid synchronization
+drift and playback incompatibility.</p>
+<h3 id="precision-vs-file-size-optimization">Precision vs. File Size
+Optimization</h3>
+<p>The Matroska timecode scale system provides flexibility for different
+media types:</p>
+<ul>
+<li><strong>Standard Video/Audio:</strong> The default 1 ms resolution
+(<code>TimestampScale = 1,000,000</code>) is sufficient for standard
+frame rates (e.g., 24 fps, 30 fps, 60 fps) and keeps block headers
+compact.</li>
+<li><strong>High-Precision Media:</strong> For high-frame-rate content
+or specialized scientific recordings requiring sub-millisecond
+precision, encoders can set <code>TimestampScale</code> to a smaller
+value (such as <code>1</code> for pure nanosecond precision), at the
+cost of requiring larger integer values in cluster timestamps.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

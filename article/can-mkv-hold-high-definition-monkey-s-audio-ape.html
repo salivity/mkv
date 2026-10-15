@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Hold High-Definition Monkey&#39;s Audio APE? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container fully supports high-definition audio encoded in Monkey&#39;s Audio (APE) format. Thanks to the open and highly flexible architecture of the Matroska specification, users can mux standard and high-resolution APE audio tracks into M">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-hold-high-definition-monkey-s-audio-ape">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Hold High-Definition Monkey&#39;s Audio APE? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-hold-high-definition-monkey-s-audio-ape" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container fully supports high-definition audio encoded in Monkey&#39;s Audio (APE) format. Thanks to the open and highly flexible architecture of the Matroska specification, users can mux standard and high-resolution APE audio tracks into M" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-hold-high-definition-monkeys-audio-ape">Can MKV Hold
+High-Definition Monkey's Audio APE?</h1>
+<p>The Matroska (MKV) container fully supports high-definition audio
+encoded in Monkey's Audio (APE) format. Thanks to the open and highly
+flexible architecture of the Matroska specification, users can mux
+standard and high-resolution APE audio tracks into MKV video files or
+standalone MKA audio files. This article explains how Matroska handles
+the APE codec, how to mux high-definition APE streams into MKV
+containers, and what to consider regarding playback compatibility.</p>
+<h2 id="technical-compatibility-of-mkv-and-ape">Technical Compatibility
+of MKV and APE</h2>
+<p>Matroska was designed to be codec-agnostic, meaning it can
+encapsulate almost any modern video, audio, or subtitle stream without
+altering the underlying data. Monkey's Audio is a popular lossless audio
+compression format that supports high-resolution specifications,
+including 24-bit depth and sample rates up to 192 kHz.</p>
+<p>When packaged inside an MKV or MKA container:</p>
+<ul>
+<li><strong>Bit-Perfect Preservation:</strong> The APE audio stream
+remains intact as a bit-for-bit lossless copy of the original
+source.</li>
+<li><strong>Metadata and Chapters:</strong> Matroska allows rich
+metadata, track tags, and chapter markers to accompany the
+high-resolution APE track.</li>
+<li><strong>Multichannel Audio:</strong> High-definition multichannel
+configurations supported by Monkey's Audio can also be stored within the
+container.</li>
+</ul>
+<h2 id="how-to-mux-high-definition-ape-into-mkv">How to Mux
+High-Definition APE into MKV</h2>
+<p>Muxing Monkey's Audio into a Matroska container requires standard
+multimedia tools such as MKVToolNix or FFmpeg.</p>
+<h3 id="using-mkvtoolnix-gui--mkvmerge">Using MKVToolNix (GUI /
+mkvmerge)</h3>
+<ol type="1">
+<li>Open <strong>MKVToolNix GUI</strong>.</li>
+<li>Add your video source and the <code>.ape</code> audio file to the
+source files list.</li>
+<li>Verify the track properties (language, default track flag, and track
+name).</li>
+<li>Click <strong>Start multiplexing</strong> to output an
+<code>.mkv</code> (or <code>.mka</code> if audio-only) file.</li>
+</ol>
+<h3 id="using-ffmpeg">Using FFmpeg</h3>
+<p>You can combine a video stream and an APE audio stream without
+re-encoding by running:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> video.mp4 <span class="at">-i</span> audio.ape <span class="at">-c</span> copy output.mkv</span></code></pre></div>
+<p>The <code>-c copy</code> flag ensures the APE stream is multiplexed
+directly without any loss in audio quality.</p>
+<h2 id="playback-and-decoder-support">Playback and Decoder Support</h2>
+<p>While the MKV container successfully stores high-definition Monkey's
+Audio streams, playback depends on the media player's ability to decode
+the APE format from inside a Matroska container.</p>
+<ul>
+<li><strong>Software Players:</strong> Modern desktop players like VLC
+Media Player, MPV, and MPC-HC (with LAV Filters) can demux and decode
+high-resolution APE tracks from MKV containers natively.</li>
+<li><strong>Hardware and Smart TVs:</strong> Standalone hardware media
+players, smart TVs, and streaming devices typically support standard MKV
+codecs like AAC, AC3, DTS, or FLAC. Most hardware devices do not contain
+a hardware or software decoder for Monkey's Audio. For maximum hardware
+compatibility, converting APE to FLAC before muxing into MKV is
+recommended.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

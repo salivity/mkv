@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Field Order for Video Deinterlacing - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container uses standardized metadata elements within its track headers to define the scanning format and field order of interlaced video streams. By setting specific Extensible Binary Meta Language (EBML) elements—primarily F">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-field-order-for-video-deinterlacing">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Field Order for Video Deinterlacing - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-field-order-for-video-deinterlacing" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container uses standardized metadata elements within its track headers to define the scanning format and field order of interlaced video streams. By setting specific Extensible Binary Meta Language (EBML) elements—primarily F" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-field-order-for-video-deinterlacing">How MKV
+Stores Field Order for Video Deinterlacing</h1>
+<p>The Matroska (MKV) multimedia container uses standardized metadata
+elements within its track headers to define the scanning format and
+field order of interlaced video streams. By setting specific Extensible
+Binary Meta Language (EBML) elements—primarily
+<code>FlagInterlaced</code> and <code>FieldOrder</code>—the container
+explicitly communicates whether a video is progressive or interlaced,
+and whether the top or bottom field takes temporal precedence. This
+container-level signaling ensures that video splitters, decoders, and
+playback renderers invoke the correct deinterlacing algorithms to
+eliminate combing artifacts and motion judder.</p>
+<h3 id="matroska-ebml-structure-for-video-tracks">Matroska EBML
+Structure for Video Tracks</h3>
+<p>Matroska organizes data using a hierarchical EBML system. Video
+stream properties are defined inside the <code>TrackEntry</code> master
+element under the <code>Video</code> sub-element. When an MKV contains
+interlaced content, two primary EBML tags dictate how the fields must be
+interpreted:</p>
+<ol type="1">
+<li><strong><code>FlagInterlaced</code> (Element ID:
+<code>0x9A</code>):</strong> Defines whether the video stream is
+interlaced.
+<ul>
+<li><code>0</code>: Unspecified</li>
+<li><code>1</code>: Interlaced</li>
+<li><code>2</code>: Progressive</li>
+</ul></li>
+<li><strong><code>FieldOrder</code> (Element ID:
+<code>0x9D</code>):</strong> Specifies the field dominance and display
+order.</li>
+</ol>
+<h3 id="fieldorder-values-and-definitions"><code>FieldOrder</code>
+Values and Definitions</h3>
+<p>The <code>FieldOrder</code> element provides direct instructions
+regarding the temporal and spatial layout of video lines:</p>
+<ul>
+<li><strong>Value 0 (Progressive):</strong> The frame contains no
+separate fields; all lines are captured at the same point in time.</li>
+<li><strong>Value 1 (Top Field First - TFF):</strong> The top field
+(even-numbered scanlines) represents an earlier point in time than the
+bottom field (odd-numbered scanlines) and must be displayed or processed
+first.</li>
+<li><strong>Value 2 (Undetermined):</strong> The video is interlaced,
+but the field dominance is unknown.</li>
+<li><strong>Value 6 (Bottom Field First - BFF):</strong> The bottom
+field represents an earlier point in time and must be displayed or
+processed first.</li>
+<li><strong>Value 9 (BFF with Fields Swapped):</strong> The spatial
+layout is inverted, requiring custom mapping during display.</li>
+<li><strong>Value 14 (TFF with Fields Swapped):</strong> The spatial
+layout is inverted, requiring custom mapping during display.</li>
+</ul>
+<h3 id="container-metadata-vs-bitstream-flags">Container Metadata vs.
+Bitstream Flags</h3>
+<p>Interlaced video formats, such as MPEG-2, H.264 (AVC), and H.265
+(HEVC), often contain their own field order signaling inside the
+elementary bitstream (such as Sequence Parameter Sets or Picture Timing
+SEI messages). However, relying solely on codec-level bitstream parsing
+can cause latency or playback errors if the headers are missing,
+malformed, or misread by a demuxer.</p>
+<p>The MKV container provides a standardized, codec-agnostic layer. When
+a container parser loads the MKV file, it reads the
+<code>TrackEntry</code> header before decoding video packets, passing
+the correct field order directly to the playback pipeline.</p>
+<h3 id="playback-and-deinterlacing-pipeline">Playback and Deinterlacing
+Pipeline</h3>
+<p>When playing an MKV file, the deinterlacing workflow follows these
+steps:</p>
+<ol type="1">
+<li><strong>Demuxing:</strong> The MKV splitter (such as FFmpeg's
+<code>libavformat</code> or LAV Splitter) parses the
+<code>TrackEntry</code> EBML elements.</li>
+<li><strong>Media Type Negotiation:</strong> The splitter flags the
+media format downstream with properties such as <code>TFF</code> or
+<code>BFF</code>.</li>
+<li><strong>Deinterlacer Activation:</strong> If hardware acceleration
+(DXVA, D3D11VA, VAAPI) or software filters (Yadif, Bボブ, Westley) are
+enabled, the video engine uses the field order tag to sequence the
+fields chronologically.</li>
+<li><strong>Frame Reconstruction:</strong> The deinterlacer interpolates
+or weaves the alternating fields into full progressive frames (e.g.,
+converting 1080i 59.94 fields per second into 1080p 59.94 frames per
+second) matching the correct temporal motion.</li>
+</ol>
+<p>If the <code>FieldOrder</code> tag matches the underlying video data,
+the player renders smooth motion. If the tag is incorrect or inverted,
+the player reconstructs fields in reverse chronological sequence,
+resulting in noticeable back-and-forth motion stutter on moving
+objects.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

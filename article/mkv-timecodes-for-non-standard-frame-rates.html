@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Timecodes for Non-Standard Frame Rates - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container handles non-standard, fractional, and variable frame rates by relying on an absolute timestamp architecture rather than a fixed frame rate counter. Instead of assuming a rigid frame interval, MKV assigns discrete presentation">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-timecodes-for-non-standard-frame-rates">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Timecodes for Non-Standard Frame Rates - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-timecodes-for-non-standard-frame-rates" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container handles non-standard, fractional, and variable frame rates by relying on an absolute timestamp architecture rather than a fixed frame rate counter. Instead of assuming a rigid frame interval, MKV assigns discrete presentation" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-timecodes-for-non-standard-frame-rates">MKV Timecodes for
+Non-Standard Frame Rates</h1>
+<p>The Matroska (MKV) container handles non-standard, fractional, and
+variable frame rates by relying on an absolute timestamp architecture
+rather than a fixed frame rate counter. Instead of assuming a rigid
+frame interval, MKV assigns discrete presentation timestamps to
+individual data blocks using nanosecond-level time scaling. This design
+ensures that fractional rates like 23.976 fps or arbitrary non-standard
+frame rates playback precisely without timing drift or audio-video
+desynchronization.</p>
+<h2 id="the-timestamp-based-model">The Timestamp-Based Model</h2>
+<p>Unlike legacy containers that rely on fixed frame rates and frame
+counters, Matroska decouples the frame delivery from a global timing
+constant. Video frames are stored in dynamic data structures called
+<strong>Clusters</strong>, which contain individual
+<strong>SimpleBlocks</strong> or <strong>BlockGroups</strong>.</p>
+<p>Every frame is presented based on a calculated timecode relative to
+the cluster's base time, allowing any frame to occur at any arbitrary
+point on the timeline.</p>
+<h2 id="timecode-precision-and-timestampscale">Timecode Precision and
+TimestampScale</h2>
+<p>Matroska achieves precision through the <code>TimestampScale</code>
+(formerly <code>TimecodeScale</code>) element located in the container's
+Segment Information header:</p>
+<ul>
+<li><strong>Default Base Unit:</strong> The default
+<code>TimestampScale</code> is set to <code>1,000,000</code>, which
+means timecodes are measured in millisecond increments (<span
+class="math inline">\(1,000,000\text{ nanoseconds} = 1\text{
+millisecond}\)</span>).</li>
+<li><strong>Nanosecond Precision:</strong> For complex fractional frame
+rates where rounding to the nearest millisecond might introduce jitter,
+the <code>TimestampScale</code> can be adjusted down to <code>1</code>
+(pure nanosecond precision) or customized to a common denominator
+matching the video source.</li>
+</ul>
+<h2 id="storing-fractional-frame-rates">Storing Fractional Frame
+Rates</h2>
+<p>Fractional frame rates—such as 23.976 fps (<span
+class="math inline">\(24000/1001\)</span>) or 29.97 fps (<span
+class="math inline">\(30000/1001\)</span>)—do not divide into whole
+milliseconds. MKV addresses this through two primary mechanisms:</p>
+<ol type="1">
+<li><strong>Individual Block Offsets:</strong> Each <code>Block</code>
+inside a <code>Cluster</code> contains a signed 16-bit integer
+representing its timestamp relative to the cluster's reference
+timestamp. The playback engine calculates the exact presentation time
+for each frame: <span class="math display">\[\text{Frame Time} =
+(\text{Cluster Timestamp} + \text{Block Timestamp}) \times
+\text{TimestampScale}\]</span></li>
+<li><strong>Dynamic Interval Rounding:</strong> When using the standard
+1 ms scale, the container alternates frame durations slightly (e.g.,
+alternating between 41 ms and 42 ms for 23.976 fps) so the cumulative
+timeline matches the real-world fractional rate over time without
+drift.</li>
+</ol>
+<h2 id="the-role-of-defaultduration">The Role of
+<code>DefaultDuration</code></h2>
+<p>Within the Track header, MKV can store an optional element called
+<code>DefaultDuration</code>.</p>
+<ul>
+<li><code>DefaultDuration</code> expresses the expected duration of a
+single frame in nanoseconds (for example, approximately
+<code>41,708,333 ns</code> for 23.976 fps).</li>
+<li>This field serves as a hint to media splitters and decoders to set
+up the display refresh rate or buffer allocation.</li>
+<li>If a file contains non-standard or variable frame rates, the
+playback engine prioritizes the individual block-level timestamps over
+the <code>DefaultDuration</code> field.</li>
+</ul>
+<h2 id="native-support-for-variable-frame-rates-vfr">Native Support for
+Variable Frame Rates (VFR)</h2>
+<p>Because every block contains its own timestamp relative to the
+cluster, non-standard frame rates do not require special flags or
+container-level modifications. An MKV file can seamlessly switch between
+arbitrary intervals—such as dropping to 1 fps during static scenes and
+ramping up to 120 fps during high-motion scenes—simply by writing the
+exact presentation time to each consecutive block.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Files Store Multiple Video Angles? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format fully supports storing multiple video angles of the same scene synchronized with one or more audio tracks within a single file. Because MKV is an open-standard, highly flexible multimedia container, it can hold an unlim">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-files-store-multiple-video-angles">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Files Store Multiple Video Angles? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-files-store-multiple-video-angles" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format fully supports storing multiple video angles of the same scene synchronized with one or more audio tracks within a single file. Because MKV is an open-standard, highly flexible multimedia container, it can hold an unlim" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-files-store-multiple-video-angles">Can MKV Files Store
+Multiple Video Angles?</h1>
+<p>The Matroska (MKV) container format fully supports storing multiple
+video angles of the same scene synchronized with one or more audio
+tracks within a single file. Because MKV is an open-standard, highly
+flexible multimedia container, it can hold an unlimited number of video,
+audio, picture, and subtitle tracks. This guide explains how MKV handles
+multi-angle video streams, how audio synchronization functions, and what
+software is required for playback.</p>
+<h3 id="how-mkv-stores-multiple-video-tracks">How MKV Stores Multiple
+Video Tracks</h3>
+<p>Unlike simpler video containers such as MP4, which typically expect a
+single primary video stream, the MKV specification allows for multiple
+independent video tracks to be multiplexed into one file.</p>
+<p>Each video angle is encoded as an individual video track (e.g., Track
+1: Angle A, Track 2: Angle B). Because these tracks reside inside the
+same container, you do not need to duplicate the audio stream for every
+angle. A single master audio track can be mapped and played alongside
+whichever video track the viewer selects.</p>
+<h3 id="achieving-audio-synchronization">Achieving Audio
+Synchronization</h3>
+<p>Audio synchronization across different camera angles in an MKV file
+relies on Presentation Time Stamps (PTS):</p>
+<ul>
+<li><strong>Shared Timecodes:</strong> When authoring or muxing the MKV,
+each video stream is aligned to the master timecode track.</li>
+<li><strong>Equal Track Starts:</strong> As long as all video angles are
+trimmed to start at the exact same point in time, the media player uses
+the container's built-in timecodes to keep the active video track locked
+in sync with the audio track.</li>
+<li><strong>Stream Switching:</strong> When a user switches from one
+video track to another during playback, compliant media players read the
+current timestamp and immediately display the corresponding frame from
+the newly selected video track without interrupting the audio
+stream.</li>
+</ul>
+<h3 id="media-player-support-and-limitations">Media Player Support and
+Limitations</h3>
+<p>While the MKV container itself fully supports multi-angle video,
+playback experience depends heavily on the software player being
+used:</p>
+<ul>
+<li><strong>Supported Desktop Players:</strong> Advanced media players
+such as VLC Media Player, MPV, and Media Player Classic (MPC-HC/MPC-BE)
+natively support multi-track MKVs. Users can switch angles by navigating
+to the "Video Track" menu and choosing an alternate stream.</li>
+<li><strong>Hardware and Smart TVs:</strong> Built-in TV media players,
+streaming sticks, and standard mobile players often default strictly to
+Video Track 1 and may lack the user interface options to toggle between
+multiple video streams.</li>
+<li><strong>Seamless Angle Switching:</strong> Unlike standard DVD or
+Blu-ray multi-angle features that allow instant, seamless toggling via a
+dedicated remote button, switching video streams in an MKV on standard
+desktop players may cause a momentary pause while the player decodes the
+new keyframe (I-frame).</li>
+</ul>
+<h3 id="how-to-create-a-multi-angle-mkv">How to Create a Multi-Angle
+MKV</h3>
+<p>To create a multi-angle MKV file:</p>
+<ol type="1">
+<li>Ensure all video angles are edited to identical lengths, frame
+rates, and start times.</li>
+<li>Open <strong>MKVToolNix</strong> (specifically the
+<code>mkvmerge</code> GUI), the standard open-source tool for MKV
+manipulation.</li>
+<li>Add the primary video file and audio tracks.</li>
+<li>Add the secondary video angles as additional tracks within the same
+source list.</li>
+<li>Label each video track clearly (e.g., "Angle 1 - Wide", "Angle 2 -
+Close-Up") to make identification easy during playback.</li>
+<li>Click <strong>Start multiplexing</strong> to generate the combined
+multi-angle MKV file.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Handles Millisecond Audio Delay Precision - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format manages millisecond-level audio delays through a flexible timestamp architecture based on Extensible Binary Meta Language (EBML). By utilizing a configurable global time base alongside cluster- and block-level relative">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-handles-millisecond-audio-delay-precision">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Handles Millisecond Audio Delay Precision - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-handles-millisecond-audio-delay-precision" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format manages millisecond-level audio delays through a flexible timestamp architecture based on Extensible Binary Meta Language (EBML). By utilizing a configurable global time base alongside cluster- and block-level relative" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-handles-millisecond-audio-delay-precision">How MKV
+Handles Millisecond Audio Delay Precision</h1>
+<p>The Matroska (MKV) container format manages millisecond-level audio
+delays through a flexible timestamp architecture based on Extensible
+Binary Meta Language (EBML). By utilizing a configurable global time
+base alongside cluster- and block-level relative timestamps, MKV
+achieves precise audio-video synchronization without introducing
+floating-point rounding errors. This system allows muxers to shift audio
+tracks forward or backward with exact millisecond or even nanosecond
+precision.</p>
+<h3 id="the-role-of-timestampscale">The Role of TimestampScale</h3>
+<p>At the core of MKV's timecode handling is the
+<code>TimestampScale</code> element (historically known as
+<code>TimecodeScale</code>) located in the Segment Information header.
+This value defines the duration of one timecode unit in nanoseconds.</p>
+<ul>
+<li><strong>Default Precision:</strong> The standard default for
+<code>TimestampScale</code> is <code>1,000,000</code> nanoseconds, which
+equals exactly 1 millisecond.</li>
+<li><strong>Custom Precision:</strong> If sub-millisecond accuracy is
+required, muxers can set a smaller <code>TimestampScale</code> (such as
+<code>1</code> for pure nanosecond precision). However, the 1 ms default
+is generally sufficient for standard audio synchronization.</li>
+</ul>
+<p>Every timestamp recorded inside the container is stored as an integer
+and multiplied by the <code>TimestampScale</code> to determine the
+real-time presentation timestamp (PTS). Because integers are used
+instead of floating-point values, timecodes avoid precision drift over
+long durations.</p>
+<h3 id="cluster-and-block-timestamp-structure">Cluster and Block
+Timestamp Structure</h3>
+<p>MKV organizes media data into <code>Cluster</code> elements, each
+containing multiple <code>Block</code> or <code>SimpleBlock</code>
+structures representing audio and video frames:</p>
+<ol type="1">
+<li><strong>Cluster Timestamp:</strong> Each Cluster defines an absolute
+base timestamp for the data it contains.</li>
+<li><strong>Relative Block Timestamp:</strong> Inside each Block, the
+timestamp is stored as a signed 16-bit integer relative to the parent
+Cluster's base timestamp.</li>
+</ol>
+<p>When calculating the final presentation time of an audio frame, the
+playback engine adds the signed Block offset to the Cluster timestamp
+and multiplies the result by <code>TimestampScale</code>.</p>
+<h3 id="managing-audio-delays">Managing Audio Delays</h3>
+<p>When applying a millisecond delay (positive or negative) to an audio
+track, MKV uses two primary methods:</p>
+<h4 id="1-timestamp-shifting">1. Timestamp Shifting</h4>
+<p>The most common method involves shifting the numerical timestamps
+assigned to the audio blocks during muxing.</p>
+<ul>
+<li><strong>Positive Delay (Audio plays late):</strong> If an audio
+track requires a +250 ms delay, the first audio block's presentation
+time is set to start at 250 ms instead of 0 ms.</li>
+<li><strong>Negative Delay (Audio plays early):</strong> If the audio
+requires a -150 ms delay, the initial audio blocks can carry negative
+relative timestamps or start in a cluster positioned prior to zero
+presentation time. Media players parse these blocks, initialize the
+decoder, and discard or pre-render audio frames until the timeline
+reaches zero.</li>
+</ul>
+<h4 id="2-track-level-offsets">2. Track-Level Offsets</h4>
+<p>MKV supports container-level elements such as
+<code>TrackOffset</code> or <code>CodecDelay</code> in the Track header.
+These elements instruct the demuxer to apply a static time shift to
+every packet in that specific track without altering the individual
+block timestamps inside the stream.</p>
+<h3 id="handling-codec-frame-boundaries">Handling Codec Frame
+Boundaries</h3>
+<p>Audio codecs process sound in discrete sample frames (e.g., 1024
+samples per AAC frame, or roughly 21.33 ms at 48 kHz). Because a
+requested millisecond delay rarely aligns perfectly with a codec's frame
+boundaries, the MKV container provides the exact target presentation
+timestamp, and the playback engine handles sub-frame trimming
+(discarding excess audio samples) to maintain exact millisecond
+sync.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

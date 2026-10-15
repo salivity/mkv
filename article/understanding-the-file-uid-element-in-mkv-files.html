@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the FileUID Element in MKV Files - mkv</title>
+    <meta name="description" content="The FileUID element in a Matroska (MKV) multimedia file is a globally unique identifier designed to distinguish a specific file from all others across different systems and storage environments. Located within the Segment Information header of the Matrosk">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/understanding-the-file-uid-element-in-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Understanding the FileUID Element in MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/understanding-the-file-uid-element-in-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The FileUID element in a Matroska (MKV) multimedia file is a globally unique identifier designed to distinguish a specific file from all others across different systems and storage environments. Located within the Segment Information header of the Matrosk" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="understanding-the-fileuid-element-in-mkv-files">Understanding
+the FileUID Element in MKV Files</h1>
+<p>The <code>FileUID</code> element in a Matroska (MKV) multimedia file
+is a globally unique identifier designed to distinguish a specific file
+from all others across different systems and storage environments.
+Located within the Segment Information header of the Matroska container
+specification, this 128-bit value persists regardless of filename
+changes or folder relocation. This article explains the technical
+definition of <code>FileUID</code>, its role in segment linking and
+media library management, and why it is critical for container-level
+identification.</p>
+<h3 id="what-is-the-fileuid-element">What Is the FileUID Element?</h3>
+<p>In the Matroska specification, the <code>FileUID</code> (Element ID:
+<code>0x73A4</code>) is an EBML (Extensible Binary Meta Language)
+element found inside the <code>Info</code> segment. It contains a
+128-bit (16-byte) randomly generated binary number, functionally
+equivalent to a standard UUID (Universally Unique Identifier).</p>
+<p>When a Matroska file is multiplexed or authored, the multiplexer
+generates this identifier to assign the container an immutable
+signature. Because the generation process relies on pseudo-random
+algorithms, the probability of two independent MKV files sharing the
+same <code>FileUID</code> is virtually zero.</p>
+<h3 id="primary-functions-of-fileuid">Primary Functions of FileUID</h3>
+<h4 id="1-independent-file-identification">1. Independent File
+Identification</h4>
+<p>Filenames are mutable and frequently changed by users, media
+management tools, or operating systems. The <code>FileUID</code> remains
+embedded within the file’s internal binary structure. Media scrapers,
+media servers, and cataloging software can read this value to track,
+catalog, and reference a specific media file without relying on file
+system paths or naming conventions.</p>
+<h4 id="2-segment-linking-and-seamless-playback">2. Segment Linking and
+Seamless Playback</h4>
+<p>One of Matroska’s advanced features is segment linking, which allows
+a single media experience to be split across multiple distinct files or
+to share common components (such as an opening sequence for television
+episodes). <code>FileUID</code> serves as the target address for
+cross-file references:</p>
+<ul>
+<li><strong>Hard Linking:</strong> A media player reads the
+<code>NextUID</code> or <code>PrevUID</code> elements in one file, which
+contain the exact <code>FileUID</code> of the adjacent file, allowing
+seamless sequential playback.</li>
+<li><strong>Ordered Chapters:</strong> Complex chapter structures
+reference the <code>FileUID</code> of external files to load specific
+segments on demand.</li>
+</ul>
+<h4 id="3-deduplication-and-version-control">3. Deduplication and
+Version Control</h4>
+<p>Content management systems and distribution pipelines use the
+<code>FileUID</code> to detect duplicate files across large storage
+networks. If a video stream is re-encoded, remuxed, or modified, a new
+<code>FileUID</code> is generated, allowing automated systems to
+distinguish between different revisions of the same source material.</p>
+<h4 id="4-stream-and-track-disambiguation">4. Stream and Track
+Disambiguation</h4>
+<p>While <code>TrackUID</code> uniquely identifies individual audio,
+video, or subtitle tracks within a container, <code>FileUID</code>
+represents the entire container context. This distinction ensures that
+multimedia frameworks (such as FFmpeg or GStreamer) properly associate
+tracks with their parent container during complex decoding or transcode
+pipelines.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Contain xHE-AAC Audio Tracks? - mkv</title>
+    <meta name="description" content="This article examines whether the Matroska (MKV) multimedia container can encapsulate audio tracks encoded in xHE-AAC (Extended High Efficiency Advanced Audio Coding). It covers container compatibility, technical implementation details, software muxing ca">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-contain-x-he-aac-audio-tracks">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Contain xHE-AAC Audio Tracks? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-contain-x-he-aac-audio-tracks" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article examines whether the Matroska (MKV) multimedia container can encapsulate audio tracks encoded in xHE-AAC (Extended High Efficiency Advanced Audio Coding). It covers container compatibility, technical implementation details, software muxing ca" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-contain-xhe-aac-audio-tracks">Can MKV Contain xHE-AAC
+Audio Tracks?</h1>
+<p>This article examines whether the Matroska (MKV) multimedia container
+can encapsulate audio tracks encoded in xHE-AAC (Extended High
+Efficiency Advanced Audio Coding). It covers container compatibility,
+technical implementation details, software muxing capabilities, and the
+playback requirements necessary to decode these streams.</p>
+<p>Yes, an MKV container can encapsulate xHE-AAC audio tracks. Matroska
+is an extensible, open-standard multimedia container designed to be
+codec-agnostic, allowing it to package virtually any modern audio,
+video, or subtitle format, including the latest additions to the MPEG
+audio family.</p>
+<p>Technically, xHE-AAC is standardized as Unified Speech and Audio
+Coding (USAC) under MPEG-D (ISO/IEC 23003-3) and represented as Audio
+Object Type 42 (AOT 42) in MPEG-4 Audio. When encapsulated within an MKV
+container, xHE-AAC is stored using the standard Matroska AAC Codec ID
+(<code>A_AAC</code>). The container holds the stream's initialization
+data within the <code>CodecPrivate</code> element, which contains the
+standard MPEG-4 <code>AudioSpecificConfig</code> signaling the USAC
+payload.</p>
+<p>To encapsulate xHE-AAC into an MKV file, modern multimedia tools like
+FFmpeg or MKVToolNix can be used. If the source xHE-AAC stream is
+provided in an ADTS, LOAS/LATM, or raw MP4/M4A elementary stream format,
+these utilities can parse the bitstream headers and remux the audio
+directly into an MKV file without re-encoding.</p>
+<p>While the MKV container successfully holds and demuxes xHE-AAC data,
+actual audio playback requires an underlying decoder that supports the
+format. The media player or operating system must utilize a compatible
+decoding library—such as Fraunhofer's FDK AAC library—to decode the
+stream into PCM audio. Modern operating systems (including current
+versions of Android, iOS, Windows 11, and macOS) have native decoders,
+making playback straightforward in updated media players such as VLC or
+mpv.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

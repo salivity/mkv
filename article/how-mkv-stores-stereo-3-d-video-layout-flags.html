@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Stereo 3D Video Layout Flags - mkv</title>
+    <meta name="description" content="This article explains how the Matroska (MKV) container stores stereoscopic 3D metadata for frame-compatible video formats. MKV achieves this by embedding a dedicated stereoscopic signaling element within its track headers, allowing media players and 3D di">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-stereo-3-d-video-layout-flags">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Stereo 3D Video Layout Flags - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-stereo-3-d-video-layout-flags" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how the Matroska (MKV) container stores stereoscopic 3D metadata for frame-compatible video formats. MKV achieves this by embedding a dedicated stereoscopic signaling element within its track headers, allowing media players and 3D di" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-stereo-3d-video-layout-flags">How MKV Stores
+Stereo 3D Video Layout Flags</h1>
+<p>This article explains how the Matroska (MKV) container stores
+stereoscopic 3D metadata for frame-compatible video formats. MKV
+achieves this by embedding a dedicated stereoscopic signaling element
+within its track headers, allowing media players and 3D displays to
+identify whether a single video stream contains packed stereo views—such
+as Side-by-Side or Top-and-Bottom—and automatically adjust the display
+aspect ratio and rendering mode.</p>
+<h2 id="the-stereomode-ebml-element">The <code>StereoMode</code> EBML
+Element</h2>
+<p>Matroska uses Extensible Binary Meta Language (EBML) to define its
+hierarchical data structure. Stereoscopic 3D metadata is stored at the
+container level within the track configuration. Specifically, it resides
+inside the <code>Video</code> element of a <code>TrackEntry</code>:</p>
+<ul>
+<li><strong>EBML Path:</strong> <code>Segment</code> <span
+class="math inline">\(\rightarrow\)</span> <code>Tracks</code> <span
+class="math inline">\(\rightarrow\)</span> <code>TrackEntry</code> <span
+class="math inline">\(\rightarrow\)</span> <code>Video</code> <span
+class="math inline">\(\rightarrow\)</span> <code>StereoMode</code></li>
+<li><strong>Element ID:</strong> <code>0x53B8</code></li>
+<li><strong>Data Type:</strong> Unsigned Integer (uinteger)</li>
+</ul>
+<p>The presence of the <code>StereoMode</code> element signals to the
+decoder that the video stream is multiplexed using a specific
+stereoscopic frame-packing layout. If the element is omitted, decoders
+default to <code>0</code> (mono / 2D).</p>
+<h2 id="frame-compatible-layout-values">Frame-Compatible Layout
+Values</h2>
+<p>Matroska assigns integer values to the <code>StereoMode</code> tag to
+define the spatial arrangement and eye dominance (which view appears
+first). The most common standard values include:</p>
+<ul>
+<li><strong>0:</strong> Mono (default 2D)</li>
+<li><strong>1:</strong> Side-by-Side (Left Eye is on the left)</li>
+<li><strong>2:</strong> Top-and-Bottom (Right Eye is on the top)</li>
+<li><strong>3:</strong> Top-and-Bottom (Left Eye is on the top)</li>
+<li><strong>4:</strong> Checkerboard (Right Eye is first)</li>
+<li><strong>5:</strong> Checkerboard (Left Eye is first)</li>
+<li><strong>6:</strong> Row Interleaved (Right Eye is first)</li>
+<li><strong>7:</strong> Row Interleaved (Left Eye is first)</li>
+<li><strong>8:</strong> Column Interleaved (Right Eye is first)</li>
+<li><strong>9:</strong> Column Interleaved (Left Eye is first)</li>
+<li><strong>10:</strong> Anaglyph (Cyan / Red)</li>
+<li><strong>11:</strong> Side-by-Side (Right Eye is on the left)</li>
+<li><strong>12:</strong> Anaglyph (Green / Magenta)</li>
+<li><strong>13:</strong> Both eyes laced in one block (Left Eye
+first)</li>
+<li><strong>14:</strong> Both eyes laced in one block (Right Eye
+first)</li>
+</ul>
+<p>Values <code>1</code>, <code>3</code>, and <code>11</code> are the
+most widely used in digital distribution for Half Side-by-Side (HSBS)
+and Half Top-and-Bottom (HTAB/HOU) encodings.</p>
+<h2 id="display-dimensions-and-aspect-ratio-handling">Display Dimensions
+and Aspect Ratio Handling</h2>
+<p>Frame-compatible stereoscopic formats often compress two views into
+standard frame dimensions (for example, two <span
+class="math inline">\(960\times1080\)</span> images squeezed into a
+single <span class="math inline">\(1920\times1080\)</span> frame). To
+ensure the individual eyes are displayed with the proper proportions
+after separation, MKV uses supplementary video header elements:</p>
+<ul>
+<li><strong><code>PixelWidth</code> (<code>0xB0</code>) and
+<code>PixelHeight</code> (<code>0xBA</code>):</strong> Define the actual
+encoded resolution of the packed frame (e.g., <span
+class="math inline">\(1920\times1080\)</span>).</li>
+<li><strong><code>DisplayWidth</code> (<code>0x54B0</code>) and
+<code>DisplayHeight</code> (<code>0x54BA</code>):</strong> Define the
+target rendering dimensions for the combined canvas or per-eye aspect
+ratio, preventing anamorphic distortion when split into two full-aspect
+views.</li>
+<li><strong><code>DisplayUnit</code> (<code>0x54B2</code>):</strong>
+Defines the unit used for display dimensions (pixels, centimeters,
+inches, or display aspect ratio).</li>
+</ul>
+<h2 id="player-and-decoder-behavior">Player and Decoder Behavior</h2>
+<p>When an MKV parser reads the <code>StereoMode</code> tag:</p>
+<ol type="1">
+<li><strong>Detection:</strong> The player detects the frame-packing
+format and eye ordering before decoding frame payloads.</li>
+<li><strong>Separation:</strong> The renderer splits the decoded frame
+along the defined boundary (vertically for Side-by-Side, horizontally
+for Top-and-Bottom).</li>
+<li><strong>Display Output:</strong> The software either formats the two
+views for output hardware (such as HDMI 3D frame-packing, polarized
+interlacing, VR headset viewports, or shutter glasses) or collapses the
+video into a standard 2D stream by cropping to the primary eye.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

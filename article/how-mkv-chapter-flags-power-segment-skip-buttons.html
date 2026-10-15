@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Chapter Flags Power Segment Skip Buttons - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format includes an advanced chapter system that allows media players to detect specific video sections, such as opening themes, recaps, and closing credits. By reading embedded Extensible Binary Meta Language (EBML) chapter el">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-chapter-flags-power-segment-skip-buttons">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Chapter Flags Power Segment Skip Buttons - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-chapter-flags-power-segment-skip-buttons" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format includes an advanced chapter system that allows media players to detect specific video sections, such as opening themes, recaps, and closing credits. By reading embedded Extensible Binary Meta Language (EBML) chapter el" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-chapter-flags-power-segment-skip-buttons">How MKV
+Chapter Flags Power Segment Skip Buttons</h1>
+<p>The Matroska (MKV) container format includes an advanced chapter
+system that allows media players to detect specific video sections, such
+as opening themes, recaps, and closing credits. By reading embedded
+Extensible Binary Meta Language (EBML) chapter elements and timestamps,
+modern media players can automatically trigger interactive on-screen
+"Skip Intro" or "Skip Credits" buttons. This local metadata parsing
+gives offline media files the same seamless navigation experience
+commonly found on major streaming platforms.</p>
+<h2 id="the-matroska-chapter-architecture">The Matroska Chapter
+Architecture</h2>
+<p>MKV files organize chapter information inside an EBML chapter
+hierarchy. Within the main <code>Chapters</code> element, the file
+contains one or more <code>ChapterAtom</code> entries. Each atom defines
+a distinct segment of the video timeline using precise timecodes:</p>
+<ul>
+<li><strong>ChapterTimeStart:</strong> The exact timestamp where a
+segment begins.</li>
+<li><strong>ChapterTimeEnd:</strong> The optional timestamp where the
+segment finishes.</li>
+<li><strong>ChapterDisplay / ChapterString:</strong> The human-readable
+title assigned to the segment (for example, "Intro", "Opening",
+"Prologue", or "Credits").</li>
+<li><strong>ChapterFlagHidden / ChapterFlagEnabled:</strong> Flags that
+indicate whether a chapter should appear in regular navigation menus or
+remain hidden for background scripting.</li>
+</ul>
+<h2 id="how-players-detect-and-classify-segments">How Players Detect and
+Classify Segments</h2>
+<p>Media players use their internal demuxers (such as FFmpeg or
+libmatroska) to read the chapter metadata when a file is loaded. To
+determine whether a chapter warrants a skip button, players evaluate the
+metadata through two primary mechanisms:</p>
+<ol type="1">
+<li><strong>String and Tag Matching:</strong> The player inspects the
+<code>ChapterString</code> element for standard keywords (e.g.,
+<code>Intro</code>, <code>OP</code>, <code>Ending</code>,
+<code>ED</code>, <code>Preview</code>, <code>Recap</code>). Advanced
+media centers and scripts use regular expressions to match these labels
+against common naming conventions used by media encoders.</li>
+<li><strong>Standardized Chapter Flags:</strong> Newer extensions to
+chapter parsing utilize specific flags or XML-based Matroska tags (such
+as <code>CHAPTER-SEGMENT-TYPE</code>) that explicitly define the
+semantic purpose of a segment rather than relying on chapter names
+alone.</li>
+</ol>
+<h2 id="event-listeners-and-ui-rendering">Event Listeners and UI
+Rendering</h2>
+<p>During playback, the video player continuously tracks the playback
+clock against the chapter timetable. When the current playback position
+crosses into the <code>ChapterTimeStart</code> boundary of a flagged
+chapter, an internal event is triggered.</p>
+<p>This event instructs the player's graphical user interface (GUI)
+layer to render an interactive skip overlay. The button remains visible
+for the duration of the chapter or until a predefined display timer
+expires.</p>
+<h2 id="executing-the-skip-operation">Executing the Skip Operation</h2>
+<p>When a user clicks the skip button, the player executes a seek
+command:</p>
+<ol type="1">
+<li>The player queries the <code>ChapterTimeEnd</code> value of the
+active chapter (or the <code>ChapterTimeStart</code> of the immediately
+following chapter).</li>
+<li>The playback engine performs a direct keyframe-accurate seek to that
+exact timecode.</li>
+<li>The skip button UI is dismissed immediately, and normal video
+rendering resumes at the start of the next segment.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

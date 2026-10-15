@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Audio Track Priority and Selection Flags - mkv</title>
+    <meta name="description" content="An MKV (Matroska) container manages automatic audio stream selection using a combination of embedded metadata flags, language tags, and stream hierarchy. Media players evaluate these properties—primarily the Default flag, Forced flag, standardized languag">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-audio-track-priority-and-selection-flags">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Audio Track Priority and Selection Flags - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-audio-track-priority-and-selection-flags" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="An MKV (Matroska) container manages automatic audio stream selection using a combination of embedded metadata flags, language tags, and stream hierarchy. Media players evaluate these properties—primarily the Default flag, Forced flag, standardized languag" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-audio-track-priority-and-selection-flags">MKV Audio Track
+Priority and Selection Flags</h1>
+<p>An MKV (Matroska) container manages automatic audio stream selection
+using a combination of embedded metadata flags, language tags, and
+stream hierarchy. Media players evaluate these properties—primarily the
+Default flag, Forced flag, standardized language tags, and track
+order—against user-defined playback preferences to automatically load
+the correct audio track without requiring manual intervention.</p>
+<h3 id="key-audio-track-flags-in-matroska">Key Audio Track Flags in
+Matroska</h3>
+<p>The Matroska specification defines several elements within the
+<code>TrackEntry</code> master element that dictate track priority:</p>
+<ul>
+<li><strong>FlagDefault (<code>&lt;FlagDefault&gt;</code>):</strong> A
+boolean value (<code>1</code> or <code>0</code>). When set to
+<code>1</code>, it signals to the media player that this track should be
+eligible for automatic playback if the user has not defined conflicting
+preferences. If multiple tracks share the same language, the one with
+<code>FlagDefault = 1</code> is prioritized.</li>
+<li><strong>FlagForced (<code>&lt;FlagForced&gt;</code>):</strong>
+Primarily used for subtitles, but in multi-audio contexts, it denotes
+content that is essential for narrative comprehension (e.g., translated
+dialogue segments in an otherwise foreign-language audio track).</li>
+<li><strong>Language Element (<code>&lt;Language&gt;</code> /
+<code>&lt;LanguageIETF&gt;</code>):</strong> Specifies the language of
+the track using standard language codes (ISO 639-2 or IETF BCP 47).
+While not a strict priority flag itself, language identification is the
+primary filter used by media players before priority flags are
+evaluated.</li>
+<li><strong>FlagHearingImpaired / FlagVisualImpaired:</strong> Modern
+Matroska extensions that identify descriptive audio or audio suited for
+accessibility, preventing players from selecting them by default for
+general audiences unless explicitly configured.</li>
+<li><strong>FlagOriginal:</strong> Indicates whether the audio track
+represents the original production language of the media.</li>
+</ul>
+<h3 id="the-automatic-selection-hierarchy">The Automatic Selection
+Hierarchy</h3>
+<p>When a media player opens an MKV file, it determines which audio
+track to play by executing a decision tree based on the container's
+flags and the player's internal settings:</p>
+<ol type="1">
+<li><strong>User Preference Matching:</strong> The player checks its own
+configuration for preferred audio languages. If a track's
+<code>&lt;Language&gt;</code> tag matches the user preference, that
+track is prioritized over non-matching tracks, regardless of the
+<code>FlagDefault</code> status on other tracks.</li>
+<li><strong>Default Flag Evaluation:</strong> If multiple tracks match
+the user's preferred language, the player selects the track where
+<code>FlagDefault</code> is set to <code>1</code>. If no language
+preference is set, the player defaults to the first track marked with
+<code>FlagDefault = 1</code>.</li>
+<li><strong>Physical Track Order:</strong> If no tracks are flagged with
+<code>FlagDefault = 1</code>, or if multiple tracks have identical flags
+and languages, the player falls back to the stream order within the
+container. The audio track with the lowest <code>TrackNumber</code>
+(typically the first audio stream encountered in the file header) is
+selected.</li>
+<li><strong>Codec and Channel Considerations:</strong> Advanced players
+may implement secondary logic, preferring higher-channel-count tracks
+(such as 5.1 or 7.1 surround sound over stereo) or lossless formats if
+the user's hardware supports them, provided the primary language and
+default conditions are equal.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

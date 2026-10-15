@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store Multi-Track Audio Microphone Stems? - mkv</title>
+    <meta name="description" content="Yes, the Matroska (MKV) multimedia container format fully supports multi-track audio and can store separate tracks representing individual microphone stems. This article explains how MKV handles multiple discrete audio streams, how recording software util">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-multi-track-audio-microphone-stems">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store Multi-Track Audio Microphone Stems? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-multi-track-audio-microphone-stems" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Yes, the Matroska (MKV) multimedia container format fully supports multi-track audio and can store separate tracks representing individual microphone stems. This article explains how MKV handles multiple discrete audio streams, how recording software util" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-multi-track-audio-microphone-stems">Can MKV Store
+Multi-Track Audio Microphone Stems?</h1>
+<p>Yes, the Matroska (MKV) multimedia container format fully supports
+multi-track audio and can store separate tracks representing individual
+microphone stems. This article explains how MKV handles multiple
+discrete audio streams, how recording software utilizes this capability
+for multi-mic setups, and how creators leverage these isolated tracks
+during post-production editing.</p>
+<h3 id="how-mkv-handles-multi-track-audio">How MKV Handles Multi-Track
+Audio</h3>
+<p>The Matroska container is designed to be universally extensible.
+Unlike simpler video containers, MKV does not impose an arbitrary limit
+on the number of audio, video, or subtitle tracks packed within a single
+file. Each audio track exists as an independent stream multiplexed
+alongside the video, allowing you to store distinct audio sources
+without mixing them together.</p>
+<h3 id="storing-microphone-stems-in-a-single-file">Storing Microphone
+Stems in a Single File</h3>
+<p>In multi-microphone recording scenarios—such as podcasts, interviews,
+or panel discussions—each physical microphone can be routed to its own
+dedicated track inside the MKV file:</p>
+<ul>
+<li><strong>Independent Audio Formats:</strong> Each microphone track
+can use different or identical audio codecs, including uncompressed PCM,
+FLAC, AAC, or Opus.</li>
+<li><strong>Track Labeling and Metadata:</strong> MKV supports detailed
+metadata tagging. Each track can be assigned custom names (e.g., "Host
+Mic," "Guest 1 Mic," "Room Ambient") and language tags, making track
+identification effortless in editing software.</li>
+<li><strong>Synchronized Timing:</strong> Because all stems share the
+container's master timecode, individual microphone tracks remain in
+frame-accurate synchronization with the video and with each other.</li>
+</ul>
+<h3 id="practical-recording-and-editing-workflow">Practical Recording
+and Editing Workflow</h3>
+<p>Recording software such as OBS Studio commonly uses the MKV format to
+record multi-track audio natively. A creator can map Microphone 1 to
+Audio Track 1, Microphone 2 to Audio Track 2, and a master composite mix
+to Audio Track 3.</p>
+<p>When the resulting MKV file is imported into modern Non-Linear
+Editors (NLEs) like Adobe Premiere Pro, DaVinci Resolve, or Final Cut
+Pro, each microphone track appears on its own timeline lane. Editors can
+apply separate equalizers, noise gates, level adjustments, and cleanup
+tools to individual speakers without affecting the other audio
+sources.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

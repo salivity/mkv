@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Video Streams in MKV with Different Resolutions - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format natively supports storing multiple video streams featuring completely different resolutions, aspect ratios, frame rates, and codecs within a single file. Unlike more restrictive containers, MKV is designed to be highly">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/multiple-video-streams-in-mkv-with-different-resolutions">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Multiple Video Streams in MKV with Different Resolutions - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/multiple-video-streams-in-mkv-with-different-resolutions" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format natively supports storing multiple video streams featuring completely different resolutions, aspect ratios, frame rates, and codecs within a single file. Unlike more restrictive containers, MKV is designed to be highly" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1
+id="multiple-video-streams-in-mkv-with-different-resolutions">Multiple
+Video Streams in MKV with Different Resolutions</h1>
+<p>The Matroska (MKV) container format natively supports storing
+multiple video streams featuring completely different resolutions,
+aspect ratios, frame rates, and codecs within a single file. Unlike more
+restrictive containers, MKV is designed to be highly flexible, allowing
+each video track to function as an independent data stream. This article
+covers how MKV handles multiple video streams of varying resolutions,
+common use cases for this feature, and playback compatibility.</p>
+<h2 id="how-mkv-supports-multiple-video-tracks">How MKV Supports
+Multiple Video Tracks</h2>
+<p>The MKV container is built on EBML (Extensible Binary Meta Language),
+a binary equivalent of XML. This architecture treats every component of
+a media file—video, audio, subtitles, and metadata—as independent
+tracks.</p>
+<p>The Matroska specification imposes no requirement that video tracks
+share the same properties. Within a single <code>.mkv</code> file:</p>
+<ul>
+<li><strong>Track 1</strong> can be a 4K UHD (3840x2160) stream encoded
+in HEVC (H.265).</li>
+<li><strong>Track 2</strong> can be a 1080p (1920x1080) stream encoded
+in AVC (H.264).</li>
+<li><strong>Track 3</strong> can be a 480p (720x480) stream encoded in
+AV1.</li>
+</ul>
+<p>Each stream contains its own header information defining its pixel
+dimensions, display aspect ratio, frame rate, and compression
+format.</p>
+<h2 id="common-use-cases">Common Use Cases</h2>
+<p>Storing multiple video streams of varying resolutions in one MKV
+container is useful in several scenarios:</p>
+<ul>
+<li><strong>Multi-Device Archiving:</strong> A single master file can
+store a full-resolution 4K version alongside a lower-resolution 720p
+version optimized for low-power mobile devices.</li>
+<li><strong>Alternate Angles and Commentary:</strong> Multi-angle
+concert footage or sports broadcasts can feature a high-resolution
+primary camera feed alongside lower-resolution secondary angles or
+picture-in-picture director commentary.</li>
+<li><strong>Aspect Ratio Variations:</strong> Films with both theatrical
+(e.g., 2.39:1) and IMAX/open-matte (e.g., 1.78:1) presentations can
+include both video masters in a single package.</li>
+</ul>
+<h2 id="media-player-and-hardware-compatibility">Media Player and
+Hardware Compatibility</h2>
+<p>While the MKV container fully supports multiple video streams with
+different resolutions, user playback depends on the media player
+software:</p>
+<ul>
+<li><strong>Desktop Players:</strong> Advanced software players such as
+VLC Media Player, MPV, and MPC-HC fully support switching between
+distinct video tracks on the fly via their video track menus.</li>
+<li><strong>Hardware and Smart TVs:</strong> Built-in media players on
+smart TVs, game consoles, and streaming set-top boxes typically default
+to the first video track (Track 1 or the track flagged as "Default") and
+often lack user interface options to toggle secondary video tracks.</li>
+<li><strong>Transcoding Servers:</strong> Media servers like Plex or
+Jellyfin may only present the primary video stream unless individual
+files are structured according to their specific multi-version naming
+guidelines.</li>
+</ul>
+<h2 id="creating-multi-stream-mkv-files">Creating Multi-Stream MKV
+Files</h2>
+<p>Tools such as <strong>MKVToolNix</strong> (specifically the
+<code>mkvmerge</code> utility) or <strong>FFmpeg</strong> can multiplex
+distinct video files into a single MKV container without
+re-encoding:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> video_4k.mp4 <span class="at">-i</span> video_1080p.mp4 <span class="at">-map</span> 0:v <span class="at">-map</span> 1:v <span class="at">-c</span> copy output.mkv</span></code></pre></div>
+<p>This command takes two separate source files of different resolutions
+and copies their raw video streams directly into a unified MKV
+container.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

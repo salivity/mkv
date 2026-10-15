@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Happens When Cutting MKV Files Mid-Cluster - mkv</title>
+    <meta name="description" content="Cutting a Matroska (MKV) video file mid-cluster without updating its internal index results in playback glitches, visual artifacts, broken seeking functionality, and potential file unreadability in strict media players. Because the Matroska container reli">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/what-happens-when-cutting-mkv-files-mid-cluster">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What Happens When Cutting MKV Files Mid-Cluster - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/what-happens-when-cutting-mkv-files-mid-cluster" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Cutting a Matroska (MKV) video file mid-cluster without updating its internal index results in playback glitches, visual artifacts, broken seeking functionality, and potential file unreadability in strict media players. Because the Matroska container reli" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="what-happens-when-cutting-mkv-files-mid-cluster">What Happens
+When Cutting MKV Files Mid-Cluster</h1>
+<p>Cutting a Matroska (MKV) video file mid-cluster without updating its
+internal index results in playback glitches, visual artifacts, broken
+seeking functionality, and potential file unreadability in strict media
+players. Because the Matroska container relies on structured Extensible
+Binary Meta Language (EBML) clusters and Cue elements to navigate and
+decode data streams, an unindexed mid-cluster split breaks both the
+container hierarchy and the compressed video stream.</p>
+<h3 id="structural-corruption-in-the-ebml-container">Structural
+Corruption in the EBML Container</h3>
+<p>MKV files organize media data into basic units called
+<strong>Clusters</strong>. Each cluster contains a timestamp and holds
+multiple video, audio, or subtitle frames stored within
+<code>SimpleBlock</code> or <code>BlockGroup</code> structures.</p>
+<p>When a cut is performed in the middle of a cluster:</p>
+<ul>
+<li><strong>Truncated EBML Elements:</strong> The targeted cluster
+abruptly ends without standard closing indicators or proper size
+declarations, leaving an invalid byte sequence.</li>
+<li><strong>Corrupted Header Information:</strong> If the cut removes
+the beginning of a cluster, the subsequent blocks lose their reference
+timestamp, making it difficult for the demuxer to determine presentation
+timestamps (PTS).</li>
+</ul>
+<h3 id="visual-artifacts-and-decoding-failures">Visual Artifacts and
+Decoding Failures</h3>
+<p>Video codecs rely on keyframes (I-frames or IDR frames) to construct
+subsequent inter-coded frames (P-frames and B-frames).</p>
+<p>If a split cuts off a cluster midway:</p>
+<ul>
+<li><strong>Missing Reference Frames:</strong> If the cut discards the
+keyframe at the start of the cluster, downstream P- and B-frames cannot
+be decoded properly.</li>
+<li><strong>Macroblocking and Glitches:</strong> Viewers will typically
+see gray screens, pixelation, severe macroblocking, or frozen video
+until the decoder encounters the next valid, independent keyframe.</li>
+<li><strong>Dropped Frames:</strong> Media engines often drop all
+orphaned frames within the damaged cluster to prevent decoder
+crashes.</li>
+</ul>
+<h3 id="broken-seeking-and-invalid-cues">Broken Seeking and Invalid
+Cues</h3>
+<p>MKV files utilize a dedicated index called <strong>Cues</strong>
+(located in the <code>Cues</code> element), which maps presentation
+timestamps directly to specific byte offsets of clusters.</p>
+<p>Without re-indexing after a cut:</p>
+<ul>
+<li><strong>Misaligned Offsets:</strong> The existing Cues table points
+to absolute byte offsets that no longer exist or point to incorrect
+data.</li>
+<li><strong>Non-Functional Seek Bars:</strong> Moving the timeline
+slider in a media player can cause playback to freeze, crash the
+application, or loop back to the beginning.</li>
+<li><strong>Incorrect Duration Metadata:</strong> The container header
+will continue to report the original, uncut duration rather than the
+new, shorter length.</li>
+</ul>
+<h3 id="audio-and-subtitle-desynchronization">Audio and Subtitle
+Desynchronization</h3>
+<p>Clusters bundle audio packets and subtitle tracks alongside video
+frames. When a cluster is truncated mid-stream:</p>
+<ul>
+<li>Audio packets may be split or omitted unevenly relative to video
+frames.</li>
+<li>Subtitle events starting within that cluster may fail to display
+entirely.</li>
+<li>Without proper timestamp recalculation, audio and video drift out of
+sync once playback resumes at the next valid cluster.</li>
+</ul>
+<h3 id="media-player-behavior-differences">Media Player Behavior
+Differences</h3>
+<p>How the resulting file behaves depends on the parser
+implementation:</p>
+<ul>
+<li><strong>Fault-Tolerant Players (e.g., VLC, MPV, FFmpeg):</strong>
+These engines scan forward through the raw byte stream to find the next
+valid EBML cluster ID (<code>0x1F43B675</code>), discard the corrupted
+segment, and resume playback. However, seeking remains degraded unless
+the player builds a temporary index in memory.</li>
+<li><strong>Strict Parsers and Hardware Players:</strong> Smart TVs,
+set-top boxes, and native OS decoders often reject the file entirely or
+halt playback the moment they encounter the invalid byte offset.</li>
+</ul>
+<h3 id="preventing-and-resolving-the-issue">Preventing and Resolving the
+Issue</h3>
+<p>To prevent mid-cluster corruption, video cutting should always be
+performed at keyframe boundaries using container-aware tools such as
+<strong>MKVToolNix</strong> or <strong>FFmpeg</strong> (using stream
+copy mode). These utilities close open clusters properly, recalculate
+timecodes, and generate a new, accurate Cues index.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Handles Nested and Overlapping Chapters - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container manages complex timeline structures, including nested and overlapping chapters, using a flexible metadata system built on Extensible Binary Meta Language (EBML). By organizing chapter data into hierarchical parent-c">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-handles-nested-and-overlapping-chapters">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Handles Nested and Overlapping Chapters - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-handles-nested-and-overlapping-chapters" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container manages complex timeline structures, including nested and overlapping chapters, using a flexible metadata system built on Extensible Binary Meta Language (EBML). By organizing chapter data into hierarchical parent-c" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-handles-nested-and-overlapping-chapters">How MKV Handles
+Nested and Overlapping Chapters</h1>
+<p>The Matroska (MKV) multimedia container manages complex timeline
+structures, including nested and overlapping chapters, using a flexible
+metadata system built on Extensible Binary Meta Language (EBML). By
+organizing chapter data into hierarchical parent-child elements
+(<code>ChapterAtom</code>) and offering support for multiple timeline
+profiles (<code>EditionEntry</code>), MKV allows media creators to build
+multi-layered chapter structures, alternative cuts, and complex playback
+paths within a single file.</p>
+<h2 id="the-hierarchical-structure-of-mkv-chapters">The Hierarchical
+Structure of MKV Chapters</h2>
+<p>Matroska does not rely on a flat list of start and end times.
+Instead, it utilizes an EBML tree structure where chapter data is
+organized hierarchically:</p>
+<ul>
+<li><strong><code>Chapters</code></strong>: The root element containing
+all chapter information.</li>
+<li><strong><code>EditionEntry</code></strong>: A distinct timeline
+configuration. A single MKV file can contain multiple editions (such as
+a Theatrical Cut and an Extended Cut).</li>
+<li><strong><code>ChapterAtom</code></strong>: The core unit
+representing an individual chapter. Each atom contains parameters like
+<code>ChapterUID</code>, <code>ChapterTimeStart</code>,
+<code>ChapterTimeEnd</code>, and display strings
+(<code>ChapterDisplay</code>).</li>
+</ul>
+<h2 id="managing-nested-chapters">Managing Nested Chapters</h2>
+<p>Nesting occurs when a broader chapter contains several
+sub-chapters—such as an "Act" containing multiple "Scenes," or a
+"Concert" containing individual "Songs."</p>
+<p>MKV manages nesting directly through recursive
+<code>ChapterAtom</code> elements:</p>
+<ol type="1">
+<li><strong>Parent-Child Relationship</strong>: A parent
+<code>ChapterAtom</code> defines the start and end time of the
+overarching segment.</li>
+<li><strong>Sub-Atoms</strong>: Inside the parent
+<code>ChapterAtom</code>, additional child <code>ChapterAtom</code>
+elements are placed. Each child contains its own start and end
+timestamps that fall within the boundaries of the parent atom.</li>
+<li><strong>Player Navigation</strong>: Supporting media players render
+these nested chapters as expandable tree menus. Selecting the parent
+navigates to the start of the overall section, while selecting a child
+jumps directly to that specific subsection.</li>
+</ol>
+<pre><code>EditionEntry
+└── ChapterAtom (Act 1: 00:00:00 - 00:30:00)
+    ├── ChapterAtom (Scene 1: 00:00:00 - 00:12:00)
+    └── ChapterAtom (Scene 2: 00:12:00 - 00:30:00)</code></pre>
+<h2 id="managing-overlapping-chapters">Managing Overlapping
+Chapters</h2>
+<p>Overlapping chapters occur when two separate chapter definitions
+occupy intersecting timecodes on the timeline. Matroska handles this
+scenario in two distinct ways depending on the author's intent:</p>
+<h3 id="1-distinct-editions-editionentry">1. Distinct Editions
+(<code>EditionEntry</code>)</h3>
+<p>When overlapping chapters represent branching paths, alternate
+scenes, or different versions of the same media, MKV separates them into
+different <code>EditionEntry</code> blocks.</p>
+<ul>
+<li>Each edition has its own <code>EditionUID</code> and its own
+independent set of <code>ChapterAtom</code> elements.</li>
+<li>Overlapping segments are isolated within their respective editions,
+preventing timecode conflicts during linear playback.</li>
+<li>Media players let the user select which edition to play, ensuring
+the playback pipeline reads only the corresponding chapter
+timeline.</li>
+</ul>
+<h3 id="2-multi-track-or-concurrent-events-within-a-single-edition">2.
+Multi-Track or Concurrent Events within a Single Edition</h3>
+<p>If overlapping chapters exist simultaneously within the same edition
+(such as marking a musical performance that spans across two distinct
+narrative scenes), MKV allows multiple <code>ChapterAtom</code> elements
+to define overlapping <code>ChapterTimeStart</code> and
+<code>ChapterTimeEnd</code> boundaries.</p>
+<ul>
+<li>Because each <code>ChapterAtom</code> possesses a unique
+<code>ChapterUID</code>, the container parses them as independent
+metadata objects.</li>
+<li>MKV metadata allows flags such as <code>ChapterFlagHidden</code> or
+<code>ChapterFlagEnabled</code> to control whether secondary overlapping
+chapters appear in the primary navigation menu or remain hidden for
+specific metadata triggers.</li>
+</ul>
+<h2 id="ordered-chapters-and-virtual-timelines">Ordered Chapters and
+Virtual Timelines</h2>
+<p>For non-linear playback, Matroska features <strong>Ordered
+Chapters</strong> (enabled via <code>EditionFlagOrdered</code>).</p>
+<p>Under an ordered chapter system, the container treats chapters not
+just as navigation markers, but as instructions for the playback engine.
+The player reads the chapters in sequential order, jumping between
+specified time intervals or even linking to external MKV files. This
+allows scenes to be reused, reordered, or seamlessly spliced together to
+create overlapping narrative structures without duplicating the
+underlying video and audio streams.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

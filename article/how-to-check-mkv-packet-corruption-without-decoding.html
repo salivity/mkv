@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Check MKV Packet Corruption Without Decoding - mkv</title>
+    <meta name="description" content="Inspecting a Matroska (MKV) video file for packet and container corruption does not require a slow, resource-heavy full video decode. By utilizing stream-level analysis tools such as FFmpeg, FFprobe, and mkvalidator, you can quickly scan the underlying EB">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-check-mkv-packet-corruption-without-decoding">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Check MKV Packet Corruption Without Decoding - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-check-mkv-packet-corruption-without-decoding" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Inspecting a Matroska (MKV) video file for packet and container corruption does not require a slow, resource-heavy full video decode. By utilizing stream-level analysis tools such as FFmpeg, FFprobe, and mkvalidator, you can quickly scan the underlying EB" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-check-mkv-packet-corruption-without-decoding">How to
+Check MKV Packet Corruption Without Decoding</h1>
+<p>Inspecting a Matroska (MKV) video file for packet and container
+corruption does not require a slow, resource-heavy full video decode. By
+utilizing stream-level analysis tools such as FFmpeg, FFprobe, and
+mkvalidator, you can quickly scan the underlying EBML container and
+multiplexed packet headers for missing data, broken timestamps, and
+corrupted payloads at pure disk-read speeds.</p>
+<h3 id="method-1-fast-packet-demuxing-with-ffmpeg">Method 1: Fast Packet
+Demuxing with FFmpeg</h3>
+<p>The fastest way to verify packet continuity across all streams
+without decoding video frames is to run a null demux with stream copying
+in FFmpeg. This forces the demuxer to read every packet in the MKV
+container, reporting any packet header faults or truncation:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-v</span> error <span class="at">-i</span> input.mkv <span class="at">-c</span> copy <span class="at">-f</span> null <span class="at">-</span></span></code></pre></div>
+<ul>
+<li><code>-v error</code>: Suppresses standard operational output and
+only prints stream/packet errors.</li>
+<li><code>-c copy</code>: Copies streams directly, bypassing video and
+audio decoders.</li>
+<li><code>-f null -</code>: Discards the output data so no new file is
+written to disk.</li>
+</ul>
+<p>If the command completes with no terminal output, the container
+structure and packet boundaries are intact. Any packet-level issues,
+such as missing frames, damaged headers, or premature EOF (End of File),
+will be printed with corresponding timestamps.</p>
+<h3 id="method-2-detailed-packet-inspection-with-ffprobe">Method 2:
+Detailed Packet Inspection with FFprobe</h3>
+<p>If you need to analyze individual packets to locate specific dropped
+frames or corrupted presentation timestamps (PTS/DTS), use FFprobe:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffprobe</span> <span class="at">-v</span> error <span class="at">-show_packets</span> <span class="at">-select_streams</span> v:0 input.mkv <span class="op">&gt;</span> packets.log</span></code></pre></div>
+<p>This processes the stream sequentially and outputs packet metadata.
+If a corrupted packet halts processing or contains invalid data lengths,
+FFprobe outputs an error to <code>stderr</code> while logging the
+successfully parsed packets, allowing you to pinpoint the exact second
+where the failure occurs.</p>
+<h3 id="method-3-structural-ebml-validation-with-mkvalidator">Method 3:
+Structural EBML Validation with mkvalidator</h3>
+<p>Corruption can also occur strictly within the Matroska container
+structure (such as malformed EBML elements, invalid cluster sizes, or
+broken seek tables) rather than the video codec bitstream. The
+<code>mkvalidator</code> command-line utility (part of the Matroska
+specification tools) performs structural verification:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvalidator</span> input.mkv</span></code></pre></div>
+<p><code>mkvalidator</code> parses all MKV elements down to the block
+level without touching codecs. It will flag:</p>
+<ul>
+<li>Invalid or unaligned track headers.</li>
+<li>Missing SimpleBlocks or damaged BlockGroups.</li>
+<li>Desynchronized cluster timestamps.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Set Default Track Flags in MKVMerge CLI - mkv</title>
+    <meta name="description" content="This guide demonstrates how to configure and automate default track flags in Matroska (.mkv) files using the mkvmerge command-line utility from the MKVToolNix suite. You will learn how to identify track IDs, apply the default track flag syntax to audio, v">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-set-default-track-flags-in-mkv-merge-cli">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Set Default Track Flags in MKVMerge CLI - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-set-default-track-flags-in-mkv-merge-cli" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This guide demonstrates how to configure and automate default track flags in Matroska (.mkv) files using the mkvmerge command-line utility from the MKVToolNix suite. You will learn how to identify track IDs, apply the default track flag syntax to audio, v" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-set-default-track-flags-in-mkvmerge-cli">How to Set
+Default Track Flags in MKVMerge CLI</h1>
+<p>This guide demonstrates how to configure and automate default track
+flags in Matroska (<code>.mkv</code>) files using the
+<code>mkvmerge</code> command-line utility from the MKVToolNix suite.
+You will learn how to identify track IDs, apply the default track flag
+syntax to audio, video, and subtitle tracks, and implement terminal
+scripts in Bash and PowerShell for batch processing.</p>
+<h2 id="1-identify-track-ids">1. Identify Track IDs</h2>
+<p>Before modifying flags, determine the internal track IDs of your
+source file using <code>mkvmerge -i</code> or <code>mkvmerge -J</code>
+(for JSON output).</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-i</span> input.mkv</span></code></pre></div>
+<p>Example output:</p>
+<pre class="text"><code>File &#39;input.mkv&#39;: container: Matroska
+Track ID 0: video (HEVC/H.265)
+Track ID 1: audio (AAC) [language:und]
+Track ID 2: audio (AC-3) [language:eng]
+Track ID 3: subtitles (SubRip/SRT) [language:eng]</code></pre>
+<h2 id="2-setting-default-track-flags-with-mkvmerge">2. Setting Default
+Track Flags with MKVMerge</h2>
+<p>To set or unset default flags during remuxing, use the
+<code>--default-track-flag</code> option followed by the
+<code>track_ID:bool</code> parameter, where <code>bool</code> can be
+<code>yes</code>/<code>no</code> or <code>1</code>/<code>0</code>.</p>
+<h3 id="basic-syntax">Basic Syntax</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-o</span> <span class="op">&lt;</span>output.mkv<span class="op">&gt;</span> --default-track-flag <span class="op">&lt;</span>track_id<span class="op">&gt;</span>:<span class="op">&lt;</span>yes<span class="kw">|</span><span class="ex">no</span><span class="op">&gt;</span> <span class="op">&lt;</span>input.mkv<span class="op">&gt;</span></span></code></pre></div>
+<h3 id="example-setting-specific-audio-and-subtitle-tracks">Example:
+Setting Specific Audio and Subtitle Tracks</h3>
+<p>To make Track ID 2 (English AC-3) the default audio track, disable
+the default flag on Track ID 1, and enable the default flag on Track ID
+3 (English Subtitles):</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-o</span> output.mkv <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--default-track-flag</span> 1:no <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--default-track-flag</span> 2:yes <span class="dt">\</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--default-track-flag</span> 3:yes <span class="dt">\</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  input.mkv</span></code></pre></div>
+<h2 id="3-automation-scripts">3. Automation Scripts</h2>
+<h3 id="bash-script-linux--macos">Bash Script (Linux / macOS)</h3>
+<p>This script iterates through all <code>.mkv</code> files in a
+directory, applies the specified track flags, and writes the modified
+files to an output directory.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ./processed</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.mkv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-e</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">||</span> <span class="cf">continue</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Processing: </span><span class="va">$file</span><span class="st">&quot;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="ex">mkvmerge</span> <span class="at">-o</span> <span class="st">&quot;./processed/</span><span class="va">$file</span><span class="st">&quot;</span> <span class="dt">\</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">--default-track-flag</span> 1:no <span class="dt">\</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">--default-track-flag</span> 2:yes <span class="dt">\</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">--default-track-flag</span> 3:yes <span class="dt">\</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;Batch processing complete.&quot;</span></span></code></pre></div>
+<h3 id="powershell-script-windows">PowerShell Script (Windows)</h3>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">New-Item</span> <span class="op">-</span>ItemType Directory <span class="op">-</span>Force <span class="op">-</span>Path <span class="op">.</span>\processed</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Get-ChildItem</span> <span class="op">-</span>Filter <span class="op">*.</span><span class="fu">mkv</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">$inputFile</span> <span class="op">=</span> <span class="va">$_</span><span class="op">.</span><span class="fu">FullName</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="va">$outputFile</span> <span class="op">=</span> <span class="fu">Join-Path</span> <span class="op">-</span>Path <span class="st">&quot;.\processed&quot;</span> <span class="op">-</span>ChildPath <span class="va">$_</span><span class="op">.</span><span class="fu">Name</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Write-Host</span> <span class="st">&quot;Processing: </span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span> mkvmerge <span class="op">-</span>o <span class="va">$outputFile</span> `</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="op">--</span>default-track-flag <span class="dv">1</span><span class="op">:</span>no `</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="op">--</span>default-track-flag <span class="dv">2</span><span class="op">:</span>yes `</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="op">--</span>default-track-flag <span class="dv">3</span><span class="op">:</span>yes `</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="va">$inputFile</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">Write-Host</span> <span class="st">&quot;Batch processing complete.&quot;</span></span></code></pre></div>
+<h2 id="4-in-place-flag-modification-alternative-mkvpropedit">4.
+In-Place Flag Modification Alternative (<code>mkvpropedit</code>)</h2>
+<p>If you want to modify default flags without remuxing the entire file
+to save time and disk space, use <code>mkvpropedit</code> (included with
+MKVToolNix):</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> input.mkv <span class="dt">\</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--edit</span> track:a1 <span class="at">--set</span> flag-default=0 <span class="dt">\</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--edit</span> track:a2 <span class="at">--set</span> flag-default=1 <span class="dt">\</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--edit</span> track:s1 <span class="at">--set</span> flag-default=1</span></code></pre></div>
+<p>Here, <code>track:a1</code> targets the first audio track,
+<code>track:a2</code> the second audio track, and <code>track:s1</code>
+the first subtitle track.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

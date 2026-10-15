@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Extract Subtitles From MKV Command Line - mkv</title>
+    <meta name="description" content="Demuxing subtitle tracks from multiple MKV files in bulk saves time and simplifies media library management. The most effective command-line tools for automated subtitle extraction are MKVToolNix (specifically mkvextract) and FFmpeg. By combining these ut">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/batch-extract-subtitles-from-mkv-command-line">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Batch Extract Subtitles From MKV Command Line - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/batch-extract-subtitles-from-mkv-command-line" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Demuxing subtitle tracks from multiple MKV files in bulk saves time and simplifies media library management. The most effective command-line tools for automated subtitle extraction are MKVToolNix (specifically mkvextract) and FFmpeg. By combining these ut" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="batch-extract-subtitles-from-mkv-command-line">Batch Extract
+Subtitles From MKV Command Line</h1>
+<p>Demuxing subtitle tracks from multiple MKV files in bulk saves time
+and simplifies media library management. The most effective command-line
+tools for automated subtitle extraction are MKVToolNix (specifically
+<code>mkvextract</code>) and FFmpeg. By combining these utilities with
+simple shell scripts or batch loops, you can automatically extract
+subtitle streams across entire directories without manual
+processing.</p>
+<h2 id="1-mkvtoolnix-mkvextract">1. MKVToolNix
+(<code>mkvextract</code>)</h2>
+<p>MKVToolNix is the standard software suite for working with the
+Matroska container format. Its dedicated extraction component,
+<code>mkvextract</code>, allows you to demux specific subtitle tracks
+cleanly.</p>
+<p>To identify track IDs in an MKV file, use <code>mkvmerge</code>:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-J</span> <span class="st">&quot;input.mkv&quot;</span></span></code></pre></div>
+<p>Once you know the subtitle track ID (for example, track ID
+<code>2</code>), you can batch process an entire folder.</p>
+<p><strong>Bash (Linux/macOS):</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.mkv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">mkvextract</span> tracks <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> 2:<span class="st">&quot;</span><span class="va">${file</span><span class="op">%</span>.mkv<span class="va">}</span><span class="st">.srt&quot;</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p><strong>PowerShell (Windows):</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Get-ChildItem</span> <span class="op">-</span>Filter <span class="op">*.</span><span class="fu">mkv</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">&amp;</span> mkvextract tracks <span class="va">$_</span><span class="op">.</span><span class="fu">FullName</span> <span class="st">&quot;2:</span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">BaseName</span><span class="op">)</span><span class="st">.srt&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h2 id="2-ffmpeg">2. FFmpeg</h2>
+<p>FFmpeg is a versatile multimedia framework that handles conversion,
+stream copying, and demuxing. Unlike <code>mkvextract</code>, FFmpeg
+allows you to target subtitle streams by type rather than
+container-specific track IDs using stream mapping
+(<code>-map 0:s</code>).</p>
+<p>To extract the first subtitle stream from all MKV files in a
+directory:</p>
+<p><strong>Bash (Linux/macOS):</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.mkv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">ffmpeg</span> <span class="at">-i</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="at">-map</span> 0:s:0 <span class="at">-c:s</span> copy <span class="st">&quot;</span><span class="va">${file</span><span class="op">%</span>.mkv<span class="va">}</span><span class="st">.srt&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<p><strong>Windows Command Prompt (CMD):</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode cmd"><code class="sourceCode dosbat"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="er">%F</span> <span class="er">in</span> <span class="er">(*.mkv)</span> <span class="er">do</span> <span class="er">ffmpeg</span> <span class="er">-i</span> <span class="er">&quot;%F&quot;</span> <span class="er">-map</span> <span class="er">0:s:0</span> <span class="er">-c:s</span> <span class="er">copy</span> <span class="er">&quot;%~nF.srt&quot;</span></span></code></pre></div>
+<p><strong>PowerShell (Windows):</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Get-ChildItem</span> <span class="op">-</span>Filter <span class="op">*.</span><span class="fu">mkv</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    ffmpeg <span class="op">-</span>i <span class="va">$_</span><span class="op">.</span><span class="fu">FullName</span> <span class="op">-</span>map <span class="dv">0</span><span class="op">:</span>s<span class="op">:</span><span class="dv">0</span> <span class="op">-</span>c<span class="op">:</span>s <span class="fu">copy</span> <span class="st">&quot;</span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">BaseName</span><span class="op">)</span><span class="st">.srt&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>To extract all subtitle streams simultaneously into individual files,
+map each stream or specify the desired language tag (e.g.,
+<code>-map 0:s:m:language:eng</code>).</p>
+<h2 id="3-python-based-cli-wrappers">3. Python-Based CLI Wrappers</h2>
+<p>If you require conditional logic—such as filtering by specific
+languages or dynamically detecting track numbers—a Python script
+utilizing <code>subprocess</code> with <code>ffmpeg</code> or
+<code>mkvextract</code> provides advanced automation.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> mkv_file <span class="kw">in</span> glob.glob(<span class="st">&quot;*.mkv&quot;</span>):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    base_name <span class="op">=</span> os.path.splitext(mkv_file)[<span class="dv">0</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    cmd <span class="op">=</span> [</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;ffmpeg&quot;</span>, <span class="st">&quot;-i&quot;</span>, mkv_file,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;-map&quot;</span>, <span class="st">&quot;0:s:0&quot;</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;-c:s&quot;</span>, <span class="st">&quot;copy&quot;</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="ss">f&quot;</span><span class="sc">{</span>base_name<span class="sc">}</span><span class="ss">.srt&quot;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    subprocess.run(cmd)</span></code></pre></div>
+<h2 id="tool-comparison">Tool Comparison</h2>
+<ul>
+<li><strong>MKVToolNix (<code>mkvextract</code>):</strong> Best for
+preserving native Matroska track specifications without re-encoding,
+ideal when track structures are consistent.</li>
+<li><strong>FFmpeg:</strong> Best for dynamic extraction using metadata
+tags (like language or stream index) and automatic container format
+adaptation.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

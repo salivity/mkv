@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why DLNA Won&#39;t Show MKV External Subtitles on Smart TV - mkv</title>
+    <meta name="description" content="Streaming MKV video files from a local server to a Smart TV using DLNA often results in missing external subtitles (such as .srt files). This issue primarily occurs because the standard DLNA protocol treats video and external subtitle files as separate st">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-dlna-won-t-show-mkv-external-subtitles-on-smart-tv">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why DLNA Won&#39;t Show MKV External Subtitles on Smart TV - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-dlna-won-t-show-mkv-external-subtitles-on-smart-tv" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Streaming MKV video files from a local server to a Smart TV using DLNA often results in missing external subtitles (such as .srt files). This issue primarily occurs because the standard DLNA protocol treats video and external subtitle files as separate st" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-dlna-wont-show-mkv-external-subtitles-on-smart-tv">Why DLNA
+Won't Show MKV External Subtitles on Smart TV</h1>
+<p>Streaming MKV video files from a local server to a Smart TV using
+DLNA often results in missing external subtitles (such as
+<code>.srt</code> files). This issue primarily occurs because the
+standard DLNA protocol treats video and external subtitle files as
+separate streams, and many Smart TV DLNA clients lack the necessary
+software extensions or profile support to request and render these
+external files simultaneously. Understanding why this happens requires
+looking at DLNA protocol constraints, TV manufacturer implementations,
+and how MKV containers handle subtitle tracks.</p>
+<h3 id="1-limitations-of-the-dlna-protocol">1. Limitations of the DLNA
+Protocol</h3>
+<p>The Digital Living Network Alliance (DLNA) protocol, built on
+Universal Plug and Play (UPnP), was originally designed to stream audio
+and video streams as single continuous data feeds. It does not natively
+standardize how external "sidecar" text files (like <code>.srt</code>,
+<code>.ass</code>, or <code>.sub</code>) should be delivered alongside
+the video. While the video stream is delivered over HTTP, external
+subtitles require an additional mechanism to link the two resources,
+which the base DLNA standard does not strictly mandate.</p>
+<h3 id="2-proprietary-extensions-and-client-incompatibility">2.
+Proprietary Extensions and Client Incompatibility</h3>
+<p>Because there is no universal DLNA standard for external subtitles,
+server and TV manufacturers created their own proprietary methods to
+bridge the gap:</p>
+<ul>
+<li><strong>Samsung:</strong> Uses custom UPnP headers
+(<code>sec:CaptionInfo</code>).</li>
+<li><strong>LG:</strong> Implements its own proprietary XML metadata
+tags for subtitle tracks.</li>
+<li><strong>Sony and Panasonic:</strong> Often support subtitles only
+when delivered via specific DLNA profiles or embedded formats.</li>
+</ul>
+<p>If your media server does not send the specific metadata required by
+your TV brand, the TV will simply play the MKV video stream and ignore
+the external subtitle file entirely.</p>
+<h3 id="3-server-side-delivery-limitations">3. Server-Side Delivery
+Limitations</h3>
+<p>Basic DLNA servers—such as the built-in Windows Media Streaming
+service, router-based DLNA features, or basic NAS media
+servers—generally only index and serve the main media container. They
+often lack the capability to read external <code>.srt</code> files,
+translate them into the TV's required DLNA protocol extension, or offer
+them as an alternate stream to the client device.</p>
+<h3 id="4-mkv-container-expectation-vs-sidecar-files">4. MKV Container
+Expectation vs. Sidecar Files</h3>
+<p>Many modern Smart TVs support subtitles over DLNA, but only if they
+are embedded (muxed) directly inside the MKV container. When a TV plays
+an MKV file, its built-in media renderer parses the internal streams
+(video, audio, text). If the subtitle is kept outside the MKV file as a
+separate document, the TV's basic DLNA media player does not look into
+the directory to fetch and sync the separate text track.</p>
+<h3 id="how-to-resolve-the-issue">How to Resolve the Issue</h3>
+<p>To ensure subtitles display properly when streaming MKV files to a
+Smart TV:</p>
+<ul>
+<li><strong>Embed the Subtitles (Muxing):</strong> Use a tool like
+MKVToolNix to merge the external <code>.srt</code> file into the MKV
+container. This process takes only a few seconds and does not require
+re-encoding the video.</li>
+<li><strong>Use Dedicated Media Servers:</strong> Replace basic DLNA
+servers with advanced media platforms such as Plex, Jellyfin, or Emby,
+paired with their native Smart TV applications rather than the TV's
+generic DLNA browser.</li>
+<li><strong>Switch to Network Sharing (SMB/NFS):</strong> If the TV
+supports third-party media players (such as Kodi or Nova Video Player on
+Android TV), connect using local SMB network shares instead of DLNA,
+allowing the player direct filesystem access to external subtitle
+files.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does Compressing MKV Reduce Video Quality? - mkv</title>
+    <meta name="description" content="Compressing an MKV file can permanently reduce its video quality depending on the compression method used. While lossy compression permanently discards visual data to shrink file sizes, lossless compression and strategic re-encoding can reduce file size w">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/does-compressing-mkv-reduce-video-quality">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Does Compressing MKV Reduce Video Quality? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/does-compressing-mkv-reduce-video-quality" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Compressing an MKV file can permanently reduce its video quality depending on the compression method used. While lossy compression permanently discards visual data to shrink file sizes, lossless compression and strategic re-encoding can reduce file size w" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="does-compressing-mkv-reduce-video-quality">Does Compressing MKV
+Reduce Video Quality?</h1>
+<p>Compressing an MKV file can permanently reduce its video quality
+depending on the compression method used. While lossy compression
+permanently discards visual data to shrink file sizes, lossless
+compression and strategic re-encoding can reduce file size with zero to
+negligible impact on visual quality. This article explains how MKV
+compression affects video files and how you can reduce file sizes
+without sacrificing viewing quality.</p>
+<h2 id="understanding-lossy-vs-lossless-mkv-compression">Understanding
+Lossy vs. Lossless MKV Compression</h2>
+<p>The impact of compression on an MKV (Matroska) file depends entirely
+on whether you use lossy or lossless compression techniques.</p>
+<h3 id="lossy-compression-permanent-quality-loss">Lossy Compression
+(Permanent Quality Loss)</h3>
+<p>Most video compression tools use lossy codecs (such as H.264,
+H.265/HEVC, or AV1) to shrink files. Lossy compression works by
+analyzing the video and permanently deleting data that the human eye is
+less likely to notice, such as subtle color gradations or details in
+fast-moving scenes. Once this data is removed and the file is saved, it
+is gone forever. You cannot restore the original quality of a lossy
+compressed video by decompressing it.</p>
+<h3 id="lossless-compression-zero-quality-loss">Lossless Compression
+(Zero Quality Loss)</h3>
+<p>Lossless compression reduces file size without removing any original
+video data. However, because video files are already highly complex,
+traditional lossless compression yields very large file sizes and is
+rarely used for everyday playback or sharing.</p>
+<p>Another way to achieve "lossless" size reduction is by remuxing. MKV
+is a container format that holds video, multiple audio tracks, and
+subtitle tracks. By using a tool like MKVToolNix to strip away unwanted
+foreign language audio tracks, director commentaries, and extra
+subtitles, you can reduce the overall file size without touching or
+altering the video stream at all.</p>
+<h2 id="why-mkv-quality-drops-during-re-encoding">Why MKV Quality Drops
+During Re-Encoding</h2>
+<p>When you use software like HandBrake or Adobe Media Encoder to
+compress an MKV file, the software decodes the original video and
+re-encodes it into a new, smaller file. This process is called
+transcoding.</p>
+<p>Transcoding introduces "generation loss." Every time a video is
+decoded and re-encoded using a lossy format, the compression artifacts
+(such as color banding, pixelation, and blurriness) compound. Even if
+you compress a high-quality MKV to another high-quality setting, some
+level of data loss occurs at the digital level, even if it is not
+immediately visible to the human eye.</p>
+<h2 id="how-to-compress-mkv-files-without-visible-quality-loss">How to
+Compress MKV Files Without Visible Quality Loss</h2>
+<p>If you need to compress an MKV file but want to preserve its visual
+integrity, you can achieve "visually lossless" results by using the
+right settings.</p>
+<ul>
+<li><strong>Use Modern Codecs:</strong> Compress your video using HEVC
+(H.265) or AV1. These modern codecs are much more efficient than the
+older H.264 standard, allowing you to reduce file sizes by 30% to 50%
+while maintaining the same visual quality.</li>
+<li><strong>Use Constant Rate Factor (CRF):</strong> Instead of setting
+a target bitrate, use CRF mode. CRF instructs the encoder to maintain a
+consistent level of visual quality throughout the entire video. For
+H.264 and H.265, a CRF value between 18 and 22 is considered visually
+indistinguishable from the original.</li>
+<li><strong>Keep the Original Resolution:</strong> Downscaling your
+video from 4K to 1080p, or 1080p to 720p, will permanently discard
+pixels and reduce sharpness. Keep the original resolution and let the
+encoder optimize the bitrate instead.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Contain JPEG 2000 Video? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format fully supports encapsulating high-resolution video streams encoded in the JPEG 2000 format. Due to Matroska’s codec-agnostic architecture, it can easily handle the massive data rates, high bit depths, and 4K, 8K, or hig">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-contain-jpeg-2000-video">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Contain JPEG 2000 Video? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-contain-jpeg-2000-video" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format fully supports encapsulating high-resolution video streams encoded in the JPEG 2000 format. Due to Matroska’s codec-agnostic architecture, it can easily handle the massive data rates, high bit depths, and 4K, 8K, or hig" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-contain-jpeg-2000-video">Can MKV Contain JPEG 2000
+Video?</h1>
+<p>The Matroska (MKV) container format fully supports encapsulating
+high-resolution video streams encoded in the JPEG 2000 format. Due to
+Matroska’s codec-agnostic architecture, it can easily handle the massive
+data rates, high bit depths, and 4K, 8K, or higher resolutions
+associated with JPEG 2000. This article explains how MKV encapsulates
+JPEG 2000 video, technical specifications, use cases, and how to mux
+these streams using standard tools.</p>
+<h3 id="matroska-container-capabilities">Matroska Container
+Capabilities</h3>
+<p>Matroska is designed to be future-proof and flexible. Unlike rigid
+container formats that restrict resolution or codec profiles, MKV
+defines stream tracks generically. The container does not impose
+arbitrary caps on frame dimensions, frame rates, or color spaces. As a
+result, professional-grade JPEG 2000 streams—whether formatted as
+progressive frames, interlaced fields, or standard image sequences—fit
+cleanly within the Matroska specification.</p>
+<h3 id="codec-mapping-for-jpeg-2000">Codec Mapping for JPEG 2000</h3>
+<p>In the Matroska specification, JPEG 2000 video tracks are typically
+mapped using standard FourCC identifiers within the
+<code>V_MS/VFW/FOURCC</code> codec ID or direct Matroska codec bindings.
+Common FourCC tags used for JPEG 2000 in MKV include:</p>
+<ul>
+<li><strong><code>mjpg</code> / <code>MJ2C</code> /
+<code>lj2k</code></strong>: Used depending on whether the source is
+Motion JPEG 2000 (MJ2K) or raw JPEG 2000 frames.</li>
+<li><strong>Color Formats and Bit Depths</strong>: MKV can preserve the
+advanced color data of JPEG 2000, including RGB, YUV (4:2:2, 4:4:4), and
+deep color bit depths (10-bit, 12-bit, 16-bit integers, or float).</li>
+</ul>
+<h3 id="common-use-cases">Common Use Cases</h3>
+<ol type="1">
+<li><strong>Archival and Preservation</strong>: Audiovisual archives
+frequently use lossless JPEG 2000 wrapped in MKV for long-term master
+storage, pairing master-grade visual streams with uncompressed PCM
+audio.</li>
+<li><strong>Digital Cinema and Mastering</strong>: High-resolution
+digital cinema assets (DCI 2K and 4K) often use JPEG 2000. Wrapping them
+into MKV provides a single-file distribution or review format without
+altering the raw stream.</li>
+<li><strong>Medical and Scientific Imaging</strong>:
+Ultra-high-resolution imaging sequences that require mathematically
+lossless compression take advantage of MKV’s chaptering, tagging, and
+multi-track capabilities.</li>
+</ol>
+<h3 id="how-to-mux-jpeg-2000-into-mkv">How to Mux JPEG 2000 into
+MKV</h3>
+<p>Open-source multimedia frameworks like FFmpeg provide native support
+for muxing JPEG 2000 streams into the Matroska container without
+re-encoding:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input_j2k_stream.mov <span class="at">-c:v</span> copy <span class="at">-c:a</span> copy output.mkv</span></code></pre></div>
+<p>This command extracts the JPEG 2000 stream and wraps it directly
+inside an <code>.mkv</code> container losslessly and
+instantaneously.</p>
+<h3 id="playback-and-compatibility">Playback and Compatibility</h3>
+<p>While the container supports the format natively, playback depends on
+the media player's decoding pipeline. Modern media players such as VLC,
+MPV, and FFmpeg-based tools can decode and play high-resolution JPEG
+2000 files in MKV containers, provided the host system has adequate CPU
+or GPU power to decode the intensive wavelet-based compression in real
+time.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

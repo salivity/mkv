@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcoding Mixed Progressive and Interlaced MKV Video - mkv</title>
+    <meta name="description" content="Processing MKV files containing mixed progressive and interlaced frames requires a video transcoder to dynamically detect field structures, reconstruct native film rates, and deinterlace video sections on a frame-by-frame basis. This article explains the">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/transcoding-mixed-progressive-and-interlaced-mkv-video">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Transcoding Mixed Progressive and Interlaced MKV Video - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/transcoding-mixed-progressive-and-interlaced-mkv-video" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Processing MKV files containing mixed progressive and interlaced frames requires a video transcoder to dynamically detect field structures, reconstruct native film rates, and deinterlace video sections on a frame-by-frame basis. This article explains the" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1
+id="transcoding-mixed-progressive-and-interlaced-mkv-video">Transcoding
+Mixed Progressive and Interlaced MKV Video</h1>
+<p>Processing MKV files containing mixed progressive and interlaced
+frames requires a video transcoder to dynamically detect field
+structures, reconstruct native film rates, and deinterlace video
+sections on a frame-by-frame basis. This article explains the technical
+pipeline transcoders use to analyze stream metadata, apply inverse
+telecine, adaptively deinterlace combing artifacts, and output a
+standardized progressive stream without degrading native progressive
+segments.</p>
+<h3 id="frame-level-analysis-and-detection">Frame-Level Analysis and
+Detection</h3>
+<p>Mixed-format MKV files typically originate from broadcast television,
+DVD rips, or hybrid master files where native 24p film, 3:2 pulldown
+telecine, and true 60i/50i video are spliced together. Because
+container-level metadata can only set a single default scanning mode,
+modern transcoders rely on dynamic frame-level analysis.</p>
+<p>Transcoders read the field flags embedded in the elementary video
+bitstream (such as H.264 or MPEG-2 stream headers) to see if a frame is
+flagged as progressive or interlaced. However, because metadata flags
+are frequently inaccurate, modern software employs spatial-comb
+detection algorithms. These algorithms evaluate pixel differences
+between adjacent scan lines to detect comb artifacts in real time before
+deciding how to process each individual frame.</p>
+<h3 id="field-matching-and-inverse-telecine-ivtc">Field Matching and
+Inverse Telecine (IVTC)</h3>
+<p>When handling content originating from film that was converted for
+broadcast, transcoders use field matching rather than standard
+deinterlacing.</p>
+<ol type="1">
+<li><strong>Field Reconstruction:</strong> The transcoder pairs
+complementary top and bottom fields across adjacent frames to recreate
+the original progressive 24 fps film frame.</li>
+<li><strong>Decimation:</strong> Once the original progressive frames
+are reconstructed, the transcoder identifies and discards the redundant
+duplicate fields created during the 3:2 pulldown process.</li>
+</ol>
+<p>This process preserves the original image resolution and avoids the
+vertical resolution loss inherent to standard deinterlacing filters.</p>
+<h3 id="adaptive-deinterlacing">Adaptive Deinterlacing</h3>
+<p>For true interlaced material—such as live sporting events, video
+cameras, or scrolling text overlays—fields cannot simply be woven back
+together. For these sections, transcoders switch to adaptive
+deinterlacing:</p>
+<ul>
+<li><strong>Spatial-Temporal Interpolation:</strong> Filters (such as
+YADIF, BWDIF, or neural-network-based scalers) interpolate missing lines
+in moving areas while preserving full resolution in static areas.</li>
+<li><strong>Conditional Filtering:</strong> The transcoder applies
+deinterlacing solely to frames exhibiting interlacing artifacts.
+Progressive frames pass through the filter untouched, preventing the
+blurring or softness that occurs when a deinterlacing filter is
+universally applied across an entire file.</li>
+</ul>
+<h3 id="frame-rate-and-timecode-normalization">Frame Rate and Timecode
+Normalization</h3>
+<p>Interlaced video often converts to double the frame rate during
+deinterlacing (e.g., 60i becomes 60p to preserve motion smoothness),
+while telecined film returns to 24p. Transcoders manage this difference
+in one of two ways:</p>
+<ul>
+<li><strong>Variable Frame Rate (VFR):</strong> The transcoder writes
+precise timecodes for each frame into the output container, allowing the
+film sections to play at 23.976 fps and the deinterlaced video sections
+to play at 59.94 fps.</li>
+<li><strong>Constant Frame Rate (CFR):</strong> If target device
+compatibility requires a fixed frame rate, the transcoder normalizes the
+stream (typically to 59.94p or 60p) by duplicating complete progressive
+frames during film sections while maintaining full temporal fluidity
+during native video sections. Audio tracks are continuously referenced
+against video presentation timestamps (PTS) to prevent drift throughout
+the conversion process.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

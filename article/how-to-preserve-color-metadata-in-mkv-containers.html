@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Preserve Color Metadata in MKV Containers - mkv</title>
+    <meta name="description" content="Preserving color primaries and matrix coefficients metadata inside a Matroska (MKV) container ensures that high dynamic range (HDR) and wide color gamut (WCG) video streams render accurately across diverse media players. When these signaling parameters ar">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-preserve-color-metadata-in-mkv-containers">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Preserve Color Metadata in MKV Containers - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-preserve-color-metadata-in-mkv-containers" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Preserving color primaries and matrix coefficients metadata inside a Matroska (MKV) container ensures that high dynamic range (HDR) and wide color gamut (WCG) video streams render accurately across diverse media players. When these signaling parameters ar" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-preserve-color-metadata-in-mkv-containers">How to
+Preserve Color Metadata in MKV Containers</h1>
+<p>Preserving color primaries and matrix coefficients metadata inside a
+Matroska (MKV) container ensures that high dynamic range (HDR) and wide
+color gamut (WCG) video streams render accurately across diverse media
+players. When these signaling parameters are missing or stripped during
+remuxing or encoding, playback devices often default to standard Rec.
+709 color spaces, leading to washed-out or oversaturated colors. This
+guide explains how to retain or inject this crucial color metadata at
+both the container level and the video bitstream level.</p>
+<h3 id="understanding-color-metadata-in-mkv">Understanding Color
+Metadata in MKV</h3>
+<p>Color metadata exists in two distinct layers of a digital video
+file:</p>
+<ol type="1">
+<li><strong>Bitstream Level (VUI):</strong> Video Usability Information
+embedded directly into the video elementary stream (H.264, HEVC, AV1, or
+VP9).</li>
+<li><strong>Container Level (Matroska Headers):</strong> EBML header
+elements specifically allocated under the MKV <code>Colour</code>
+element, including <code>ColourPrimaries</code>,
+<code>MatrixCoefficients</code>, and
+<code>TransferCharacteristics</code>.</li>
+</ol>
+<p>For maximum compatibility, both layers should contain matching
+metadata values (e.g., BT.2020 or BT.709).</p>
+<hr />
+<h3 id="method-1-injecting-or-editing-metadata-using-mkvtoolnix">Method
+1: Injecting or Editing Metadata Using MKVToolNix</h3>
+<p>MKVToolNix provides the most reliable way to modify container-level
+color metadata without re-encoding the video track.</p>
+<h4 id="using-mkvpropedit-command-line">Using <code>mkvpropedit</code>
+(Command Line)</h4>
+<p>You can directly modify existing MKV files in place using the
+<code>mkvpropedit</code> utility.</p>
+<p>To set the color parameters for HDR10 (BT.2020 / SMPTE ST 2084 /
+BT.2020 non-constant luminance):</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;input.mkv&quot;</span> <span class="at">--edit</span> track:v1 <span class="dt">\</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> colour-primaries=9 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> colour-transfer-characteristics=16 <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> colour-matrix-coefficients=9 <span class="dt">\</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">--set</span> colour-range=1</span></code></pre></div>
+<p>Common standard integer values:</p>
+<ul>
+<li><strong>BT.709:</strong> Primaries = <code>1</code>, Transfer =
+<code>1</code>, Matrix = <code>1</code></li>
+<li><strong>BT.2020 (HDR10/PQ):</strong> Primaries = <code>9</code>,
+Transfer = <code>16</code>, Matrix = <code>9</code></li>
+<li><strong>BT.2020 (HLG):</strong> Primaries = <code>9</code>, Transfer
+= <code>18</code>, Matrix = <code>9</code></li>
+</ul>
+<h4 id="using-mkvtoolnix-gui">Using MKVToolNix GUI</h4>
+<ol type="1">
+<li>Open the MKV file in <strong>MKVToolNix GUI</strong> (or use the
+<strong>Header Editor</strong>).</li>
+<li>Select the <strong>Video track</strong>.</li>
+<li>Locate the <strong>Color / Mastering metadata</strong> section.</li>
+<li>Set the dropdown fields for:
+<ul>
+<li><strong>Colour primaries</strong> (e.g.,
+<code>ITU-R BT.2020</code>)</li>
+<li><strong>Transfer characteristics</strong> (e.g.,
+<code>SMPTE ST 2084</code> or <code>ITU-R BT.709</code>)</li>
+<li><strong>Matrix coefficients</strong> (e.g.,
+<code>ITU-R BT.2020 non-constant luminance</code>)</li>
+</ul></li>
+<li>Click <strong>Start multiplexing</strong> or <strong>Save</strong>
+if using the Header Editor.</li>
+</ol>
+<hr />
+<h3 id="method-2-setting-metadata-during-ffmpeg-remuxing">Method 2:
+Setting Metadata During FFmpeg Remuxing</h3>
+<p>When remuxing streams from MP4, TS, or another MKV into a new MKV
+container, FFmpeg can write metadata tags to both the stream and the
+container headers.</p>
+<h4 id="remuxing-without-re-encoding--cv-copy">Remuxing Without
+Re-encoding (<code>-c:v copy</code>)</h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mp4 <span class="at">-c</span> copy <span class="dt">\</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-color_primaries</span> bt2020 <span class="dt">\</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-color_trc</span> smpte2084 <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-colorspace</span> bt2020nc <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-color_range</span> tv <span class="dt">\</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  output.mkv</span></code></pre></div>
+<ul>
+<li><code>-color_primaries</code>: Sets the chromaticity coordinates of
+the source color primaries.</li>
+<li><code>-color_trc</code>: Defines the opto-electronic transfer
+characteristics.</li>
+<li><code>-colorspace</code>: Sets the matrix coefficients used for
+deriving luma and chroma signals.</li>
+</ul>
+<hr />
+<h3 id="method-3-preserving-metadata-during-video-encoding">Method 3:
+Preserving Metadata During Video Encoding</h3>
+<p>If re-encoding the video before packing it into MKV, configure the
+encoder to write VUI parameters directly into the elementary
+bitstream.</p>
+<h4 id="for-x265-hevc">For x265 (HEVC):</h4>
+<p>Pass the relevant VUI parameters to the encoder:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mov <span class="at">-c:v</span> libx265 <span class="at">-crf</span> 18 <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-x265-params</span> <span class="st">&quot;colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc:range=limited&quot;</span> <span class="dt">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  output.mkv</span></code></pre></div>
+<h4 id="for-x264-avc">For x264 (AVC):</h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mov <span class="at">-c:v</span> libx264 <span class="at">-crf</span> 18 <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-x264-params</span> <span class="st">&quot;colorprim=bt709:transfer=bt709:colormatrix=bt709&quot;</span> <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  output.mkv</span></code></pre></div>
+<hr />
+<h3 id="verifying-the-mkv-color-metadata">Verifying the MKV Color
+Metadata</h3>
+<p>To ensure the parameters are correctly embedded, inspect the
+resulting MKV file using <code>mediainfo</code>:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mediainfo</span> output.mkv</span></code></pre></div>
+<p>Look for the following fields under the <strong>Video</strong>
+section:</p>
+<ul>
+<li><strong>Color primaries</strong></li>
+<li><strong>Transfer characteristics</strong></li>
+<li><strong>Matrix coefficients</strong></li>
+<li><strong>Color range</strong></li>
+</ul>
+<p>If these fields match your target specification, the MKV container
+and its underlying stream are correctly configured for color-accurate
+decoding and playback.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Dual-Mono Audio in Stereo Channels Explained - mkv</title>
+    <meta name="description" content="An MKV (Matroska) container handles dual-mono audio mapped across stereo channels by encapsulating a standard two-channel stream where the left and right channels contain distinct, independent audio signals rather than a single stereo image. While Matrosk">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-dual-mono-audio-in-stereo-channels-explained">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Dual-Mono Audio in Stereo Channels Explained - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-dual-mono-audio-in-stereo-channels-explained" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="An MKV (Matroska) container handles dual-mono audio mapped across stereo channels by encapsulating a standard two-channel stream where the left and right channels contain distinct, independent audio signals rather than a single stereo image. While Matrosk" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-dual-mono-audio-in-stereo-channels-explained">MKV Dual-Mono
+Audio in Stereo Channels Explained</h1>
+<p>An MKV (Matroska) container handles dual-mono audio mapped across
+stereo channels by encapsulating a standard two-channel stream where the
+left and right channels contain distinct, independent audio signals
+rather than a single stereo image. While Matroska natively supports
+advanced metadata and multi-track configurations, treating dual-mono
+audio inside a standard stereo pair relies on a combination of
+container-level channel declarations, codec bitstream parameters, and
+the audio processing capabilities of the playback software.</p>
+<h3 id="the-structure-of-dual-mono-in-a-stereo-container">The Structure
+of Dual-Mono in a Stereo Container</h3>
+<p>Dual-mono typically originates from legacy broadcasts or archive
+media where two separate mono signals (such as two different languages,
+or a mix of program audio and director commentary) are encoded into the
+left and right channels of a single 2.0 stereo audio stream.</p>
+<p>Within an MKV file, this audio is represented as a single track entry
+containing two audio channels:</p>
+<ul>
+<li><strong>Channel 1 (Left):</strong> Carries the first discrete mono
+signal.</li>
+<li><strong>Channel 2 (Right):</strong> Carries the second discrete mono
+signal.</li>
+</ul>
+<p>At the container level, Matroska flags this stream with a
+<code>Channels</code> element value of <code>2</code>. The container
+itself does not inherently separate the playback of these channels; it
+treats the stream as a standard stereo pair and delivers the multiplexed
+data directly to the audio decoder.</p>
+<h3 id="matroska-header-and-metadata-constraints">Matroska Header and
+Metadata Constraints</h3>
+<p>Matroska includes elements like <code>TrackLanguage</code>,
+<code>Name</code>, and <code>ChannelPositions</code> within its track
+headers. However, because metadata in an MKV is assigned per
+<em>track</em> rather than per <em>individual channel within a
+track</em>, a standard dual-mono stereo track can only carry one primary
+language tag and one track title at the container level.</p>
+<p>If an MKV file contains a single track with English on the left
+channel and Spanish on the right channel, the container metadata cannot
+independently assign the <code>eng</code> and <code>spa</code> language
+tags to the respective individual channels. The track is presented to
+the demuxer as a unified two-channel audio stream.</p>
+<h3 id="playback-and-channel-routing">Playback and Channel Routing</h3>
+<p>Because the MKV container defines the stream simply as two-channel
+audio, media players and decoders will, by default, route the left
+channel to the left speaker and the right channel to the right speaker.
+This creates an overlapping listening experience where both distinct
+audio sources play simultaneously in separate ears.</p>
+<p>To properly isolate a channel, playback relies on intermediate audio
+decoders or filters (such as LAV Filters, FFmpeg, or media player
+channel-remapping matrices) to perform one of the following
+operations:</p>
+<ul>
+<li><strong>Left-Only Downmix:</strong> Routing the left channel to both
+the left and right output speakers (centering Audio Source 1).</li>
+<li><strong>Right-Only Downmix:</strong> Routing the right channel to
+both the left and right output speakers (centering Audio Source 2).</li>
+</ul>
+<h3 id="the-modern-alternative-splitting-into-discrete-mono-tracks">The
+Modern Alternative: Splitting into Discrete Mono Tracks</h3>
+<p>Because mapping dual-mono across a single stereo stream creates
+metadata limitations and playback friction, the preferred method in
+modern MKV authoring is demultiplexing the dual-mono stereo stream into
+two discrete single-channel (mono) tracks inside the same MKV
+container.</p>
+<p>When authored as separate mono tracks:</p>
+<ol type="1">
+<li><strong>Track 1:</strong> Configured with <code>Channels = 1</code>,
+tagged with its specific language and name.</li>
+<li><strong>Track 2:</strong> Configured with <code>Channels = 1</code>,
+tagged with its distinct language and name.</li>
+</ol>
+<p>This approach allows media players to natively recognize, switch
+between, and center each mono track automatically without requiring
+manual channel manipulation or custom matrix routing from the end
+user.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

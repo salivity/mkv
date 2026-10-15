@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Losslessly Extract Video from MKV via CLI - mkv</title>
+    <meta name="description" content="Extracting the primary video stream from a Matroska (MKV) container without re-encoding preserves full visual fidelity and finishes in seconds. This guide details how to use powerful command-line tools—primarily FFmpeg and MKVToolNix (mkvextract)—to demux">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-losslessly-extract-video-from-mkv-via-cli">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Losslessly Extract Video from MKV via CLI - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-losslessly-extract-video-from-mkv-via-cli" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Extracting the primary video stream from a Matroska (MKV) container without re-encoding preserves full visual fidelity and finishes in seconds. This guide details how to use powerful command-line tools—primarily FFmpeg and MKVToolNix (mkvextract)—to demux" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-losslessly-extract-video-from-mkv-via-cli">How to
+Losslessly Extract Video from MKV via CLI</h1>
+<p>Extracting the primary video stream from a Matroska (MKV) container
+without re-encoding preserves full visual fidelity and finishes in
+seconds. This guide details how to use powerful command-line
+tools—primarily <strong>FFmpeg</strong> and <strong>MKVToolNix
+(<code>mkvextract</code>)</strong>—to demux and save the original,
+untouched video stream from any MKV file.</p>
+<h3 id="method-1-using-ffmpeg-recommended">Method 1: Using FFmpeg
+(Recommended)</h3>
+<p>FFmpeg is the most versatile cross-platform tool for media
+manipulation. It achieves lossless extraction through stream copying,
+which extracts the compressed data packets directly without decoding or
+re-encoding.</p>
+<h4 id="1-identify-the-video-codec">1. Identify the Video Codec</h4>
+<p>Check the video format inside the MKV to choose the proper output
+extension:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffprobe</span> <span class="at">-v</span> error <span class="at">-select_streams</span> v:0 <span class="at">-show_entries</span> stream=codec_name <span class="at">-of</span> default=noprint_wrappers=1:nokey=1 input.mkv</span></code></pre></div>
+<p>Common codecs include <code>h264</code>, <code>hevc</code> (H.265),
+<code>vp9</code>, and <code>av1</code>.</p>
+<h4 id="2-extract-the-stream">2. Extract the Stream</h4>
+<p>Run the following command to isolate the first video track:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-map</span> 0:v:0 <span class="at">-c:v</span> copy output.mp4</span></code></pre></div>
+<ul>
+<li><strong><code>-i input.mkv</code></strong>: Specifies the source
+file.</li>
+<li><strong><code>-map 0:v:0</code></strong>: Selects the first video
+stream from the first input file (ignoring audio, subtitles, and
+secondary video tracks).</li>
+<li><strong><code>-c:v copy</code></strong>: Directs FFmpeg to copy the
+video codec stream bit-for-bit without re-encoding.</li>
+<li><strong><code>output.mp4</code></strong>: The target container. If
+extracting raw bitstreams instead of a container, use the appropriate
+raw extension (e.g., <code>output.h264</code> or
+<code>output.hevc</code>).</li>
+</ul>
+<hr />
+<h3 id="method-2-using-mkvtoolnix-mkvextract">Method 2: Using MKVToolNix
+(<code>mkvextract</code>)</h3>
+<p><code>mkvextract</code> is a specialized tool tailored specifically
+for Matroska files, making it ideal for extracting raw elementary
+streams.</p>
+<h4 id="1-identify-the-track-id">1. Identify the Track ID</h4>
+<p>Inspect the MKV structure to find the track ID of the video
+stream:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-i</span> input.mkv</span></code></pre></div>
+<p>Look for output indicating the video track (usually
+<code>Track ID 0</code>).</p>
+<h4 id="2-extract-the-elementary-stream">2. Extract the Elementary
+Stream</h4>
+<p>Extract the video track using its ID:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvextract</span> tracks input.mkv 0:video_stream.h264</span></code></pre></div>
+<p>Replace <code>0</code> with the correct Track ID and
+<code>.h264</code> with the matching format extension
+(<code>.hevc</code>, <code>.vp9</code>, etc.).</p>
+<hr />
+<h3 id="summary">Summary</h3>
+<ul>
+<li>Use <strong>FFmpeg</strong> when you want to extract the video into
+a new container format (like MP4 or MOV) losslessly via
+<code>-c:v copy</code>.</li>
+<li>Use <strong>mkvextract</strong> when you need raw, standalone
+elementary video bitstreams directly from an MKV file.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

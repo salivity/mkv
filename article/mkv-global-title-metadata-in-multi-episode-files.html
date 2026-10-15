@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Global Title Metadata in Multi-Episode Files - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format manages global and episode-specific metadata for multi-episode files by utilizing its flexible Extensible Binary Meta Language (EBML) architecture. Through a combination of the Segment Information element, a hierarchica">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-global-title-metadata-in-multi-episode-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Global Title Metadata in Multi-Episode Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-global-title-metadata-in-multi-episode-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format manages global and episode-specific metadata for multi-episode files by utilizing its flexible Extensible Binary Meta Language (EBML) architecture. Through a combination of the Segment Information element, a hierarchica" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-global-title-metadata-in-multi-episode-files">MKV Global
+Title Metadata in Multi-Episode Files</h1>
+<p>The Matroska (MKV) container format manages global and
+episode-specific metadata for multi-episode files by utilizing its
+flexible Extensible Binary Meta Language (EBML) architecture. Through a
+combination of the Segment Information element, a hierarchical tagging
+system, and chapter-level metadata binding, MKV allows media creators to
+define top-level file titles alongside distinct episode titles and
+properties within a single physical file.</p>
+<h3 id="segment-information-element">Segment Information Element</h3>
+<p>At the highest structural level, an MKV file contains a
+<code>Segment</code> element that houses all video, audio, subtitle, and
+metadata tracks. Within this segment lies the <code>Info</code> (Segment
+Information) block, which contains the <code>Title</code> element.</p>
+<ul>
+<li><strong>Top-Level Storage:</strong> The <code>Title</code> element
+inside <code>Segment/Info</code> represents the default global title for
+the entire container.</li>
+<li><strong>Multi-Episode Role:</strong> In multi-episode files (such as
+an entire season or a multi-part feature combined into one file), this
+global field typically holds the overarching series or collection name
+(e.g., <em>"Series Name - Season 01"</em>).</li>
+</ul>
+<h3 id="the-matroska-tagging-system">The Matroska Tagging System</h3>
+<p>For structured and granular metadata, Matroska uses a dedicated
+<code>Tags</code> master element containing one or more <code>Tag</code>
+elements. Each <code>Tag</code> element is composed of two primary
+sub-elements: <code>Targets</code> and <code>SimpleTag</code>.</p>
+<h4 id="targets-and-targettypevalue">Targets and TargetTypeValue</h4>
+<p>The <code>Targets</code> element establishes the scope of the
+metadata using <code>TargetTypeValue</code> integers. This hierarchy
+differentiates global titles from individual episode data:</p>
+<ul>
+<li><strong>TargetTypeValue 70 (Collection):</strong> Represents the
+entire franchise or series.</li>
+<li><strong>TargetTypeValue 60 (Season):</strong> Represents a specific
+season or volume.</li>
+<li><strong>TargetTypeValue 50 (Episode/Movie):</strong> Represents an
+individual episode.</li>
+</ul>
+<h4 id="simpletag">SimpleTag</h4>
+<p>Within a <code>Tag</code>, <code>SimpleTag</code> blocks define
+key-value pairs such as <code>TITLE</code>, <code>SUMMARY</code>,
+<code>ARTIST</code>, and <code>DATE_RELEASED</code>. A tag targeting
+level 70 or 60 provides the global show context, while tags targeted at
+level 50 define individual episode names and descriptions.</p>
+<h3 id="binding-metadata-via-chapter-structures">Binding Metadata via
+Chapter Structures</h3>
+<p>When multiple episodes exist on a continuous timeline inside a single
+MKV file, MKV binds episode-specific titles using the
+<code>Chapters</code> element:</p>
+<ol type="1">
+<li><strong>Chapter Atoms:</strong> The timeline is divided into
+distinct episodes using <code>&lt;ChapterAtom&gt;</code> elements, each
+defined by start and end timestamps.</li>
+<li><strong>ChapterDisplay:</strong> Each atom contains a
+<code>&lt;ChapterDisplay&gt;</code> element with a
+<code>&lt;ChapterString&gt;</code>, providing a basic title displayed
+during playback navigation.</li>
+<li><strong>ChapterUID Linking:</strong> Each
+<code>&lt;ChapterAtom&gt;</code> is assigned a unique identifier
+(<code>ChapterUID</code>). The advanced <code>Tags</code> system
+references this <code>ChapterUID</code> inside its <code>Targets</code>
+element, linking rich metadata (such as episode name, director, and
+synopsis) directly to that specific time segment without conflicting
+with the global file title.</li>
+</ol>
+<p>Through this modular hierarchy of Segment Titles, Chapter UIDs, and
+Target-scoped Tags, MKV maintains clear separation between global media
+titles and granular, multi-episode content.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

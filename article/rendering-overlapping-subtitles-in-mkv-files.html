@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendering Overlapping Subtitles in MKV Files - mkv</title>
+    <meta name="description" content="When multiple subtitle events overlap chronologically within a Matroska (MKV) container, media playback engines must demux, parse, and composite these streams simultaneously without visual collision. Rendering overlapping subtitles relies on a synchronize">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/rendering-overlapping-subtitles-in-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Rendering Overlapping Subtitles in MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/rendering-overlapping-subtitles-in-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When multiple subtitle events overlap chronologically within a Matroska (MKV) container, media playback engines must demux, parse, and composite these streams simultaneously without visual collision. Rendering overlapping subtitles relies on a synchronize" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="rendering-overlapping-subtitles-in-mkv-files">Rendering
+Overlapping Subtitles in MKV Files</h1>
+<p>When multiple subtitle events overlap chronologically within a
+Matroska (MKV) container, media playback engines must demux, parse, and
+composite these streams simultaneously without visual collision.
+Rendering overlapping subtitles relies on a synchronized pipeline
+consisting of the container demuxer, a format-specific subtitle layout
+engine (such as libass or native platform decoders), and a video
+compositor. Depending on whether the embedded stream is text-based (like
+SRT or ASS) or bitmap-based (like PGS or VobSub), the playback engine
+applies specific layout algorithms, layer hierarchies, and alpha
+blending to display the text accurately on screen.</p>
+<h3 id="1-demuxing-and-timestamp-synchronization">1. Demuxing and
+Timestamp Synchronization</h3>
+<p>The MKV container stores subtitles in dedicated tracks as discrete
+packets alongside video and audio. Each subtitle packet contains payload
+data and precise timing metadata, specifically a Presentation Time Stamp
+(PTS) and a Duration.</p>
+<p>When playback begins:</p>
+<ul>
+<li>The container demuxer (e.g., FFmpeg's <code>libavformat</code>)
+reads the stream ahead of the video renderer.</li>
+<li>If two subtitle events have overlapping time windows (where Event B
+starts before Event A ends), the demuxer queues both packets into the
+subtitle decoder.</li>
+<li>The playback clock maintains synchronization so both events remain
+active in memory simultaneously for the duration of their overlap.</li>
+</ul>
+<h3 id="2-format-specific-collision-and-layout-handling">2.
+Format-Specific Collision and Layout Handling</h3>
+<p>How overlapping subtitles are positioned depends heavily on the
+underlying subtitle format embedded in the MKV track:</p>
+<h4 id="advanced-substation-alpha-assssa">Advanced SubStation Alpha
+(ASS/SSA)</h4>
+<p>ASS is the most common format for complex subtitle styling in MKV
+files. It handles overlapping through explicit script instructions
+processed by renderers like <code>libass</code>:</p>
+<ul>
+<li><strong>Layer Property:</strong> Each dialogue line has an assigned
+integer layer. Higher layer numbers render visually on top of lower
+layer numbers.</li>
+<li><strong>Collision Detection:</strong> For lines sharing the same
+layer and alignment without explicit coordinates (e.g., standard
+bottom-center dialogue), the engine applies an automatic collision
+resolution algorithm. It shifts the newer or lower-priority text
+vertically upward to stack neatly above the active line.</li>
+<li><strong>Explicit Positioning:</strong> When lines use override tags
+such as <code>\pos(x,y)</code>, the engine bypasses collision checks and
+draws the text at the defined coordinates, allowing intentional visual
+overlaps.</li>
+</ul>
+<h4 id="subrip-srt-and-plain-text">SubRip (SRT) and Plain Text</h4>
+<p>SRT files do not natively contain coordinate or layering metadata.
+When an SRT track contains overlapping timestamps, the playback engine's
+internal layout engine creates a dynamic stack:</p>
+<ul>
+<li>The first active line occupies the default anchor position
+(typically bottom-center).</li>
+<li>The overlapping line is automatically measured, and its bounding box
+is placed immediately above or below the active line.</li>
+<li>When the duration of the first line expires, the engine recalculates
+the layout and moves the remaining active line to the primary anchor
+position.</li>
+</ul>
+<h4 id="bitmap-subtitles-pgs--vobsub">Bitmap Subtitles (PGS /
+VobSub)</h4>
+<p>Blu-ray (PGS) and DVD (VobSub) subtitles are pre-rendered image
+bitmaps:</p>
+<ul>
+<li>Each packet contains absolute screen coordinates and an alpha
+channel for transparency.</li>
+<li>The playback engine does not need to compute text line wrapping or
+collision shifting; it simply composites each bitmap at its designated
+screen coordinates.</li>
+<li>If two bitmaps share the same pixel coordinates, the engine renders
+them using the "painter's algorithm," drawing the newer packet over the
+older one.</li>
+</ul>
+<h3 id="3-rasterization-and-video-compositing">3. Rasterization and
+Video Compositing</h3>
+<p>Once the layout engine determines the bounding boxes and styling
+(fonts, outlines, shadows, or raw pixels), the text is rasterized into
+an RGBA surface:</p>
+<ul>
+<li><strong>Alpha Blending:</strong> The rasterized subtitle plane is
+blended over the decoded video frame using standard Porter-Duff alpha
+compositing (<span class="math inline">\(A \text{ over }
+B\)</span>).</li>
+<li><strong>Hardware Planes:</strong> Modern players (such as MPV, VLC,
+or Kodi) often pass the rendered subtitle texture directly to the GPU
+via APIs like OpenGL, Vulkan, or Direct3D. The graphics pipeline then
+combines the subtitle overlay with the video stream in a single pass
+before final display output.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

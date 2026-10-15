@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purpose of SeekID in MKV SeekHead Structure - mkv</title>
+    <meta name="description" content="This article provides an overview of the SeekID element within the Matroska (MKV) multimedia container format, explaining its core function, structural context within the SeekHead, and why it is critical for fast media navigation and efficient file parsin">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/purpose-of-seek-id-in-mkv-seek-head-structure">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Purpose of SeekID in MKV SeekHead Structure - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/purpose-of-seek-id-in-mkv-seek-head-structure" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides an overview of the SeekID element within the Matroska (MKV) multimedia container format, explaining its core function, structural context within the SeekHead, and why it is critical for fast media navigation and efficient file parsin" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="purpose-of-seekid-in-mkv-seekhead-structure">Purpose of SeekID
+in MKV SeekHead Structure</h1>
+<p>This article provides an overview of the <code>SeekID</code> element
+within the Matroska (MKV) multimedia container format, explaining its
+core function, structural context within the <code>SeekHead</code>, and
+why it is critical for fast media navigation and efficient file
+parsing.</p>
+<p>In the Matroska container specification, the <code>SeekHead</code>
+acts as an index or table of contents for the entire file. It contains a
+list of <code>Seek</code> entries that allow media players and demuxers
+to quickly locate major top-level elements without scanning the entire
+file sequentially. Each <code>Seek</code> entry is composed of two
+primary child elements: <code>SeekID</code> and
+<code>SeekPosition</code>.</p>
+<p>The primary purpose of the <code>SeekID</code> element is to store
+the unique Extensible Binary Meta Language (EBML) identifier of the
+target element being referenced. While <code>SeekPosition</code> defines
+the byte offset where the element begins, <code>SeekID</code> identifies
+<em>what</em> kind of element resides at that specific offset.</p>
+<p>Common EBML Element IDs referenced by a <code>SeekID</code>
+include:</p>
+<ul>
+<li><strong>Segment Info (<code>0x1549A966</code>):</strong> General
+information about the segment, such as title, duration, and timestamp
+scaling.</li>
+<li><strong>Tracks (<code>0x1654AE6B</code>):</strong> Technical
+descriptions of video, audio, and subtitle streams.</li>
+<li><strong>Cues (<code>0x1C53BB6B</code>):</strong>
+Timestamp-to-byte-offset indexing used for precise video seeking.</li>
+<li><strong>Chapters (<code>0x1043A770</code>):</strong> Chapter markers
+and menu structures.</li>
+<li><strong>Tags (<code>0x1254C367</code>):</strong> Metadata such as
+artist, release year, or comments.</li>
+<li><strong>Attachments (<code>0x1941A469</code>):</strong> Embedded
+files like cover art or custom fonts.</li>
+</ul>
+<p>Without <code>SeekID</code>, a media player would only have a list of
+byte positions without knowing the purpose of the data at those
+locations. By reading the <code>SeekID</code>, the demuxer can
+selectively jump directly to crucial metadata—such as track parameters
+or cue points—greatly speeding up file initialization and random access
+playback.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

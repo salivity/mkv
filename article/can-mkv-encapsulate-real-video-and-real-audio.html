@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Encapsulate RealVideo and RealAudio? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format fully supports the encapsulation of legacy RealVideo and RealAudio streams. Because Matroska was architected to be an open, extensible, and codec-agnostic multimedia wrapper, it includes native specifications">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-encapsulate-real-video-and-real-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Encapsulate RealVideo and RealAudio? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-encapsulate-real-video-and-real-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format fully supports the encapsulation of legacy RealVideo and RealAudio streams. Because Matroska was architected to be an open, extensible, and codec-agnostic multimedia wrapper, it includes native specifications" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-encapsulate-realvideo-and-realaudio">Can MKV Encapsulate
+RealVideo and RealAudio?</h1>
+<p>The Matroska (MKV) multimedia container format fully supports the
+encapsulation of legacy RealVideo and RealAudio streams. Because
+Matroska was architected to be an open, extensible, and codec-agnostic
+multimedia wrapper, it includes native specifications for carrying
+proprietary RealMedia formats without requiring re-encoding. This
+article explains how MKV handles legacy RealMedia streams, the specific
+codecs supported, the multiplexing process, and playback
+considerations.</p>
+<h3 id="matroska-specifications-for-realmedia">Matroska Specifications
+for RealMedia</h3>
+<p>The Matroska specification explicitly defines codec IDs designed to
+store RealMedia data natively. Instead of stripping or transcoding the
+original compressed bitstream, MKV wraps the original frames alongside
+the initialization headers required by the decoder.</p>
+<p>The standard Matroska codec identifiers for RealMedia include:</p>
+<ul>
+<li><strong>RealVideo:</strong> <code>V_REAL/RV10</code>,
+<code>V_REAL/RV20</code>, <code>V_REAL/RV30</code>, and
+<code>V_REAL/RV40</code> (frequently used in RMVB files).</li>
+<li><strong>RealAudio:</strong> <code>A_REAL/14_4</code> (early voice
+codec), <code>A_REAL/28_8</code>, <code>A_REAL/COOK</code> (Cooker),
+<code>A_REAL/SIPR</code> (Sipro), <code>A_REAL/RALF</code> (RealAudio
+Lossless Format), and <code>A_REAL/ATRC</code> (Sony ATRAC3).</li>
+</ul>
+<h3 id="multiplexing-legacy-streams-into-mkv">Multiplexing Legacy
+Streams into MKV</h3>
+<p>Remuxing RealMedia content (typically found in <code>.rm</code>,
+<code>.ra</code>, or <code>.rmvb</code> files) into an <code>.mkv</code>
+container is a lossless process. Software such as MKVToolNix
+(<code>mkvmerge</code>) can read RealMedia containers directly, extract
+the underlying audio and video tracks, and encapsulate them into an MKV
+file without altering the compression quality.</p>
+<p>During this process, the multiplexer extracts the necessary
+initialization private data from the RealMedia file and places it into
+the <code>CodecPrivate</code> element of the Matroska track headers,
+ensuring compliant players can initialize the decoders correctly.</p>
+<h3 id="advantages-of-encapsulation">Advantages of Encapsulation</h3>
+<p>Wrapping legacy streams in MKV provides several operational
+benefits:</p>
+<ul>
+<li><strong>Modern Feature Integration:</strong> Legacy streams can be
+merged with modern subtitle formats (such as SRT or ASS), chapter
+markers, and additional audio tracks.</li>
+<li><strong>Fixing Container Limitations:</strong> The legacy RealMedia
+container has limited indexing and metadata capabilities; moving to MKV
+improves seeking accuracy and streaming performance.</li>
+<li><strong>Preserved Quality:</strong> Because the audio and video are
+not re-encoded, the conversion process is fast and avoids generation
+loss.</li>
+</ul>
+<h3 id="playback-compatibility">Playback Compatibility</h3>
+<p>While the MKV container successfully houses RealVideo and RealAudio
+tracks, successful playback still requires a media player capable of
+decoding these legacy formats. Modern software players utilizing the
+FFmpeg backend—such as VLC Media Player, MPV, and MPC-HC—can natively
+decode RealMedia streams inside MKV containers without requiring
+original RealNetworks software or proprietary DirectShow filters.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

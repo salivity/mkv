@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Media Centers Show Wrong Cover Art for MKVs - mkv</title>
+    <meta name="description" content="Media centers frequently display the wrong poster, thumbnail, or backdrop for Matroska (MKV) video files that contain multiple embedded images. This issue occurs because media players and server software—such as Plex, Kodi, Jellyfin, and VLC—use different">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-media-centers-show-wrong-cover-art-for-mk-vs">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Media Centers Show Wrong Cover Art for MKVs - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-media-centers-show-wrong-cover-art-for-mk-vs" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Media centers frequently display the wrong poster, thumbnail, or backdrop for Matroska (MKV) video files that contain multiple embedded images. This issue occurs because media players and server software—such as Plex, Kodi, Jellyfin, and VLC—use different" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-media-centers-show-wrong-cover-art-for-mkvs">Why Media
+Centers Show Wrong Cover Art for MKVs</h1>
+<p>Media centers frequently display the wrong poster, thumbnail, or
+backdrop for Matroska (MKV) video files that contain multiple embedded
+images. This issue occurs because media players and server software—such
+as Plex, Kodi, Jellyfin, and VLC—use different methods to prioritize,
+parse, and identify embedded image attachments. When an MKV container
+contains several images without standardized naming conventions or
+priority flags, the media center may simply display the first image it
+reads rather than the intended primary poster.</p>
+<h3 id="how-mkv-image-attachments-work">How MKV Image Attachments
+Work</h3>
+<p>The Matroska container format allows various files to be embedded
+directly alongside video, audio, and subtitle streams. These attachments
+often include:</p>
+<ul>
+<li>Front cover art (<code>cover.jpg</code> or
+<code>cover.png</code>)</li>
+<li>Back cover art (<code>cover_back.jpg</code>)</li>
+<li>Fanart, backdrops, or landscape thumbnails</li>
+<li>Production stills, cast photos, or disc art</li>
+</ul>
+<p>Each attachment inside an MKV file contains metadata fields,
+including a filename, a MIME type (such as <code>image/jpeg</code>), and
+an internal track/attachment index number.</p>
+<h3 id="common-causes-for-incorrect-cover-art-display">Common Causes for
+Incorrect Cover Art Display</h3>
+<h4 id="1-attachment-index-priority-first-in-priority">1. Attachment
+Index Priority (First-In Priority)</h4>
+<p>Many media scrapers and players do not evaluate attachment metadata
+deeply. Instead, they scan the container sequentially and display the
+very first image stream they encounter. If a background wallpaper or
+disc image was added to the MKV before the primary cover, the media
+player will default to showing that image.</p>
+<h4 id="2-non-standard-attachment-naming">2. Non-Standard Attachment
+Naming</h4>
+<p>According to Matroska metadata specifications, primary cover images
+should ideally be named <code>cover.jpg</code> or
+<code>cover.png</code>, while smaller thumbnails are designated as
+<code>small_cover.jpg</code>. If embedded images use arbitrary names
+(e.g., <code>folder.jpg</code>, <code>image1.jpeg</code>,
+<code>poster_final.png</code>), the media center's parser may fail to
+recognize which image is the official cover.</p>
+<h4 id="3-conflicting-local-and-online-metadata-agents">3. Conflicting
+Local and Online Metadata Agents</h4>
+<p>Media servers often use a combination of online scrapers (such as
+TheMovieDB or TheTVDB) and local metadata agents. If local media asset
+prioritization is enabled, the server will override accurate online
+metadata with whatever attachment is extracted from the local MKV file,
+even if that attachment is an incorrect or low-resolution image.</p>
+<h4 id="4-multiple-images-with-identical-mime-types">4. Multiple Images
+with Identical MIME Types</h4>
+<p>When an MKV contains multiple attachments sharing the same MIME type
+(e.g., three separate <code>image/jpeg</code> files) without distinctive
+Matroska description tags, the parser has no programmatic way to
+determine image hierarchy, leading to inconsistent thumbnail generation
+across different devices.</p>
+<h3 id="how-to-resolve-the-issue">How to Resolve the Issue</h3>
+<ul>
+<li><strong>Edit Attachments with MKVToolNix:</strong> Open the file in
+MKVToolNix Header Editor or Multiplexer. Remove unnecessary image
+attachments, reorder them, or rename the primary poster to
+<code>cover.jpg</code>.</li>
+<li><strong>Standardize File Naming:</strong> Ensure the primary front
+poster uses the exact filename <code>cover.jpg</code> or
+<code>cover.png</code>.</li>
+<li><strong>Adjust Scraper Priority:</strong> In media server settings
+(such as Plex or Jellyfin), lower the priority of "Local Media Assets"
+so that the server prioritizes fetched online metadata over embedded
+container attachments.</li>
+<li><strong>Clear Image Caches:</strong> After modifying the MKV
+attachments, refresh the media center's metadata cache to remove the
+previously cached incorrect thumbnail.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

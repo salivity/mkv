@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Contain 32-Bit Multi-Channel FLAC Audio? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container fully supports the encapsulation of multi-channel FLAC audio tracks with 32-bit sample resolution. Because MKV is designed to be an extensible, codec-agnostic multimedia container and the FLAC bitstream specification natively">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-contain-32-bit-multi-channel-flac-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Contain 32-Bit Multi-Channel FLAC Audio? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-contain-32-bit-multi-channel-flac-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container fully supports the encapsulation of multi-channel FLAC audio tracks with 32-bit sample resolution. Because MKV is designed to be an extensible, codec-agnostic multimedia container and the FLAC bitstream specification natively" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-contain-32-bit-multi-channel-flac-audio">Can MKV Contain
+32-Bit Multi-Channel FLAC Audio?</h1>
+<p>The Matroska (MKV) container fully supports the encapsulation of
+multi-channel FLAC audio tracks with 32-bit sample resolution. Because
+MKV is designed to be an extensible, codec-agnostic multimedia container
+and the FLAC bitstream specification natively accommodates high bit
+depths and multiple audio channels, muxing these streams into an MKV
+file is technically valid and widely achievable using modern multimedia
+tools.</p>
+<h3 id="matroska-container-capabilities">Matroska Container
+Capabilities</h3>
+<p>Matroska uses an Extensible Binary Meta Language (EBML) structure
+that does not impose strict arbitrary limits on audio channels or bit
+depth. Audio streams within MKV are identified by codec identifiers such
+as <code>A_FLAC</code>. When storing FLAC, the container embeds the
+native FLAC bitstream headers (including the <code>STREAMINFO</code>
+block) and subsequent audio frames directly. Because the container acts
+as a passthrough wrapper for the compressed frames, it does not alter or
+constrain the audio resolution.</p>
+<h3 id="flac-specification-for-channels-and-bit-depth">FLAC
+Specification for Channels and Bit Depth</h3>
+<p>The official FLAC specification defines audio parameters that
+accommodate high-resolution configurations:</p>
+<ul>
+<li><strong>Bit Depth:</strong> FLAC supports sample resolutions ranging
+from 4 to 32 bits per sample. While 16-bit and 24-bit are the most
+common production standards, 32-bit integer samples are fully permitted
+by the bitstream architecture.</li>
+<li><strong>Channel Count:</strong> FLAC supports between 1 and 8
+standard audio channels (such as stereo, 5.1 surround, and 7.1
+surround), as well as custom channel mappings.</li>
+</ul>
+<p>When multi-channel 32-bit audio is encoded into a FLAC bitstream, the
+<code>STREAMINFO</code> metadata correctly reflects these parameters,
+which remain intact upon encapsulation into an MKV file.</p>
+<h3 id="multiplexing-and-tool-support">Multiplexing and Tool
+Support</h3>
+<p>Standard muxing software can package 32-bit multi-channel FLAC into
+MKV without requiring re-encoding:</p>
+<ul>
+<li><strong>MKVToolNix (<code>mkvmerge</code>):</strong> Reads the FLAC
+stream headers, preserves all channels and bit-depth parameters, and
+writes the appropriate <code>A_FLAC</code> track within the
+<code>.mkv</code> or <code>.mka</code> container.</li>
+<li><strong>FFmpeg:</strong> Allows direct stream copying (using
+<code>-c:a copy</code>) of 32-bit multi-channel FLAC tracks into the
+Matroska format.</li>
+</ul>
+<h3 id="playback-and-hardware-compatibility">Playback and Hardware
+Compatibility</h3>
+<p>While an MKV file can successfully contain a 32-bit multi-channel
+FLAC track, end-user playback depends on the decoder and audio output
+pipeline:</p>
+<ul>
+<li><strong>Software Decoders:</strong> Modern media players like MPV
+and VLC rely on up-to-date versions of FFmpeg (<code>libavcodec</code>)
+or the reference <code>libFLAC</code> library, both of which support
+decoding 32-bit multi-channel streams.</li>
+<li><strong>Hardware Limitations:</strong> Many standalone media
+players, AV receivers, and hardware digital-to-analog converters (DACs)
+are limited to 24-bit depth or specific channel layouts. If a hardware
+device cannot process 32-bit multi-channel streams, the player must
+downsample or convert the audio to 24-bit or 16-bit during output.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

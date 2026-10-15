@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Audio Gain Metadata - mkv</title>
+    <meta name="description" content="Matroska (MKV) files manage volume normalization across diverse audio streams by utilizing a combination of EBML metadata tags, container-level track properties, and embedded bitstream data. Instead of modifying the original audio samples, the container s">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-audio-gain-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Audio Gain Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-audio-gain-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Matroska (MKV) files manage volume normalization across diverse audio streams by utilizing a combination of EBML metadata tags, container-level track properties, and embedded bitstream data. Instead of modifying the original audio samples, the container s" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-audio-gain-metadata">How MKV Stores Audio Gain
+Metadata</h1>
+<p>Matroska (MKV) files manage volume normalization across diverse audio
+streams by utilizing a combination of EBML metadata tags,
+container-level track properties, and embedded bitstream data. Instead
+of modifying the original audio samples, the container stores
+standardized gain values—such as ReplayGain and EBU R128
+metrics—allowing media players to dynamically adjust playback volume
+across different tracks, languages, or commentary streams without
+quality loss.</p>
+<h3 id="matroska-tagging-system">Matroska Tagging System</h3>
+<p>The primary method for storing loudness metadata in an MKV file is
+through its hierarchical <code>Tags</code> element. Matroska uses
+Extensible Binary Meta Language (EBML) to map metadata to specific
+components of the container.</p>
+<p>To apply gain to an individual audio track:</p>
+<ul>
+<li>A <code>Tag</code> element is created with a <code>Targets</code>
+sub-element.</li>
+<li>The <code>TargetTypeValue</code> is set to <code>30</code> (the
+standard target level for an individual track).</li>
+<li>The <code>TagTrackUID</code> links the tag directly to the unique
+identifier of the target audio track.</li>
+<li>Inside <code>SimpleTag</code> entries, gain values are stored as
+key-value string pairs.</li>
+</ul>
+<p>Commonly implemented tags include:</p>
+<ul>
+<li><code>REPLAYGAIN_TRACK_GAIN</code>: Stored in decibels (e.g.,
+<code>-6.50 dB</code>), defining the adjustment needed to reach target
+loudness.</li>
+<li><code>REPLAYGAIN_TRACK_PEAK</code>: A floating-point number
+representing the highest sample value to prevent clipping.</li>
+<li><code>R128_TRACK_GAIN</code>: An EBU R128 standard gain offset,
+measured in LUFS/LU increments.</li>
+</ul>
+<h3 id="track-header-elements">Track Header Elements</h3>
+<p>MKV specifications define audio properties within the
+<code>TrackAudio</code> element under the main <code>TrackEntry</code>.
+While less common for dynamic volume normalization than the Tagging
+system, the container supports static volume and output scaling
+parameters. Splitters can read these elements to determine baseline
+channel layouts, sampling rates, and default output adjustments before
+passing data to the audio decoder.</p>
+<h3 id="embedded-bitstream-metadata-passthrough">Embedded Bitstream
+Metadata Passthrough</h3>
+<p>In addition to container-level tags, MKV serves as a transparent
+transport for codecs that include their own internal volume
+normalization data:</p>
+<ul>
+<li><strong>Dolby Digital (AC-3 / E-AC-3):</strong> Contains Dialogue
+Normalization (<code>dialnorm</code>) metadata within the elementary
+stream headers.</li>
+<li><strong>AAC:</strong> Can contain Dynamic Range Control (DRC) and
+Loudness metadata inside the bitstream's Audio Specific Config.</li>
+<li><strong>Opus:</strong> Contains an internal <code>Output Gain</code>
+header field embedded directly in the stream headers to normalize
+default playback.</li>
+</ul>
+<p>When an MKV muxer packs these elementary streams into clusters, it
+preserves this internal bitstream data entirely.</p>
+<h3 id="playback-and-decoupled-processing">Playback and Decoupled
+Processing</h3>
+<p>When a player parses an MKV file, the demuxer reads both the
+container-level tags (like ReplayGain) and the codec-level headers. The
+playback software applies these values as digital pre-amplification
+parameters during decoding. Because the gain data exists purely as
+metadata, it ensures consistent loudness across different streams—such
+as switching from a loud 5.1 surround mix to a quiet stereo commentary
+track—without permanently altering the encoded audio.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

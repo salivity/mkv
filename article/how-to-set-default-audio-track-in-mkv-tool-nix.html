@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Set Default Audio Track in MKVToolNix - mkv</title>
+    <meta name="description" content="MKVToolNix provides powerful command-line utilities to modify track properties within Matroska (.mkv) files. This guide demonstrates how to use mkvpropedit to set a specific audio track as the default output without remuxing the entire file, as well as ho">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-set-default-audio-track-in-mkv-tool-nix">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Set Default Audio Track in MKVToolNix - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-set-default-audio-track-in-mkv-tool-nix" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="MKVToolNix provides powerful command-line utilities to modify track properties within Matroska (.mkv) files. This guide demonstrates how to use mkvpropedit to set a specific audio track as the default output without remuxing the entire file, as well as ho" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-set-default-audio-track-in-mkvtoolnix">How to Set Default
+Audio Track in MKVToolNix</h1>
+<p>MKVToolNix provides powerful command-line utilities to modify track
+properties within Matroska (.mkv) files. This guide demonstrates how to
+use <code>mkvpropedit</code> to set a specific audio track as the
+default output without remuxing the entire file, as well as how to set
+it during a standard multiplexing process using
+<code>mkvmerge</code>.</p>
+<h3 id="identifying-audio-track-ids">Identifying Audio Track IDs</h3>
+<p>Before modifying properties, you need to identify the track number or
+ID of the audio streams in your file. Run the following command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-i</span> <span class="st">&quot;input_file.mkv&quot;</span></span></code></pre></div>
+<p>The output will list the tracks along with their IDs and types (e.g.,
+<code>Track ID 0: video</code>, <code>Track ID 1: audio (AAC)</code>,
+<code>Track ID 2: audio (AC-3)</code>).</p>
+<hr />
+<h3 id="method-1-using-mkvpropedit-instant-in-place-modification">Method
+1: Using <code>mkvpropedit</code> (Instant In-Place Modification)</h3>
+<p>The <code>mkvpropedit</code> tool allows you to change track headers
+directly in the existing MKV file without re-encoding or rebuilding the
+file.</p>
+<p>To set an audio track as default, use the <code>--edit</code>
+parameter followed by the track selector, then use
+<code>--set flag-default=1</code>.</p>
+<h4 id="setting-the-first-audio-track-as-default">Setting the First
+Audio Track as Default:</h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;input_file.mkv&quot;</span> <span class="at">--edit</span> track:a1 <span class="at">--set</span> flag-default=1</span></code></pre></div>
+<h4 id="setting-a-specific-track-by-track-id">Setting a Specific Track
+by Track ID:</h4>
+<p>If your desired audio track is Track ID 2, run:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;input_file.mkv&quot;</span> <span class="at">--edit</span> track:2 <span class="at">--set</span> flag-default=1</span></code></pre></div>
+<h4 id="disabling-other-default-flags">Disabling Other Default
+Flags:</h4>
+<p>To ensure media players do not prioritize the wrong track, explicitly
+remove the default flag from the other audio tracks:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;input_file.mkv&quot;</span> <span class="at">--edit</span> track:a1 <span class="at">--set</span> flag-default=0 <span class="at">--edit</span> track:a2 <span class="at">--set</span> flag-default=1</span></code></pre></div>
+<hr />
+<h3 id="method-2-using-mkvmerge-creating-a-new-file">Method 2: Using
+<code>mkvmerge</code> (Creating a New File)</h3>
+<p>If you are already creating or remuxing an MKV file, use
+<code>mkvmerge</code> with the <code>--default-track-flag</code>
+option.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-o</span> <span class="st">&quot;output_file.mkv&quot;</span> <span class="at">--default-track-flag</span> 1:no <span class="at">--default-track-flag</span> 2:yes <span class="st">&quot;input_file.mkv&quot;</span></span></code></pre></div>
+<p>In this command:</p>
+<ul>
+<li><code>1:no</code> disables the default flag on Track ID 1.</li>
+<li><code>2:yes</code> enables the default flag on Track ID 2.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

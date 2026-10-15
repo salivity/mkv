@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Containers Store Custom XML Music Metadata - mkv</title>
+    <meta name="description" content="The Matroska (MKV/MKA) multimedia container format stores rich, custom music metadata through a standardized, hierarchical tagging system built into its core Extensible Binary Meta Language (EBML) architecture. By converting structured XML documents into">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-containers-store-custom-xml-music-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Containers Store Custom XML Music Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-containers-store-custom-xml-music-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV/MKA) multimedia container format stores rich, custom music metadata through a standardized, hierarchical tagging system built into its core Extensible Binary Meta Language (EBML) architecture. By converting structured XML documents into" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-containers-store-custom-xml-music-metadata">How MKV
+Containers Store Custom XML Music Metadata</h1>
+<p>The Matroska (MKV/MKA) multimedia container format stores rich,
+custom music metadata through a standardized, hierarchical tagging
+system built into its core Extensible Binary Meta Language (EBML)
+architecture. By converting structured XML documents into native EBML
+tag elements, Matroska allows users and developers to attach
+comprehensive track-level audio details—such as artist credits, track
+numbers, replay gain values, and synchronized lyrics—directly to
+individual streams within the file.</p>
+<h2 id="the-ebml-tagging-system-architecture">The EBML Tagging System
+Architecture</h2>
+<p>Matroska does not simply append a raw XML text file to the container.
+Instead, it parses custom XML metadata into binary EBML elements within
+a dedicated top-level <code>Tags</code> master element.</p>
+<p>The <code>Tags</code> element contains one or more <code>Tag</code>
+elements, each consisting of two primary components:</p>
+<ol type="1">
+<li><strong>Targets</strong>: Defines what the metadata applies to (the
+whole file, a specific track, a chapter, or an attachment).</li>
+<li><strong>SimpleTag</strong>: Contains the actual key-value pairs
+representing the metadata fields.</li>
+</ol>
+<h2 id="target-mapping-and-track-association">Target Mapping and Track
+Association</h2>
+<p>To associate custom metadata with a specific music track rather than
+the entire media container, Matroska uses the <code>Targets</code>
+element.</p>
+<ul>
+<li><strong>TrackUID</strong>: Specifies the unique ID of the specific
+audio track the metadata belongs to.</li>
+<li><strong>TargetTypeValue</strong>: Defines the logical level of the
+target in a standard Matroska hierarchy (e.g., <code>50</code> for
+Album, <code>30</code> for Track/Song, <code>10</code> for Movement or
+Part).</li>
+</ul>
+<p>This structure ensures that multiple audio tracks within a single MKV
+file can carry completely independent metadata profiles.</p>
+<h2 id="the-structure-of-simpletag-elements">The Structure of SimpleTag
+Elements</h2>
+<p>Metadata keys and values are defined using nested
+<code>SimpleTag</code> structures. Each <code>SimpleTag</code>
+contains:</p>
+<ul>
+<li><strong>TagName</strong>: The identifier for the metadata field
+(e.g., <code>ARTIST</code>, <code>TITLE</code>, <code>ISRC</code>,
+<code>BPM</code>).</li>
+<li><strong>TagString</strong>: The text value of the tag stored in
+UTF-8 encoding.</li>
+<li><strong>TagBinary</strong>: An optional binary payload, useful for
+raw data payloads.</li>
+<li><strong>TagLanguage</strong>: An ISO 639-2 language code indicating
+the language of the tag value.</li>
+<li><strong>TagDefault</strong>: A boolean flag indicating if this tag
+is the default choice for the given language.</li>
+</ul>
+<p><code>SimpleTag</code> elements can also be nested within other
+<code>SimpleTag</code> elements to create multi-level metadata, such as
+detailed performer roles (e.g., mapping an <code>ARTIST</code> tag with
+a nested <code>INSTRUMENT</code> tag).</p>
+<h2 id="example-xml-representation">Example XML Representation</h2>
+<p>Before being multiplexed into EBML, metadata is typically written in
+an XML structure matching the Matroska specification:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode xml"><code class="sourceCode xml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>&lt;<span class="kw">Tags</span>&gt;</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  &lt;<span class="kw">Tag</span>&gt;</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">Targets</span>&gt;</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TargetTypeValue</span>&gt;30&lt;/<span class="kw">TargetTypeValue</span>&gt;</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TrackUID</span>&gt;1234567890&lt;/<span class="kw">TrackUID</span>&gt;</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">Targets</span>&gt;</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">SimpleTag</span>&gt;</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TagName</span>&gt;TITLE&lt;/<span class="kw">TagName</span>&gt;</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TagString</span>&gt;Track Title&lt;/<span class="kw">TagString</span>&gt;</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">SimpleTag</span>&gt;</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">SimpleTag</span>&gt;</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TagName</span>&gt;ARTIST&lt;/<span class="kw">TagName</span>&gt;</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TagString</span>&gt;Lead Performer&lt;/<span class="kw">TagString</span>&gt;</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">SimpleTag</span>&gt;</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    &lt;<span class="kw">SimpleTag</span>&gt;</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TagName</span>&gt;CUSTOM_DATABASE_ID&lt;/<span class="kw">TagName</span>&gt;</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      &lt;<span class="kw">TagString</span>&gt;XYZ-98765&lt;/<span class="kw">TagString</span>&gt;</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    &lt;/<span class="kw">SimpleTag</span>&gt;</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  &lt;/<span class="kw">Tag</span>&gt;</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>&lt;/<span class="kw">Tags</span>&gt;</span></code></pre></div>
+<h2 id="custom-tag-extensibility">Custom Tag Extensibility</h2>
+<p>Matroska maintains a list of officially recognized tag names, but the
+container format is non-restrictive. Any custom <code>TagName</code>
+defined in the XML input is preserved and converted to EBML during
+multiplexing. Tools like <code>mkvmerge</code> or
+<code>mkvpropedit</code> parse the XML file, validate the hierarchy
+against the Matroska specifications, and write the structured data
+directly into the MKV container's <code>Tags</code> block without
+requiring re-encoding of the audio streams.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

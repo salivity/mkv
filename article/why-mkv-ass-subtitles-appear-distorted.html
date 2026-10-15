@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why MKV ASS Subtitles Appear Distorted - mkv</title>
+    <meta name="description" content="Advanced SubStation Alpha (ASS) subtitles embedded within Matroska (MKV) files frequently appear distorted, misplaced, or visually degraded due to engine incompatibility, missing embedded fonts, and coordinate scaling errors. Because ASS is a complex, scr">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-mkv-ass-subtitles-appear-distorted">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why MKV ASS Subtitles Appear Distorted - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-mkv-ass-subtitles-appear-distorted" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Advanced SubStation Alpha (ASS) subtitles embedded within Matroska (MKV) files frequently appear distorted, misplaced, or visually degraded due to engine incompatibility, missing embedded fonts, and coordinate scaling errors. Because ASS is a complex, scr" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-mkv-ass-subtitles-appear-distorted">Why MKV ASS Subtitles
+Appear Distorted</h1>
+<p>Advanced SubStation Alpha (ASS) subtitles embedded within Matroska
+(MKV) files frequently appear distorted, misplaced, or visually degraded
+due to engine incompatibility, missing embedded fonts, and coordinate
+scaling errors. Because ASS is a complex, script-based format that
+relies on absolute positioning, vector graphics, and custom typography,
+video players lacking dedicated rendering pipelines fail to display the
+intended visual output.</p>
+<h3 id="lack-of-a-dedicated-ass-rendering-engine-libass">Lack of a
+Dedicated ASS Rendering Engine (libass)</h3>
+<p>Unlike simple subtitle formats such as SRT, which only contain plain
+text and timestamps, ASS tracks feature rich styling, margins, rotation,
+animations, and precise screen positioning. Most desktop and mobile
+media players that handle ASS correctly rely on <code>libass</code>, an
+open-source subtitle renderer designed specifically for this format.
+When a player uses a generic text renderer or an internal, non-compliant
+subtitle engine—common in smart TVs, browser-based web players, and
+basic system media players—it strips or misinterprets the styling code.
+This causes raw styling tags (such as <code>{\pos(x,y)}</code> or
+<code>{\an8}</code>) to display as plain text on the screen or causes
+text to overlap and clip improperly.</p>
+<h3 id="missing-or-ignored-embedded-fonts">Missing or Ignored Embedded
+Fonts</h3>
+<p>Stylized ASS subtitles often depend on specific custom fonts embedded
+directly into the MKV container as attachments. A fully compliant player
+extracts these fonts into memory during playback to render the text
+accurately. If a player cannot parse MKV attachments or lacks permission
+to load external font assets, it substitutes the intended font with a
+default system font like Arial or Sans-Serif. Because default fonts have
+different glyph dimensions, kerning, and line heights, the layout
+breaks, leading to text overflowing off the screen, mismatched dialogue
+boxes, and distorted visual effects.</p>
+<h3 id="script-resolution-playresx-and-playresy-scaling-errors">Script
+Resolution (PlayResX and PlayResY) Scaling Errors</h3>
+<p>ASS scripts define a fixed authoring canvas using the
+<code>PlayResX</code> and <code>PlayResY</code> header parameters (such
+as 1920x1080 or 1280x720). The video player is responsible for taking
+these coordinate targets and scaling them proportionally to the current
+playback window and video aspect ratio. When a player fails to calculate
+this aspect ratio conversion properly, subtitles become stretched,
+squashed, misaligned, or rendered at the wrong scale relative to the
+video frame.</p>
+<h3 id="hardware-acceleration-and-pipeline-placement">Hardware
+Acceleration and Pipeline Placement</h3>
+<p>The stage at which subtitles are rendered in the video output
+pipeline significantly affects visual clarity. Some media players apply
+hardware-accelerated video decoding and render subtitles onto the video
+stream before upscaling, while others render subtitles on an overlay
+plane after scaling. If the subtitle stream is rendered at a lower
+internal resolution and then upscaled alongside the video, vector
+elements and text edges appear pixelated, blurry, or visibly
+distorted.</p>
+<h3 id="character-encoding-mismatches">Character Encoding
+Mismatches</h3>
+<p>ASS files are standardized to use UTF-8 encoding. If an embedded
+track is muxed using an older legacy encoding (such as ANSI, Shift-JIS,
+or Windows-1252) without the player properly recognizing the character
+set, non-ASCII characters and complex typesetting scripts will corrupt
+into unreadable symbols (mojibake), further distorting the
+presentation.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

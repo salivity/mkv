@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Preserves Dolby Vision Profile 8 Metadata - mkv</title>
+    <meta name="description" content="This article explains the technical mechanism behind how the Matroska (MKV) multimedia container encapsulates and preserves dynamic metadata for Dolby Vision Profile 8 streams. Dolby Vision Profile 8 combines a standard High Dynamic Range (HDR10) base lay">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-preserves-dolby-vision-profile-8-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Preserves Dolby Vision Profile 8 Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-preserves-dolby-vision-profile-8-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains the technical mechanism behind how the Matroska (MKV) multimedia container encapsulates and preserves dynamic metadata for Dolby Vision Profile 8 streams. Dolby Vision Profile 8 combines a standard High Dynamic Range (HDR10) base lay" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-preserves-dolby-vision-profile-8-metadata">How MKV
+Preserves Dolby Vision Profile 8 Metadata</h1>
+<p>This article explains the technical mechanism behind how the Matroska
+(MKV) multimedia container encapsulates and preserves dynamic metadata
+for Dolby Vision Profile 8 streams. Dolby Vision Profile 8 combines a
+standard High Dynamic Range (HDR10) base layer with dynamic metadata,
+allowing compatible displays to adjust brightness and color
+frame-by-frame while maintaining backward compatibility. The MKV format
+achieves this preservation primarily by encapsulating the raw HEVC
+bitstream along with embedded Supplemental Enhancement Information (SEI)
+Network Abstraction Layer (NAL) units directly within its structural
+tracks, accompanied by specific container-level signaling.</p>
+<h3 id="the-structure-of-dolby-vision-profile-8">The Structure of Dolby
+Vision Profile 8</h3>
+<p>Dolby Vision Profile 8 (most commonly Profile 8.1) is a single-track,
+dual-layer compatibility profile. It consists of:</p>
+<ol type="1">
+<li><strong>A Base Layer (BL):</strong> A standard 10-bit HEVC (H.265)
+video stream encoded with the SMPTE ST 2084 (PQ) transfer function and
+BT.2020 color space, identical to standard HDR10.</li>
+<li><strong>Reference Processing Unit (RPU) Metadata:</strong> Dynamic
+metadata containing scene-by-scene and frame-by-frame color mapping,
+trim data, and mastering display specifications.</li>
+</ol>
+<p>Unlike dual-track profiles (such as Profile 7 used on UHD Blu-rays,
+which often utilize a separate Enhancement Layer), Profile 8 embeds the
+RPU directly into the video stream alongside the HDR10 base layer.</p>
+<h3 id="in-band-carriage-via-nal-units">In-Band Carriage via NAL
+Units</h3>
+<p>The MKV container preserves Dolby Vision dynamic metadata primarily
+because of how the HEVC elementary stream is structured. The dynamic RPU
+metadata is carried "in-band" as specific HEVC Network Abstraction Layer
+(NAL) units.</p>
+<ul>
+<li><strong>Prefix SEI Messages:</strong> The RPU is packaged within
+ITU-T T.35 user data unregistered Supplemental Enhancement Information
+(SEI) messages (NAL unit type 39 in HEVC).</li>
+<li><strong>Interleaved Placement:</strong> These metadata NAL units
+immediately precede the video slice data for each frame to which they
+apply.</li>
+</ul>
+<p>When multiplexing an HEVC stream into an MKV container, tools like
+MKVToolNix retain the elementary stream structure unaltered. The
+container stores the access units—including both the base video slices
+and the prefix SEI messages—inside standard Matroska
+<code>SimpleBlock</code> or <code>BlockGroup</code> elements under the
+<code>V_MPEGH/ISO/HEVC</code> codec ID. Because Matroska encapsulates
+the complete access unit, the RPU NAL units are never stripped or
+modified during the muxing process.</p>
+<h3 id="container-level-dolby-vision-signaling">Container-Level Dolby
+Vision Signaling</h3>
+<p>To ensure that media splitters and hardware decoders can identify the
+presence of Dolby Vision without scanning every frame's bitstream,
+modern Matroska specifications include standardized signaling for Dolby
+Vision metadata.</p>
+<p>During muxing, the container populates a dedicated configuration
+record within the video track headers:</p>
+<ul>
+<li><strong>Dolby Vision Configuration Record (<code>CodecPrivate</code>
+or Track Elements):</strong> This stores key parameters, including the
+Profile (Profile 8), Level, RPU presence flag, and backward
+compatibility ID (e.g., Cross-Compatibility ID 1 for HDR10).</li>
+<li><strong>Color Elements:</strong> The MKV header specifies standard
+color descriptors (<code>MatrixCoefficients</code>,
+<code>TransferCharacteristics</code>, and <code>Primaries</code>) set to
+BT.2020 and PQ, allowing non-Dolby Vision capable renderers to fall back
+safely to HDR10.</li>
+</ul>
+<h3 id="the-demuxing-and-playback-pipeline">The Demuxing and Playback
+Pipeline</h3>
+<p>During playback, the MKV demuxer processes the file using a
+streamlined workflow:</p>
+<ol type="1">
+<li><strong>Detection:</strong> The demuxer reads the track headers to
+confirm the presence of Dolby Vision Profile 8.</li>
+<li><strong>Pass-Through:</strong> The demuxer unpacks the
+<code>SimpleBlock</code> structures and passes the continuous HEVC
+bitstream—containing both the base layer frames and the interleaved SEI
+RPU packets—directly to the video decoder.</li>
+<li><strong>Extraction and Application:</strong> A Dolby
+Vision-compliant decoder separates the RPU NAL units from the HEVC slice
+data. The base layer is decoded into raw video frames, and the RPU
+metadata is parsed to apply the dynamic tone mapping instructions before
+outputting the signal via HDMI to a compatible display. If the decoder
+or display does not support Dolby Vision, the SEI NAL units are simply
+ignored, and the video falls back to standard HDR10.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

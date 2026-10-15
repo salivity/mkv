@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store BMP or PNG Frame Sequences? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format is capable of storing both uncompressed BMP files and lossless PNG frame sequences as a functional video stream. Because MKV was engineered to be an open, highly extensible multimedia container, it does not restrict vid">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-bmp-or-png-frame-sequences">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store BMP or PNG Frame Sequences? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-bmp-or-png-frame-sequences" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format is capable of storing both uncompressed BMP files and lossless PNG frame sequences as a functional video stream. Because MKV was engineered to be an open, highly extensible multimedia container, it does not restrict vid" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-bmp-or-png-frame-sequences">Can MKV Store BMP or
+PNG Frame Sequences?</h1>
+<p>The Matroska (MKV) container format is capable of storing both
+uncompressed BMP files and lossless PNG frame sequences as a functional
+video stream. Because MKV was engineered to be an open, highly
+extensible multimedia container, it does not restrict video tracks to
+traditional inter-frame compressed formats like H.264 or HEVC. This
+article explains how MKV handles image sequences as video streams, how
+they are technically encapsulated, and the practical considerations
+regarding playback and performance.</p>
+<h3 id="how-mkv-handles-image-sequences">How MKV Handles Image
+Sequences</h3>
+<p>The Matroska specification is codec-agnostic. Instead of dictating
+specific compression algorithms, it stores metadata, timing packets, and
+raw payload data. When an image sequence such as a series of BMP or PNG
+files is wrapped into an MKV container, each image is treated as an
+individual video frame with a corresponding presentation timestamp
+(PTS).</p>
+<h3 id="storing-png-as-a-video-stream">Storing PNG as a Video
+Stream</h3>
+<p>PNG frames can be natively stored in MKV using the designated Codec
+ID <code>V_PNG</code> or standard FourCC mapping. In this setup:</p>
+<ul>
+<li>Each keyframe contains the full, losslessly compressed PNG
+data.</li>
+<li>Color depth, alpha channels (transparency), and RGB color spaces are
+fully preserved.</li>
+<li>The container sets the frame rate by defining the time duration each
+PNG frame is displayed.</li>
+</ul>
+<p>Tools like FFmpeg can mux PNG sequences directly into MKV without
+re-encoding by utilizing stream copy commands or the PNG video
+encoder:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-framerate</span> 24 <span class="at">-i</span> input_%04d.png <span class="at">-c:v</span> copy output.mkv</span></code></pre></div>
+<h3 id="storing-bmp-and-raw-uncompressed-video">Storing BMP and Raw
+Uncompressed Video</h3>
+<p>BMP files generally represent raw, uncompressed DIB
+(Device-Independent Bitmap) data. While BMP files contain header
+structures that can be stored directly via FourCC wrappers, MKV more
+commonly stores this data as uncompressed raw video
+(<code>V_UNCOMPRESSED</code> or <code>rawvideo</code>).</p>
+<ul>
+<li><strong>Direct Bitmaps:</strong> MKV can wrap BMP payloads using
+Video for Windows (VFW) compatibility layers.</li>
+<li><strong>Raw Video Frames:</strong> MKV can store the raw RGB or YUV
+planar/packed pixel arrays extracted from BMP files, along with
+resolution and color depth metadata.</li>
+</ul>
+<h3 id="advantages-and-practical-considerations">Advantages and
+Practical Considerations</h3>
+<p>Using MKV to store frame sequences provides several benefits over
+loose directory-based image folders:</p>
+<ul>
+<li><strong>Single-File Portability:</strong> Thousands of separate
+files are consolidated into a single container without data loss.</li>
+<li><strong>Audio and Subtitle Synchronization:</strong> Audio tracks
+and timecodes can be muxed directly alongside the sequence.</li>
+<li><strong>Preserved Quality:</strong> Mastering-grade visuals retain
+exact pixel values, making this useful for archival and video production
+intermediate steps.</li>
+</ul>
+<h3 id="limitations">Limitations</h3>
+<ul>
+<li><strong>File Size:</strong> Storing uncompressed BMPs or large PNG
+sequences results in massive file sizes that require high disk read
+speeds.</li>
+<li><strong>Decoding Overhead:</strong> PNG compression is
+computationally intensive for real-time decoding, which may cause frame
+drops during playback at high resolutions and frame rates.</li>
+<li><strong>Player Compatibility:</strong> While professional players
+and software like VLC or mpv support these streams natively, hardware
+decoders and consumer media players often lack support for non-standard
+video streams inside MKV files.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

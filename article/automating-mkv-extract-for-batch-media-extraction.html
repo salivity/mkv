@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automating MKVExtract for Batch Media Extraction - mkv</title>
+    <meta name="description" content="MKVExtract, a core component of the MKVToolNix suite, provides command-line capabilities for demuxing Matroska (.mkv) container files into individual video, audio, subtitle, and chapter streams. This article explains how to integrate MKVExtract into autom">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/automating-mkv-extract-for-batch-media-extraction">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Automating MKVExtract for Batch Media Extraction - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/automating-mkv-extract-for-batch-media-extraction" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="MKVExtract, a core component of the MKVToolNix suite, provides command-line capabilities for demuxing Matroska (.mkv) container files into individual video, audio, subtitle, and chapter streams. This article explains how to integrate MKVExtract into autom" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="automating-mkvextract-for-batch-media-extraction">Automating
+MKVExtract for Batch Media Extraction</h1>
+<p>MKVExtract, a core component of the MKVToolNix suite, provides
+command-line capabilities for demuxing Matroska (.mkv) container files
+into individual video, audio, subtitle, and chapter streams. This
+article explains how to integrate MKVExtract into automated scripting
+environments—such as Bash, PowerShell, and Python—to streamline
+high-volume media processing. It covers track discovery, dynamic command
+generation, batch execution patterns, and best practices for robust
+automation pipelines.</p>
+<h2 id="prerequisites-and-core-syntax">Prerequisites and Core
+Syntax</h2>
+<p>Before automating, ensure <code>mkvextract</code> and
+<code>mkvmerge</code> are installed and available in your system's
+PATH.</p>
+<p>The fundamental syntax for extracting tracks using MKVExtract is:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvextract</span> tracks <span class="op">&lt;</span>source-file.mkv<span class="op">&gt;</span> <span class="op">&lt;</span>track-id<span class="op">&gt;</span>:<span class="op">&lt;</span>output-file.ext<span class="op">&gt;</span></span></code></pre></div>
+<p>Because track IDs vary across different files, hardcoding track
+numbers can lead to incorrect extractions. A reliable automation
+pipeline always pairs <code>mkvextract</code> with <code>mkvmerge</code>
+to inspect the source file first.</p>
+<h2 id="inspecting-tracks-programmatically">Inspecting Tracks
+Programmatically</h2>
+<p>To automate extraction dynamically, use
+<code>mkvmerge -J &lt;file.mkv&gt;</code> to output the container's
+structure in JSON format. This output contains detailed information
+about:</p>
+<ul>
+<li><strong>Track ID:</strong> The integer required by
+<code>mkvextract</code>.</li>
+<li><strong>Track Type:</strong> Audio, video, or subtitles.</li>
+<li><strong>Codec and Properties:</strong> Codec ID, language codes,
+default/forced flags, and track names.</li>
+</ul>
+<p>By parsing this JSON output, scripts can identify specific streams
+(e.g., all English SRT subtitles or FLAC audio tracks) without manual
+inspection.</p>
+<h2 id="automation-examples">Automation Examples</h2>
+<h3 id="1-bash-scripting-linux--macos">1. Bash Scripting (Linux /
+macOS)</h3>
+<p>This Bash script uses <code>jq</code> to parse container data,
+dynamically locate English subtitle tracks, and extract them across all
+MKV files in a directory.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.mkv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="bu">[</span> <span class="ot">-e</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="bu">]</span> <span class="kw">||</span> <span class="cf">continue</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">&quot;Processing: </span><span class="va">$file</span><span class="st">&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Extract track ID and codec for English subtitles</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="ex">mkvmerge</span> <span class="at">-J</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">jq</span> <span class="at">-r</span> <span class="st">&#39;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="st">    .tracks[] | </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="st">    select(.type==&quot;subtitles&quot; and .properties.language==&quot;eng&quot;) | </span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="st">    &quot;\(.id) \(.properties.codec_id)&quot;</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="st">  &#39;</span> <span class="kw">|</span> <span class="cf">while</span> <span class="bu">read</span> <span class="at">-r</span> <span class="va">track_id</span> <span class="va">codec</span><span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Determine appropriate extension</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="va">ext</span><span class="op">=</span><span class="st">&quot;sub&quot;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$codec</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="pp">*</span><span class="st">&quot;UTF8&quot;</span><span class="pp">*</span> <span class="kw">]]</span> <span class="kw">&amp;&amp;</span> <span class="va">ext</span><span class="op">=</span><span class="st">&quot;srt&quot;</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">[[</span> <span class="st">&quot;</span><span class="va">$codec</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="pp">*</span><span class="st">&quot;ASS&quot;</span><span class="pp">*</span> <span class="kw">]]</span> <span class="kw">&amp;&amp;</span> <span class="va">ext</span><span class="op">=</span><span class="st">&quot;ass&quot;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="va">output</span><span class="op">=</span><span class="st">&quot;</span><span class="va">${file</span><span class="op">%</span>.mkv<span class="va">}</span><span class="st">_track</span><span class="va">${track_id}</span><span class="st">_eng.</span><span class="va">${ext}</span><span class="st">&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">echo</span> <span class="st">&quot;Extracting track </span><span class="va">$track_id</span><span class="st"> to </span><span class="va">$output</span><span class="st">...&quot;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="ex">mkvextract</span> tracks <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">${track_id}</span><span class="st">:</span><span class="va">${output}</span><span class="st">&quot;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">done</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<h3 id="2-powershell-scripting-windows">2. PowerShell Scripting
+(Windows)</h3>
+<p>PowerShell natively handles JSON, making it well-suited for querying
+<code>mkvmerge</code> metadata and passing parameters to
+<code>mkvextract</code>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Get-ChildItem</span> <span class="op">-</span>Filter <span class="op">*.</span><span class="fu">mkv</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">$file</span> <span class="op">=</span> <span class="va">$_</span><span class="op">.</span><span class="fu">FullName</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="va">$baseName</span> <span class="op">=</span> <span class="va">$_</span><span class="op">.</span><span class="fu">BaseName</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get file metadata as JSON</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="va">$json</span> <span class="op">=</span> mkvmerge <span class="op">-</span>J <span class="va">$file</span> <span class="op">|</span> <span class="fu">ConvertFrom-Json</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Find all audio tracks</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">$audioTracks</span> <span class="op">=</span> <span class="va">$json</span><span class="op">.</span><span class="fu">tracks</span> <span class="op">|</span> <span class="fu">Where-Object</span> <span class="op">{</span> <span class="va">$_</span><span class="op">.</span><span class="fu">type</span> <span class="op">-eq</span> <span class="st">&quot;audio&quot;</span> <span class="op">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">foreach</span> <span class="op">(</span><span class="va">$track</span> <span class="kw">in</span> <span class="va">$audioTracks</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">$trackId</span> <span class="op">=</span> <span class="va">$track</span><span class="op">.</span><span class="fu">id</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">$lang</span> <span class="op">=</span> <span class="cf">if</span> <span class="op">(</span><span class="va">$track</span><span class="op">.</span><span class="fu">properties</span><span class="op">.</span><span class="fu">language</span><span class="op">)</span> <span class="op">{</span> <span class="va">$track</span><span class="op">.</span><span class="fu">properties</span><span class="op">.</span><span class="fu">language</span> <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span> <span class="st">&quot;und&quot;</span> <span class="op">}</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">$outputPath</span> <span class="op">=</span> <span class="fu">Join-Path</span> <span class="va">$_</span><span class="op">.</span><span class="fu">DirectoryName</span> <span class="st">&quot;</span><span class="op">$(</span><span class="va">$baseName</span><span class="op">)</span><span class="st">_audio_</span><span class="pp">${</span><span class="va">trackId</span><span class="pp">}</span><span class="st">_</span><span class="pp">${</span><span class="va">lang</span><span class="pp">}</span><span class="st">.aac&quot;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">Write-Host</span> <span class="st">&quot;Extracting audio track </span><span class="va">$trackId</span><span class="st"> from </span><span class="op">$(</span><span class="va">$_</span><span class="op">.</span><span class="fu">Name</span><span class="op">)</span><span class="st">&quot;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">&amp;</span> mkvextract tracks <span class="va">$file</span> <span class="st">&quot;</span><span class="pp">${</span><span class="va">trackId</span><span class="pp">}</span><span class="st">:</span><span class="pp">${</span><span class="va">outputPath</span><span class="pp">}</span><span class="st">&quot;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h3 id="3-python-automation">3. Python Automation</h3>
+<p>Python provides greater control for complex workflows, such as
+conditional extraction, database logging, and error handling.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> extract_chapters_and_subs(mkv_path: Path):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get JSON metadata</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    cmd <span class="op">=</span> [<span class="st">&quot;mkvmerge&quot;</span>, <span class="st">&quot;-J&quot;</span>, <span class="bu">str</span>(mkv_path)]</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> subprocess.run(cmd, capture_output<span class="op">=</span><span class="va">True</span>, text<span class="op">=</span><span class="va">True</span>, check<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    metadata <span class="op">=</span> json.loads(result.stdout)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 1. Extract Chapters if present</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> metadata.get(<span class="st">&quot;chapters&quot;</span>):</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        chapter_out <span class="op">=</span> mkv_path.with_suffix(<span class="st">&quot;.chapters.xml&quot;</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        subprocess.run([<span class="st">&quot;mkvextract&quot;</span>, <span class="st">&quot;chapters&quot;</span>, <span class="bu">str</span>(mkv_path), <span class="st">&quot;-s&quot;</span>, <span class="bu">str</span>(chapter_out)], check<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 2. Extract Subtitles</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    extract_args <span class="op">=</span> []</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> track <span class="kw">in</span> metadata.get(<span class="st">&quot;tracks&quot;</span>, []):</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> track[<span class="st">&quot;type&quot;</span>] <span class="op">==</span> <span class="st">&quot;subtitles&quot;</span>:</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            track_id <span class="op">=</span> track[<span class="st">&quot;id&quot;</span>]</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>            lang <span class="op">=</span> track.get(<span class="st">&quot;properties&quot;</span>, {}).get(<span class="st">&quot;language&quot;</span>, <span class="st">&quot;und&quot;</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>            sub_out <span class="op">=</span> mkv_path.with_name(<span class="ss">f&quot;</span><span class="sc">{</span>mkv_path<span class="sc">.</span>stem<span class="sc">}</span><span class="ss">_track</span><span class="sc">{</span>track_id<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>lang<span class="sc">}</span><span class="ss">.srt&quot;</span>)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>            extract_args.append(<span class="ss">f&quot;</span><span class="sc">{</span>track_id<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>sub_out<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> extract_args:</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>        subprocess.run([<span class="st">&quot;mkvextract&quot;</span>, <span class="st">&quot;tracks&quot;</span>, <span class="bu">str</span>(mkv_path)] <span class="op">+</span> extract_args, check<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&quot;__main__&quot;</span>:</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> mkv_file <span class="kw">in</span> Path(<span class="st">&quot;.&quot;</span>).glob(<span class="st">&quot;*.mkv&quot;</span>):</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&quot;Demuxing </span><span class="sc">{</span>mkv_file<span class="sc">.</span>name<span class="sc">}</span><span class="ss">...&quot;</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>        extract_chapters_and_subs(mkv_file)</span></code></pre></div>
+<h2 id="best-practices-for-automation">Best Practices for
+Automation</h2>
+<ul>
+<li><strong>Multi-Track Demuxing in a Single Call:</strong>
+<code>mkvextract</code> can extract multiple tracks simultaneously by
+passing multiple <code>&lt;track-id&gt;:&lt;output-file&gt;</code>
+arguments, avoiding redundant passes over large video files.</li>
+<li><strong>Handling Exit Codes:</strong> Check process return values. A
+return code of <code>0</code> indicates success, <code>1</code>
+indicates warnings (such as missing frames), and <code>2</code>
+indicates a critical error.</li>
+<li><strong>Extraction Modes:</strong> In addition to
+<code>tracks</code>, use dedicated extraction modes like
+<code>mkvextract chapters &lt;file&gt;</code> for chapter extraction,
+<code>mkvextract attachments &lt;file&gt;</code> for embedded fonts and
+covers, and <code>mkvextract tags &lt;file&gt;</code> for XML
+metadata.</li>
+<li><strong>Concurrency:</strong> For multi-core processing, limit
+parallel extractions based on disk I/O throughput rather than CPU count,
+as demuxing large files is primarily an I/O-bound operation.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

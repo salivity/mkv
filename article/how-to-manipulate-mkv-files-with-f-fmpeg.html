@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Manipulate MKV Files with FFmpeg - mkv</title>
+    <meta name="description" content="This article provides a practical guide on how to use FFmpeg, a powerful command-line tool, to manipulate MKV (Matroska) video files. You will learn how to perform essential video editing tasks such as converting formats without losing quality, cutting an">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-manipulate-mkv-files-with-f-fmpeg">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Manipulate MKV Files with FFmpeg - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-manipulate-mkv-files-with-f-fmpeg" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a practical guide on how to use FFmpeg, a powerful command-line tool, to manipulate MKV (Matroska) video files. You will learn how to perform essential video editing tasks such as converting formats without losing quality, cutting an" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-manipulate-mkv-files-with-ffmpeg">How to Manipulate MKV
+Files with FFmpeg</h1>
+<p>This article provides a practical guide on how to use FFmpeg, a
+powerful command-line tool, to manipulate MKV (Matroska) video files.
+You will learn how to perform essential video editing tasks such as
+converting formats without losing quality, cutting and trimming
+segments, extracting audio tracks, and re-encoding video codecs using
+simple, direct commands.</p>
+<h2 id="remuxing-mkv-to-mp4-without-re-encoding">Remuxing MKV to MP4
+(Without Re-encoding)</h2>
+<p>Remuxing changes the container format from MKV to MP4 without
+altering the underlying video and audio data. Because it does not
+re-encode the stream, this process is incredibly fast and preserves
+original quality.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c</span> copy output.mp4</span></code></pre></div>
+<ul>
+<li><code>-i input.mkv</code>: Specifies the input file.</li>
+<li><code>-c copy</code>: Directs FFmpeg to copy the video, audio, and
+subtitle streams directly without re-encoding them.</li>
+</ul>
+<h2 id="trimming-and-cutting-mkv-videos">Trimming and Cutting MKV
+Videos</h2>
+<p>You can cut a specific segment out of an MKV file by defining a start
+time and duration. Using the copy codec ensures the cut is
+instantaneous.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-ss</span> 00:01:30 <span class="at">-i</span> input.mkv <span class="at">-to</span> 00:02:45 <span class="at">-c</span> copy output.mkv</span></code></pre></div>
+<ul>
+<li><code>-ss 00:01:30</code>: Sets the start time (1 minute and 30
+seconds). Placing this before <code>-i</code> speeds up the seeking
+process.</li>
+<li><code>-to 00:02:45</code>: Sets the stop time (2 minutes and 45
+seconds). Alternatively, use <code>-t 00:01:15</code> to specify a
+duration of 1 minute and 15 seconds.</li>
+<li><code>-c copy</code>: Copies the streams without re-encoding.</li>
+</ul>
+<h2 id="extracting-audio-from-an-mkv-file">Extracting Audio from an MKV
+File</h2>
+<p>If you only need the audio track from an MKV file, you can extract it
+into an audio container.</p>
+<p>To extract the original audio stream without re-encoding (e.g.,
+extracting AC3 or AAC audio):</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-vn</span> <span class="at">-c:a</span> copy output.mka</span></code></pre></div>
+<ul>
+<li><code>-vn</code>: Disables video recording/processing.</li>
+<li><code>-c:a copy</code>: Copies the audio stream directly.</li>
+</ul>
+<p>To convert the extracted audio to a highly compatible MP3 file:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-vn</span> <span class="at">-c:a</span> libmp3lame <span class="at">-q:a</span> 2 output.mp3</span></code></pre></div>
+<ul>
+<li><code>-c:a libmp3lame</code>: Uses the MP3 encoder.</li>
+<li><code>-q:a 2</code>: Sets a high-quality variable bitrate
+(VBR).</li>
+</ul>
+<h2 id="re-encoding-video-and-audio-codecs">Re-encoding Video and Audio
+Codecs</h2>
+<p>Sometimes you need to compress an MKV file or convert its codecs for
+better device compatibility. The command below transcodes the video to
+H.264 and the audio to AAC.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c:v</span> libx264 <span class="at">-crf</span> 23 <span class="at">-c:a</span> aac <span class="at">-b:a</span> 192k output.mkv</span></code></pre></div>
+<ul>
+<li><code>-c:v libx264</code>: Encodes the video stream to H.264.</li>
+<li><code>-crf 23</code>: Sets the Constant Rate Factor for quality.
+Lower numbers mean better quality (18-28 is the standard range).</li>
+<li><code>-c:a aac</code>: Encodes the audio to AAC format.</li>
+<li><code>-b:a 192k</code>: Sets the audio bitrate to 192 kbps.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

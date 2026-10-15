@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dolby TrueHD MKV Pass-Through via eARC on Smart TVs - mkv</title>
+    <meta name="description" content="Modern smart TVs equipped with enhanced Audio Return Channel (eARC) have the physical bandwidth to transmit lossless audio formats like Dolby TrueHD. However, when playing local MKV files directly through the television&#39;s internal media player or built-in">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/dolby-true-hd-mkv-pass-through-via-e-arc-on-smart-t-vs">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Dolby TrueHD MKV Pass-Through via eARC on Smart TVs - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/dolby-true-hd-mkv-pass-through-via-e-arc-on-smart-t-vs" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Modern smart TVs equipped with enhanced Audio Return Channel (eARC) have the physical bandwidth to transmit lossless audio formats like Dolby TrueHD. However, when playing local MKV files directly through the television&#39;s internal media player or built-in" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="dolby-truehd-mkv-pass-through-via-earc-on-smart-tvs">Dolby
+TrueHD MKV Pass-Through via eARC on Smart TVs</h1>
+<p>Modern smart TVs equipped with enhanced Audio Return Channel (eARC)
+have the physical bandwidth to transmit lossless audio formats like
+Dolby TrueHD. However, when playing local MKV files directly through the
+television's internal media player or built-in apps (such as Plex or
+Emby), TrueHD pass-through is almost universally blocked. Understanding
+why this limitation exists and how smart TVs process these audio streams
+is essential for setting up a proper home theater environment.</p>
+<h3 id="the-internal-app-limitation">The Internal App Limitation</h3>
+<p>While eARC hardware supports high-bandwidth formats up to 37
+Mbps—easily accommodating the bitrates required for Dolby TrueHD and
+Dolby Atmos—the restriction lies within the smart TV operating systems
+(such as LG webOS, Samsung Tizen, or Google TV on Sony and TCL).</p>
+<p>Television manufacturers design internal audio pipelines primarily
+for streaming services, which use lossy formats like Dolby Digital Plus
+(E-AC-3). As a result, the internal media players and operating system
+decoders lack the licensing or system-level capability to route raw,
+lossless TrueHD bitstreams from an internal application (USB playback or
+local network streaming) out through the eARC port.</p>
+<h3 id="how-smart-tvs-handle-truehd-playback">How Smart TVs Handle
+TrueHD Playback</h3>
+<p>When attempting to play an MKV container containing a Dolby TrueHD
+track via an internal TV app, the TV will typically handle the audio in
+one of four ways:</p>
+<ul>
+<li><strong>Fallback to Dolby Digital/AC-3:</strong> If the MKV file
+contains an embedded secondary lossy Dolby Digital track (or if the
+media server extracts it), the TV will play that lossy track
+instead.</li>
+<li><strong>Server-Side Transcoding:</strong> If using a media server
+like Plex or Jellyfin, the server detects that the TV cannot decode
+TrueHD and automatically transcodes the audio to multi-channel PCM,
+Dolby Digital, or AAC.</li>
+<li><strong>Downmixing to Stereo PCM:</strong> Some TVs decode the
+TrueHD stream internally and downmix it to a two-channel stereo PCM
+signal before sending it over eARC.</li>
+<li><strong>No Audio:</strong> In the worst-case scenario where the TV
+cannot decode or route the track and no fallback exists, playback
+results in complete silence.</li>
+</ul>
+<h3 id="internal-playback-vs-external-hdmi-pass-through">Internal
+Playback vs. External HDMI Pass-Through</h3>
+<p>There is a major distinction between playing an MKV file from an
+<em>internal</em> app versus an <em>external</em> source device:</p>
+<ul>
+<li><strong>Internal Apps (Fails):</strong> Playing an MKV file from a
+USB drive plugged into the TV or via an internal app will not pass
+TrueHD over eARC.</li>
+<li><strong>External Devices (Succeeds):</strong> Connecting an external
+media player (such as an Nvidia Shield TV Pro, a dedicated Blu-ray
+player, or an HTPC) directly to an HDMI input on the TV allows the TV to
+act purely as a pass-through bridge. The TV accepts the raw TrueHD
+bitstream from the external device and sends it untouched via the eARC
+port to an AV receiver or soundbar.</li>
+</ul>
+<h3 id="the-solution-for-truehd-mkv-playback">The Solution for TrueHD
+MKV Playback</h3>
+<p>To achieve full, uncompressed Dolby TrueHD (including TrueHD with
+Dolby Atmos) playback from MKV files, bypass the smart TV's native media
+player entirely. The standard solution is to connect an external
+streaming device that natively supports TrueHD bitstreaming directly to
+an eARC-capable AV receiver/soundbar, or to the TV's HDMI input set to
+"Bitstream / Pass-Through" mode.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

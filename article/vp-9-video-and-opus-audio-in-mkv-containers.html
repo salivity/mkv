@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP9 Video and Opus Audio in MKV Containers - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports encapsulating VP9 video alongside Opus audio streams. Because MKV is designed to be universally adaptable and codec-agnostic, it natively accommodates both modern, open-source formats within a single">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/vp-9-video-and-opus-audio-in-mkv-containers">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VP9 Video and Opus Audio in MKV Containers - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/vp-9-video-and-opus-audio-in-mkv-containers" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports encapsulating VP9 video alongside Opus audio streams. Because MKV is designed to be universally adaptable and codec-agnostic, it natively accommodates both modern, open-source formats within a single" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="vp9-video-and-opus-audio-in-mkv-containers">VP9 Video and Opus
+Audio in MKV Containers</h1>
+<p>The Matroska (MKV) multimedia container fully supports encapsulating
+VP9 video alongside Opus audio streams. Because MKV is designed to be
+universally adaptable and codec-agnostic, it natively accommodates both
+modern, open-source formats within a single file. This combination
+delivers high-efficiency video compression paired with low-latency,
+high-fidelity audio, making it an ideal choice for digital preservation,
+streaming, and offline playback.</p>
+<h3 id="native-codec-support-in-matroska">Native Codec Support in
+Matroska</h3>
+<p>The Matroska specification explicitly defines track mappings for both
+the VP9 video codec and the Opus audio codec. VP9 provides efficient
+compression comparable to HEVC/H.265 without licensing fees, while Opus
+offers superior sound quality across a wide range of bitrates. When
+packaged inside an MKV container, both streams retain their native
+properties without requiring transcoding or quality loss.</p>
+<h3 id="the-mkv-and-webm-connection">The MKV and WebM Connection</h3>
+<p>WebM, a standard format for HTML5 web video, is actually a
+constrained subset of the Matroska format. WebM was specifically
+engineered by Google to use VP8/VP9/AV1 video and Vorbis/Opus audio.
+Because WebM is derived directly from the MKV container structure, any
+stream combination valid in WebM is inherently valid in standard MKV
+files. Using the full MKV container over WebM provides added benefits,
+such as support for advanced subtitle formats (like SSA/ASS), chapter
+markers, attachments, and multiple audio tracks.</p>
+<h3 id="software-and-hardware-compatibility">Software and Hardware
+Compatibility</h3>
+<p>MKV files containing VP9 and Opus are widely supported across modern
+media software and operating systems:</p>
+<ul>
+<li><strong>Software Players:</strong> Cross-platform media players such
+as VLC, MPV, MPC-HC, and PotPlayer can demux and decode this combination
+natively.</li>
+<li><strong>Media Servers:</strong> Streaming solutions like Plex, Emby,
+and Jellyfin handle MKV files containing VP9 and Opus with direct play
+on compatible client devices.</li>
+<li><strong>Hardware Decoding:</strong> Devices equipped with hardware
+VP9 decoding (such as modern GPUs, smart TVs, and streaming sticks) can
+offload video processing smoothly, while Opus is lightweight enough for
+any modern CPU to decode with minimal power usage.</li>
+</ul>
+<h3 id="how-to-mux-vp9-and-opus-into-mkv">How to Mux VP9 and Opus into
+MKV</h3>
+<p>You can package existing VP9 and Opus tracks into an MKV container
+quickly using standard tools without re-encoding the streams:</p>
+<ul>
+<li><p><strong>Using FFmpeg:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> video_stream.vp9 <span class="at">-i</span> audio_stream.opus <span class="at">-c</span> copy output.mkv</span></code></pre></div></li>
+<li><p><strong>Using MKVToolNix:</strong> Load the input files into
+MKVToolNix GUI, arrange the tracks as needed, and start multiplexing to
+generate the <code>.mkv</code> output file.</p></li>
+</ul>
+<p>Combining VP9 and Opus within an MKV container results in an open,
+highly efficient, and future-proof media file suitable for a wide
+variety of playback environments.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

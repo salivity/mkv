@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storing Synchronized Telemetry in MKV Containers - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format fully supports storing real-time telemetry data synchronized with video frames. Thanks to its flexible, extensible binary structure based on EBML (Extensible Binary Meta Language), MKV can multiplex arbitrary data strea">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/storing-synchronized-telemetry-in-mkv-containers">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Storing Synchronized Telemetry in MKV Containers - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/storing-synchronized-telemetry-in-mkv-containers" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format fully supports storing real-time telemetry data synchronized with video frames. Thanks to its flexible, extensible binary structure based on EBML (Extensible Binary Meta Language), MKV can multiplex arbitrary data strea" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="storing-synchronized-telemetry-in-mkv-containers">Storing
+Synchronized Telemetry in MKV Containers</h1>
+<p>The Matroska (MKV) container format fully supports storing real-time
+telemetry data synchronized with video frames. Thanks to its flexible,
+extensible binary structure based on EBML (Extensible Binary Meta
+Language), MKV can multiplex arbitrary data streams alongside standard
+audio and video tracks. This article explains how MKV handles telemetry
+data, the mechanisms used for per-frame synchronization, common data
+formats, and how to implement this in standard workflows.</p>
+<h2 id="how-mkv-handles-real-time-telemetry">How MKV Handles Real-Time
+Telemetry</h2>
+<p>Unlike rigid container formats, Matroska is codec-agnostic and does
+not restrict track types to conventional audio and video. It allows
+developers to define additional tracks specifically designated for
+metadata, subtitles, or raw binary data.</p>
+<p>Each entry in an MKV file is organized into discrete packets called
+<code>Block</code> or <code>SimpleBlock</code> elements, which are
+grouped inside <code>Cluster</code> elements. Every data block contains
+a precise timestamp (Presentation Time Stamp or PTS) relative to the
+cluster's timecode. By assigning matching timestamps to both a video
+frame and a corresponding telemetry packet, MKV achieves frame-accurate
+synchronization.</p>
+<h2 id="methods-for-embedding-telemetry-in-mkv">Methods for Embedding
+Telemetry in MKV</h2>
+<p>There are several standard approaches to embedding telemetry data
+inside an MKV container depending on how the data will be consumed:</p>
+<h3 id="1-timed-text-and-subtitle-tracks-json-csv-srt">1. Timed Text and
+Subtitle Tracks (JSON, CSV, SRT)</h3>
+<p>For lightweight or human-readable telemetry (such as GPS coordinates,
+altitude, speed, or temperature), you can store data as a timed text
+track:</p>
+<ul>
+<li><strong>SRT/VTT:</strong> Useful for displaying basic telemetry
+overlays directly on media players without specialized software.</li>
+<li><strong>JSON/CSV Lines:</strong> Stored as generic subtitle or text
+tracks where each subtitle event contains a serialized JSON payload
+representing sensor readings for that specific time offset.</li>
+</ul>
+<h3 id="2-binary-data-tracks-klv-and-custom-sensors">2. Binary Data
+Tracks (KLV and Custom Sensors)</h3>
+<p>For high-frequency sensor data (such as IMU readings, accelerometers,
+or flight controllers operating at 50Hz to 1000Hz), text tracks can
+introduce unnecessary overhead. MKV allows you to create raw binary
+tracks:</p>
+<ul>
+<li><strong>MISB / KLV (Key-Length-Value):</strong> A standardized
+metadata format widely used in aerospace and defense for drone
+telemetry. MKV supports muxing KLV packets synchronized to video
+frames.</li>
+<li><strong>Custom Binary Payloads:</strong> Proprietary binary
+structures mapped directly into custom track headers with user-defined
+codecs (e.g., <code>D_WEBVTT/METADATA</code> or custom EBML track
+types).</li>
+</ul>
+<h3 id="3-styled-subtitle-overlays-ssaass">3. Styled Subtitle Overlays
+(SSA/ASS)</h3>
+<p>If the goal is purely visual synchronization without requiring a
+dedicated decoder application, Advanced SubStation Alpha (ASS) tracks
+allow telemetry values to be dynamically rendered over the video with
+custom fonts, colors, and dashboard-like positions.</p>
+<h2 id="advantages-of-using-mkv-for-telemetry">Advantages of Using MKV
+for Telemetry</h2>
+<ul>
+<li><strong>Resilience to Corruption:</strong> MKV files use
+cluster-based indexing, meaning that even if a recording session ends
+abruptly (such as a power failure on a drone or dashcam), the recorded
+video and telemetry up to the last written cluster remain
+recoverable.</li>
+<li><strong>Sub-millisecond Precision:</strong> The default Matroska
+timecode scale is 1 millisecond, but it can be configured to nanosecond
+precision, easily accommodating high-frequency telemetry logs.</li>
+<li><strong>Multi-Stream Support:</strong> A single MKV file can hold
+multiple independent telemetry tracks simultaneously—for instance, one
+track for GPS, another for high-speed IMU data, and another for camera
+settings.</li>
+</ul>
+<h2 id="implementation-tools">Implementation Tools</h2>
+<p>Multiplexing telemetry into MKV is natively supported by major
+open-source media utilities:</p>
+<ul>
+<li><strong>FFmpeg:</strong> Allows mapping external data files (like
+timed SRT, WebVTT, or raw data streams) directly into an MKV container
+alongside encoded video frames using commands like <code>-map</code> and
+<code>-c:d copy</code>.</li>
+<li><strong>MKVToolNix (<code>mkvmerge</code>):</strong> A dedicated
+toolkit for Matroska that can inject custom track types, configure track
+properties, and embed synchronized subtitle or metadata streams into
+existing MKV files.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

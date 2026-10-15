@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Pixel vs Display Dimensions - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container separates coded pixel resolution from presentation geometry by defining distinct metadata elements inside its video track headers. Using the Extensible Binary Meta Language (EBML) structure, an MKV file stores raw frame measur">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-pixel-vs-display-dimensions">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Pixel vs Display Dimensions - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-pixel-vs-display-dimensions" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container separates coded pixel resolution from presentation geometry by defining distinct metadata elements inside its video track headers. Using the Extensible Binary Meta Language (EBML) structure, an MKV file stores raw frame measur" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-pixel-vs-display-dimensions">How MKV Stores Pixel
+vs Display Dimensions</h1>
+<p>The Matroska (MKV) container separates coded pixel resolution from
+presentation geometry by defining distinct metadata elements inside its
+video track headers. Using the Extensible Binary Meta Language (EBML)
+structure, an MKV file stores raw frame measurements independently of
+the final rendering size. This allows media players to decode video at
+its native pixel grid and automatically scale it to the correct aspect
+ratio upon playback without requiring stream re-encoding.</p>
+<h3 id="the-ebml-video-track-architecture">The EBML Video Track
+Architecture</h3>
+<p>In the Matroska specification, track properties are organized under
+the <code>Segment</code> &gt; <code>Tracks</code> &gt;
+<code>TrackEntry</code> hierarchy. When a track is identified as a video
+stream, the container includes a <code>Video</code> master element (EBML
+ID <code>0xE0</code>). Within this master element, separate sub-elements
+handle storage dimensions and display dimensions.</p>
+<h3 id="pixel-dimensions-storage-resolution">Pixel Dimensions: Storage
+Resolution</h3>
+<p>Pixel dimensions represent the actual number of coded pixels
+contained within the compressed bitstream. MKV defines these using two
+specific EBML elements:</p>
+<ul>
+<li><strong>PixelWidth (EBML ID <code>0xB0</code>):</strong> Defines the
+width of the encoded video frames in raw pixels.</li>
+<li><strong>PixelHeight (EBML ID <code>0xBA</code>):</strong> Defines
+the height of the encoded video frames in raw pixels.</li>
+</ul>
+<p>These integer values dictate the buffer size required by the video
+decoder to reconstruct each frame. They remain strictly tied to the
+encoded stream data (for example, a standard 720x480 DVD rip or a
+1440x1080 HDV capture).</p>
+<h3 id="display-dimensions-presentation-scaling">Display Dimensions:
+Presentation Scaling</h3>
+<p>To account for non-square pixels and anamorphic video, MKV provides
+secondary elements that dictate the target rendered output:</p>
+<ul>
+<li><strong>DisplayWidth (EBML ID <code>0x54B0</code>):</strong> The
+target width at which the video should be rendered on a screen.</li>
+<li><strong>DisplayHeight (EBML ID <code>0x54BA</code>):</strong> The
+target height at which the video should be rendered on a screen.</li>
+<li><strong>DisplayUnit (EBML ID <code>0x54B2</code>):</strong> An
+optional parameter indicating how <code>DisplayWidth</code> and
+<code>DisplayHeight</code> should be interpreted (e.g., <code>0</code>
+for pixels, <code>1</code> for centimeters, <code>2</code> for inches,
+or <code>3</code> for aspect ratio). By default, this value is
+<code>0</code> (pixels).</li>
+</ul>
+<p>If <code>DisplayWidth</code> and <code>DisplayHeight</code> are
+omitted, the container assumes square pixels, rendering the video at the
+values specified by <code>PixelWidth</code> and
+<code>PixelHeight</code>.</p>
+<h3 id="how-players-process-the-data">How Players Process the Data</h3>
+<p>During playback, the media pipeline functions in two distinct
+stages:</p>
+<ol type="1">
+<li><strong>Decoding:</strong> The video decoder uses
+<code>PixelWidth</code> and <code>PixelHeight</code> to allocate memory
+buffers and decode the compressed macroblocks into raw image
+frames.</li>
+<li><strong>Rendering:</strong> The video renderer reads
+<code>DisplayWidth</code> and <code>DisplayHeight</code> from the MKV
+container header. It calculates the Pixel Aspect Ratio (PAR) or Display
+Aspect Ratio (DAR) and stretches or compresses the decoded frame to
+match the target display dimensions.</li>
+</ol>
+<p>Because these values exist as lightweight container metadata rather
+than hardcoded video stream headers, users and authoring tools can
+modify the display aspect ratio instantly using header editing tools
+without touching or recompressing the underlying video stream.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

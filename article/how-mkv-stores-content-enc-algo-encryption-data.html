@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores ContentEncAlgo Encryption Data - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format utilizes an extensible Extensible Binary Meta Language (EBML) structure to handle protected and encrypted media streams. Within this architecture, encryption metadata is organized in the track headers under s">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-content-enc-algo-encryption-data">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores ContentEncAlgo Encryption Data - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-content-enc-algo-encryption-data" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format utilizes an extensible Extensible Binary Meta Language (EBML) structure to handle protected and encrypted media streams. Within this architecture, encryption metadata is organized in the track headers under s" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-contentencalgo-encryption-data">How MKV Stores
+ContentEncAlgo Encryption Data</h1>
+<p>The Matroska (MKV) multimedia container format utilizes an extensible
+Extensible Binary Meta Language (EBML) structure to handle protected and
+encrypted media streams. Within this architecture, encryption metadata
+is organized in the track headers under specific structural elements.
+The container specifies the cipher used via the
+<code>ContentEncAlgo</code> element, alongside corresponding key
+identifiers and cipher configurations, allowing demuxers and
+cryptographic modules to identify, extract, and decrypt media blocks
+before decoding.</p>
+<h3 id="the-ebml-structural-hierarchy">The EBML Structural
+Hierarchy</h3>
+<p>MKV organizes encryption parameters inside the metadata header of
+each individual media track. Encryption is treated as a sub-type of
+content encoding (which also covers compression). The hierarchy is
+structured as follows:</p>
+<ul>
+<li><strong>Segment (<code>0x18538067</code>)</strong>: The top-level
+root container for all MKV metadata and data.
+<ul>
+<li><strong>Tracks (<code>0x1654AE6B</code>)</strong>: Contains
+information about all streams in the file.
+<ul>
+<li><strong>TrackEntry (<code>0xAE</code>)</strong>: Describes an
+individual video, audio, or subtitle track.
+<ul>
+<li><strong>ContentEncodings (<code>0x6D80</code>)</strong>: Wraps one
+or more encoding configurations.
+<ul>
+<li><strong>ContentEncoding (<code>0x6264</code>)</strong>: Defines a
+specific encoding step and its order.
+<ul>
+<li><strong>ContentEncodingType (<code>0x5031</code>)</strong>: Set to
+<code>1</code> to indicate encryption (as opposed to <code>0</code> for
+compression).</li>
+<li><strong>ContentEncryption (<code>0x5035</code>)</strong>: The parent
+container for all cryptographic settings.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<h3 id="the-role-of-contentencalgo">The Role of ContentEncAlgo</h3>
+<p>Inside the <code>ContentEncryption</code> element, the
+<code>ContentEncAlgo</code> (<code>0x47E1</code>) tag is stored as an
+unsigned integer (unsigned int). It explicitly tells the playback engine
+which cryptographic algorithm was used to encrypt the track's raw
+payload data.</p>
+<p>The Matroska specification maps the integer values of
+<code>ContentEncAlgo</code> to specific algorithms:</p>
+<ul>
+<li><strong>0 - Not Encrypted</strong>: The data remains in plain text
+(often used as a passthrough or default).</li>
+<li><strong>1 - DES</strong>: Data Encryption Standard.</li>
+<li><strong>2 - 3DES</strong>: Triple Data Encryption Standard
+(Triple-DES).</li>
+<li><strong>3 - Twofish</strong>: Twofish symmetric key block
+cipher.</li>
+<li><strong>4 - Blowfish</strong>: Blowfish symmetric block cipher.</li>
+<li><strong>5 - AES</strong>: Advanced Encryption Standard
+(Rijndael).</li>
+</ul>
+<h3 id="complementary-encryption-metadata-elements">Complementary
+Encryption Metadata Elements</h3>
+<p><code>ContentEncAlgo</code> does not work in isolation; it works in
+tandem with several sibling EBML elements located within
+<code>ContentEncryption</code> to fully define the cryptographic
+profile:</p>
+<ul>
+<li><strong>ContentEncKeyID (<code>0x47E2</code>)</strong>: A binary
+payload containing the Key Identifier (Key ID). The demuxer uses this ID
+to query a digital rights management (DRM) system or key repository for
+the correct decryption key without exposing the key itself inside the
+container.</li>
+<li><strong>ContentEncAESSettings (<code>0x47E7</code>)</strong>: If
+<code>ContentEncAlgo</code> is set to <code>5</code> (AES), this
+sub-element defines AES-specific behavior.
+<ul>
+<li><strong>AESSettingsCipherMode (<code>0x47E8</code>)</strong>: An
+unsigned integer defining the block cipher mode. For instance, value
+<code>1</code> represents AES-CTR (Counter Mode), commonly used in
+modern media streaming, while value <code>2</code> represents
+AES-CBC.</li>
+</ul></li>
+</ul>
+<h3 id="payload-storage-and-decryption-flow">Payload Storage and
+Decryption Flow</h3>
+<p>When an MKV file containing encrypted media is demuxed:</p>
+<ol type="1">
+<li><strong>Header Parsing</strong>: The parser traverses the
+<code>TrackEntry</code> and encounters <code>ContentEncodings</code>. If
+<code>ContentEncodingType</code> is <code>1</code>, it reads the
+<code>ContentEncryption</code> block.</li>
+<li><strong>Algorithm Identification</strong>: The parser reads
+<code>ContentEncAlgo</code> to configure the correct decryption module
+(e.g., AES-128 or AES-256).</li>
+<li><strong>Key Retrieval</strong>: The parser extracts the binary data
+from <code>ContentEncKeyID</code> and requests the matching secret key
+from the cryptographic provider or DRM client.</li>
+<li><strong>Frame Processing</strong>: Media frames are stored inside
+<code>Cluster</code> elements as <code>SimpleBlock</code> or
+<code>BlockGroup</code> structures. When encrypted, the payloads of
+these blocks contain ciphertext. The playback system routes this
+ciphertext through the initialized cipher engine using the designated
+<code>ContentEncAlgo</code> specifications.</li>
+<li><strong>Passing to Decoder</strong>: Once decrypted, the raw
+elementary stream data (e.g., H.264, HEVC, AAC) is forwarded to the
+designated media decoder for rendering.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

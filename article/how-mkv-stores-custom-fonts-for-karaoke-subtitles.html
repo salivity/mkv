@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Custom Fonts for Karaoke Subtitles - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format utilizes a dedicated binary attachment framework to package custom font files directly alongside video, audio, and subtitle streams. For stylized subtitle formats—most notably Advanced SubStation Alpha (.ass)">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-custom-fonts-for-karaoke-subtitles">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Custom Fonts for Karaoke Subtitles - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-custom-fonts-for-karaoke-subtitles" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format utilizes a dedicated binary attachment framework to package custom font files directly alongside video, audio, and subtitle streams. For stylized subtitle formats—most notably Advanced SubStation Alpha (.ass)" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-custom-fonts-for-karaoke-subtitles">How MKV
+Stores Custom Fonts for Karaoke Subtitles</h1>
+<p>The Matroska (MKV) multimedia container format utilizes a dedicated
+binary attachment framework to package custom font files directly
+alongside video, audio, and subtitle streams. For stylized subtitle
+formats—most notably Advanced SubStation Alpha (.ass)—embedded fonts
+ensure that complex karaoke typography, unique typefaces, glyphs, and
+vector animations render identically across all devices without
+requiring viewers to manually install the fonts on their host operating
+systems.</p>
+<h2 id="the-matroska-attachment-architecture">The Matroska Attachment
+Architecture</h2>
+<p>MKV is built on EBML (Extensible Binary Meta Language), a binary
+equivalent to XML. Within the EBML hierarchy, the container reserves a
+specific top-level element called <code>Attachments</code>
+(<code>0x1941A469</code>).</p>
+<p>Inside this container-level block, individual fonts are stored as
+distinct <code>AttachedFile</code> (<code>0x61A7</code>) child elements.
+Each font attachment contains specific metadata tags alongside the raw
+binary file:</p>
+<ul>
+<li><strong>FileDescription (<code>0x467E</code>):</strong> An optional
+plain-text description of the attached file.</li>
+<li><strong>FileName (<code>0x466E</code>):</strong> The exact filename,
+such as <code>CustomKaraokeFont.ttf</code> or
+<code>StylizedDisplay.otf</code>.</li>
+<li><strong>FileMediaType (<code>0x4660</code>):</strong> The MIME type
+indicating the font format, such as <code>font/ttf</code>,
+<code>font/otf</code>, <code>application/x-font-truetype</code>, or
+<code>application/vnd.ms-opentype</code>.</li>
+<li><strong>FileData (<code>0x465C</code>):</strong> The raw,
+uncompressed binary payload of the TrueType (TTF) or OpenType (OTF)
+font.</li>
+<li><strong>FileUID (<code>0x46AE</code>):</strong> A unique 64-bit
+unsigned integer identifying the attachment within the container.</li>
+</ul>
+<h2 id="demuxing-and-subtitle-rendering-pipeline">Demuxing and Subtitle
+Rendering Pipeline</h2>
+<p>When a media player opens an MKV file containing karaoke subtitles,
+it executes a specific pipeline to load and apply the embedded
+fonts:</p>
+<ol type="1">
+<li><strong>Demuxing the Attachments:</strong> The media demuxer (such
+as FFmpeg or LAV Splitter) reads the <code>Attachments</code> header
+during container initialization and extracts the raw font data into
+memory.</li>
+<li><strong>Font Memory Loading:</strong> Instead of writing files to
+the system's global font directory, modern subtitle renderers (like
+<code>libass</code> or <code>VSFilter</code>/<code>xy-VSFilter</code>)
+use font configuration libraries (like <code>Fontconfig</code> or
+DirectWrite) to create an in-memory, sandboxed font collection for that
+playback session.</li>
+<li><strong>Typography Matching:</strong> The subtitle script defines
+styles using the font's internal PostScript or Family name. When the
+subtitle renderer encounters a karaoke line requiring a specific font,
+it queries the local in-memory pool first.</li>
+<li><strong>Glyph Rendering and Effect Execution:</strong> The renderer
+extracts the required vector glyphs from the embedded font data and
+applies the specified karaoke timing tags (such as <code>\k</code>,
+<code>\K</code>, or <code>\kf</code>), fills, borders, and position
+coordinates before rasterizing the final visual frames over the video
+stream.</li>
+</ol>
+<p>By embedding the raw font binaries directly into the EBML stream and
+resolving them dynamically in memory, MKV preserves the visual fidelity,
+alignment, and timing of complex karaoke effects across different
+platforms and player configurations.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

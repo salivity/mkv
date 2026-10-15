@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Edit MKV Files in DaVinci Resolve - mkv</title>
+    <meta name="description" content="This article provides a straightforward guide on how to import, edit, and export MKV video files in DaVinci Resolve. You will learn how to utilize native MKV support in modern versions of the software, troubleshoot common audio and video codec issues, and">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-edit-mkv-files-in-da-vinci-resolve">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Edit MKV Files in DaVinci Resolve - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-edit-mkv-files-in-da-vinci-resolve" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article provides a straightforward guide on how to import, edit, and export MKV video files in DaVinci Resolve. You will learn how to utilize native MKV support in modern versions of the software, troubleshoot common audio and video codec issues, and" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-edit-mkv-files-in-davinci-resolve">How to Edit MKV Files
+in DaVinci Resolve</h1>
+<p>This article provides a straightforward guide on how to import, edit,
+and export MKV video files in DaVinci Resolve. You will learn how to
+utilize native MKV support in modern versions of the software,
+troubleshoot common audio and video codec issues, and quickly convert or
+remux incompatible MKV files to edit-friendly formats like MP4.</p>
+<h2 id="native-mkv-support-in-davinci-resolve">Native MKV Support in
+DaVinci Resolve</h2>
+<p>If you are using DaVinci Resolve version 17.2 or later, the software
+natively supports the import and editing of MKV (Matroska) container
+files.</p>
+<p>To import an MKV file directly:</p>
+<ol type="1">
+<li>Open DaVinci Resolve and start a new project or open an existing
+one.</li>
+<li>Go to the <strong>Media</strong> page or the <strong>Edit</strong>
+page.</li>
+<li>Right-click inside the <strong>Media Pool</strong> and select
+<strong>Import Media</strong>, or simply drag and drop your MKV file
+from your computer's file explorer directly into the Media Pool.</li>
+<li>Drag the imported clip onto your timeline to begin editing.</li>
+</ol>
+<h2 id="troubleshooting-mkv-import-issues">Troubleshooting MKV Import
+Issues</h2>
+<p>If your MKV file does not import, or if it imports but lacks audio or
+video, it is usually because DaVinci Resolve does not support the
+specific audio or video codec contained inside the MKV wrapper (such as
+AC-3 audio or variable frame rate video).</p>
+<p>To fix this, you must convert or remux the file into a fully
+compatible format like MP4 using one of the free methods below.</p>
+<h3 id="method-1-remuxing-mkv-to-mp4-using-obs-studio">Method 1:
+Remuxing MKV to MP4 Using OBS Studio</h3>
+<p>If you recorded your footage using OBS Studio, you can change the
+container from MKV to MP4 in seconds without losing any video quality
+through a process called "remuxing."</p>
+<ol type="1">
+<li>Open <strong>OBS Studio</strong>.</li>
+<li>Click on <strong>File</strong> in the top-left menu and select
+<strong>Remux Recordings</strong>.</li>
+<li>Click the three dots under <strong>OBS Recording</strong> to browse
+and select your MKV file.</li>
+<li>The target file path will automatically set to MP4.</li>
+<li>Click the <strong>Remux</strong> button. The process completes
+almost instantly.</li>
+<li>Import the newly created MP4 file into DaVinci Resolve.</li>
+</ol>
+<h3 id="method-2-converting-mkv-using-handbrake">Method 2: Converting
+MKV Using HandBrake</h3>
+<p>For MKV files from other sources, you can use the free, open-source
+transcoder HandBrake to convert the files into a standard H.264 MP4
+format.</p>
+<ol type="1">
+<li>Download, install, and open <strong>HandBrake</strong>.</li>
+<li>Drag and drop your MKV file into the window.</li>
+<li>In the <strong>Summary</strong> tab, ensure the
+<strong>Format</strong> is set to <strong>MP4</strong>.</li>
+<li>In the <strong>Video</strong> tab, set the <strong>Framerate
+(FPS)</strong> to <strong>Constant Framerate</strong> to avoid sync
+issues in DaVinci Resolve.</li>
+<li>Choose a destination folder at the bottom, then click <strong>Start
+Encode</strong> at the top of the window.</li>
+<li>Once finished, import the converted MP4 file into DaVinci
+Resolve.</li>
+</ol>
+<h2 id="exporting-your-edited-video">Exporting Your Edited Video</h2>
+<p>DaVinci Resolve does not support exporting directly back into the MKV
+container format. Once you have finished editing your video, you must
+export it using a compatible container.</p>
+<ol type="1">
+<li>Go to the <strong>Deliver</strong> page (the rocket icon at the
+bottom of the screen).</li>
+<li>Under <strong>Render Settings</strong>, locate the <strong>Export
+Video</strong> settings.</li>
+<li>Set the <strong>Format</strong> to <strong>MP4</strong> or
+<strong>QuickTime</strong>.</li>
+<li>Set the <strong>Codec</strong> to <strong>H.264</strong> or
+<strong>H.265</strong>.</li>
+<li>Click <strong>Add to Render Queue</strong>, then click
+<strong>Render All</strong> in the Render Queue panel to export your
+final video.</li>
+</ol></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores HDR Maximum Luminance Values - mkv</title>
+    <meta name="description" content="High Dynamic Range (HDR) video relies on mastering display metadata to ensure playback devices accurately tone-map luminance levels to match their specific display capabilities. The Matroska (MKV) container format preserves this critical color grading inf">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-hdr-maximum-luminance-values">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores HDR Maximum Luminance Values - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-hdr-maximum-luminance-values" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="High Dynamic Range (HDR) video relies on mastering display metadata to ensure playback devices accurately tone-map luminance levels to match their specific display capabilities. The Matroska (MKV) container format preserves this critical color grading inf" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-hdr-maximum-luminance-values">How MKV Stores HDR
+Maximum Luminance Values</h1>
+<p>High Dynamic Range (HDR) video relies on mastering display metadata
+to ensure playback devices accurately tone-map luminance levels to match
+their specific display capabilities. The Matroska (MKV) container format
+preserves this critical color grading information by embedding
+standardized static metadata fields directly into its track headers
+using Extensible Binary Meta Language (EBML). This article explains the
+technical structure MKV uses to define, store, and expose maximum
+luminance parameters—such as peak display luminance and Content Light
+Level metadata—independently of the underlying video bitstream.</p>
+<h3 id="the-mkv-ebml-header-structure">The MKV EBML Header
+Structure</h3>
+<p>Matroska uses an extensible, binary hierarchical system (EBML) to
+organize media properties. When an HDR video stream is multiplexed into
+an MKV container, HDR color grading parameters are defined within the
+container's Track properties.</p>
+<p>The hierarchy follows this path:</p>
+<ol type="1">
+<li><code>Segment</code> (The root EBML element)</li>
+<li><code>Tracks</code></li>
+<li><code>TrackEntry</code> (Specific to the video stream)</li>
+<li><code>Video</code></li>
+<li><code>Colour</code></li>
+</ol>
+<p>The <code>Colour</code> element (EBML ID <code>0x55B0</code>)
+contains all video colorimetry information, including color space,
+matrix coefficients, transfer characteristics, and display luminance
+specifications.</p>
+<h3 id="mastering-display-luminance-elements">Mastering Display
+Luminance Elements</h3>
+<p>Within the <code>Colour</code> element, the
+<code>MasteringMetadata</code> master element (EBML ID
+<code>0x55D0</code>) defines the physical characteristics of the monitor
+used during the mastering process, adhering to the SMPTE ST 2086
+standard.</p>
+<p>The maximum luminance of the mastering display is explicitly stored
+in the following tag:</p>
+<ul>
+<li><strong><code>LuminanceMax</code> (EBML ID
+<code>0x55D9</code>):</strong> Represents the maximum luminance of the
+mastering display. The value is stored as a floating-point number
+representing candelas per square meter (<span
+class="math inline">\(\text{cd/m}^2\)</span>), commonly referred to as
+nits (e.g., 1000.0 or 4000.0).</li>
+<li><strong><code>LuminanceMin</code> (EBML ID
+<code>0x55DA</code>):</strong> Represents the minimum black level
+luminance of the mastering display, also expressed as a floating-point
+value in <span class="math inline">\(\text{cd/m}^2\)</span> (e.g.,
+0.0001 or 0.005).</li>
+</ul>
+<p>Alongside luminance values, the <code>MasteringMetadata</code>
+element stores the chromaticity coordinates (<span
+class="math inline">\(x, y\)</span>) for the red, green, and blue
+primary colors, as well as the white point.</p>
+<h3 id="content-light-level-metadata-maxcll-and-maxfall">Content Light
+Level Metadata (MaxCLL and MaxFALL)</h3>
+<p>In addition to mastering display capabilities, HDR color grading
+requires constraints based on the actual pixel values within the
+content, as defined by CTA-861-3. MKV stores these values directly under
+the <code>Colour</code> element:</p>
+<ul>
+<li><strong><code>MaxCLL</code> (EBML ID <code>0x55E9</code>):</strong>
+Maximum Content Light Level. Stored as an unsigned integer representing
+the maximum pixel brightness (<span
+class="math inline">\(\text{cd/m}^2\)</span>) found in any single frame
+of the entire video.</li>
+<li><strong><code>MaxFALL</code> (EBML ID <code>0x55EA</code>):</strong>
+Maximum Frame-Average Light Level. Stored as an unsigned integer
+representing the highest average brightness value (<span
+class="math inline">\(\text{cd/m}^2\)</span>) of any single frame across
+the entire video.</li>
+</ul>
+<h3 id="container-level-vs-bitstream-level-metadata">Container-Level vs.
+Bitstream-Level Metadata</h3>
+<p>In modern codecs like HEVC (H.265) or AV1, mastering luminance data
+is typically embedded within the video stream's Supplemental Enhancement
+Information (SEI) NAL units or sequence headers.</p>
+<p>MKV replicates these values at the container level to provide major
+advantages for playback pipelines:</p>
+<ul>
+<li><strong>Instant Extraction:</strong> Media splitters, renderers, and
+operating systems can query display and content peak brightness
+instantly during file inspection without initializing video decoders or
+parsing raw bitstream packets.</li>
+<li><strong>Direct Passthrough:</strong> Hardware video processors and
+external displays can immediately prepare tone-mapping curves and HDMI
+dynamic range signaling (InfoFrames) prior to decoding the first video
+frame.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

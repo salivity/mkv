@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Media Servers Select Languages Using MKV Track Names - mkv</title>
+    <meta name="description" content="Media servers like Plex, Jellyfin, and Emby automatically select audio and subtitle streams by parsing embedded Matroska (MKV) metadata against user-defined profile preferences. While standardized ISO language codes provide the baseline language identific">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-media-servers-select-languages-using-mkv-track-names">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How Media Servers Select Languages Using MKV Track Names - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-media-servers-select-languages-using-mkv-track-names" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Media servers like Plex, Jellyfin, and Emby automatically select audio and subtitle streams by parsing embedded Matroska (MKV) metadata against user-defined profile preferences. While standardized ISO language codes provide the baseline language identific" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-media-servers-select-languages-using-mkv-track-names">How
+Media Servers Select Languages Using MKV Track Names</h1>
+<p>Media servers like Plex, Jellyfin, and Emby automatically select
+audio and subtitle streams by parsing embedded Matroska (MKV) metadata
+against user-defined profile preferences. While standardized ISO
+language codes provide the baseline language identification, media
+servers read track names and header flags to distinguish between
+multiple tracks of the same language, identifying specialized versions
+like Director's Commentary, Forced subtitles, or specific audio
+formats.</p>
+<h3 id="the-role-of-mkv-metadata-and-track-names">The Role of MKV
+Metadata and Track Names</h3>
+<p>The MKV container format uses the Extensible Binary Meta Language
+(EBML), allowing rich metadata to be embedded directly into media files.
+For every stream (video, audio, or subtitle), the container stores two
+critical pieces of linguistic and descriptive data:</p>
+<ol type="1">
+<li><strong>Language Tags (<code>Language</code> /
+<code>LanguageIETF</code>):</strong> Standardized ISO 639-2 or BCP 47
+codes (e.g., <code>eng</code>, <code>spa</code>, <code>jpn</code>) that
+identify the primary spoken or written language.</li>
+<li><strong>Track Name / Title (<code>Name</code>):</strong> A
+customizable text string (e.g., "Full Dialogue", "Forced", "Director's
+Commentary", "Descriptive Audio") that offers context beyond the basic
+language code.</li>
+</ol>
+<h3 id="how-the-automatic-selection-algorithm-works">How the Automatic
+Selection Algorithm Works</h3>
+<p>When a media server scans a library or initiates playback, it
+executes a hierarchical matching algorithm:</p>
+<ol type="1">
+<li><strong>User Profile Evaluation:</strong> The server checks the
+active user's global settings, which define the preferred audio
+language, preferred subtitle language, and subtitle display mode (e.g.,
+"Always on", "Manually selected", or "Shown with foreign audio").</li>
+<li><strong>ISO Language Matching:</strong> The server first filters the
+available tracks by matching the embedded ISO language tag to the user's
+preferred language.</li>
+<li><strong>Track Name Parsing and Keyword Heuristics:</strong> When
+multiple tracks share the same ISO language tag, the server parses the
+track name strings using internal heuristic rules and regular
+expressions:
+<ul>
+<li><strong>Forced Subtitles:</strong> If a user selects foreign audio
+with native subtitles, the server searches for terms like
+<code>Forced</code> or <code>Foreign Dialogue Only</code> in the
+subtitle track name to display only translated non-native segments.</li>
+<li><strong>Accessibility Streams:</strong> Keywords like
+<code>SDH</code> (Subtitles for the Deaf and Hard of Hearing) or
+<code>CC</code> (Closed Captions) in subtitle titles, or
+<code>Commentary</code> and <code>Audio Description</code> in audio
+titles, allow the server to deprioritize or prioritize tracks based on
+accessibility configurations.</li>
+<li><strong>Default vs. Alternative Mixes:</strong> Audio track names
+containing descriptive flags (e.g., "Original Audio", "Stereo", "TrueHD
+Atmos") help the server pick the best track suited to the playback
+client's hardware capabilities.</li>
+</ul></li>
+<li><strong>Flag Prioritization:</strong> In addition to track names,
+servers cross-reference container-level boolean flags—such as
+<code>FlagDefault</code>, <code>FlagForced</code>, and
+<code>FlagHearingImpaired</code>—with the track name metadata to resolve
+conflicts.</li>
+</ol>
+<h3 id="best-practices-for-reliable-language-automation">Best Practices
+for Reliable Language Automation</h3>
+<p>To ensure automated language selection functions accurately across
+all media servers:</p>
+<ul>
+<li><strong>Assign Accurate ISO Codes:</strong> Never leave the language
+tag as "Undefined" (<code>und</code>), as track names alone are rarely
+used as a fallback for the primary language filter.</li>
+<li><strong>Use Standardized Naming Conventions:</strong> Keep track
+names clean and descriptive, using universally recognized keywords like
+<code>Forced</code>, <code>SDH</code>, or <code>Commentary</code>.</li>
+<li><strong>Set Proper Flags:</strong> Use MKV multiplexing tools to set
+the <code>Forced</code> and <code>Default</code> flags alongside
+descriptive track titles so media servers can instantly recognize the
+track's purpose without relying solely on text parsing.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

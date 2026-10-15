@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matroska Cue Element: Fast Seeking in Large MKV Files - mkv</title>
+    <meta name="description" content="The Matroska (.mkv) container format relies on an internal indexing structure known as the Cue element to enable instantaneous navigation across large video files. This article explains how the Cue element works as a timestamp-to-byte-offset lookup table,">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/matroska-cue-element-fast-seeking-in-large-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Matroska Cue Element: Fast Seeking in Large MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/matroska-cue-element-fast-seeking-in-large-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (.mkv) container format relies on an internal indexing structure known as the Cue element to enable instantaneous navigation across large video files. This article explains how the Cue element works as a timestamp-to-byte-offset lookup table," />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="matroska-cue-element-fast-seeking-in-large-mkv-files">Matroska
+Cue Element: Fast Seeking in Large MKV Files</h1>
+<p>The Matroska (<code>.mkv</code>) container format relies on an
+internal indexing structure known as the Cue element to enable
+instantaneous navigation across large video files. This article explains
+how the Cue element works as a timestamp-to-byte-offset lookup table,
+how it targets keyframes to prevent decoding delays, and why it is
+critical for smooth seeking in multi-gigabyte media and network
+streams.</p>
+<h2 id="what-is-the-matroska-cue-element">What Is the Matroska Cue
+Element?</h2>
+<p>In the Extensible Binary Meta Language (EBML) architecture of an MKV
+file, the <code>Cues</code> element acts as a built-in index. It
+consists of multiple <code>CuePoint</code> entries, each containing:</p>
+<ul>
+<li><strong><code>CueTime</code>:</strong> The specific timestamp of a
+frame within the timeline.</li>
+<li><strong><code>CueTrackPositions</code>:</strong> Data identifying
+which track the cue applies to.</li>
+<li><strong><code>CueClusterPosition</code>:</strong> The exact byte
+offset of the <code>Cluster</code> element containing that frame
+relative to the start of the <code>Segment</code>.</li>
+<li><strong><code>CueBlockNumber</code> (optional):</strong> The
+specific block number inside the cluster to pinpoint the exact
+frame.</li>
+</ul>
+<p>Without this index, a media player would have to parse the file
+sequentially from the beginning or guess positions using linear byte
+interpolation, which is slow and inaccurate for variable bitrate (VBR)
+media.</p>
+<h2 id="the-direct-lookup-seeking-mechanism">The Direct-Lookup Seeking
+Mechanism</h2>
+<p>When a user scrubs to a specific timestamp in a massive MKV file, the
+playback engine uses the Cue element to perform an efficient seek
+operation:</p>
+<ol type="1">
+<li><strong>Binary Search:</strong> The player performs a binary search
+on the <code>CueTime</code> values in memory to find the index entry
+closest to, but not exceeding, the target timestamp.</li>
+<li><strong>Byte-Level Jump:</strong> Using the
+<code>CueClusterPosition</code>, the player instructs the storage
+controller or network stack to read directly from the exact byte
+location of the target cluster.</li>
+<li><strong>Keyframe Synchronization:</strong> Cues typically index only
+Intra-coded frames (keyframes/I-frames). Because inter-coded frames
+(P-frames and B-frames) require reference data from earlier frames,
+jumping directly to an indexed keyframe guarantees that the video
+decoder can immediately reconstruct full images without waiting for the
+next synchronization point.</li>
+</ol>
+<h2 id="optimization-in-massive-files-and-streaming">Optimization in
+Massive Files and Streaming</h2>
+<p>For multi-gigabyte files (such as 4K Blu-ray remuxes), the Cue
+element prevents high disk I/O and latency.</p>
+<ul>
+<li><strong>Fast Metadata Resolution via SeekHead:</strong> The MKV
+file's header includes a <code>SeekHead</code> element that points
+directly to the offset of the <code>Cues</code> element. Even if the
+<code>Cues</code> are placed at the end of a 50 GB file, the player
+reads the <code>SeekHead</code> at the start, jumps directly to the
+<code>Cues</code>, loads the index into RAM, and is instantly ready for
+seeking anywhere in the timeline.</li>
+<li><strong>Network Playback (HTTP Range Requests):</strong> When
+streaming an MKV file over HTTP, the Cue index allows the client to
+issue targeted HTTP <code>Range</code> requests. Instead of buffering
+continuous data from the current position to the target position, the
+client requests only the bytes surrounding the indexed keyframe,
+resulting in near-instant seeking even over constrained bandwidth.</li>
+</ul></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

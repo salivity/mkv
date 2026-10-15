@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why TrueHD Audio Drops During MKV Playback - mkv</title>
+    <meta name="description" content="Audio dropouts during the playback of MKV files containing high-bitrate Dolby TrueHD tracks typically occur due to hardware processing limitations, HDMI bandwidth constraints, and timestamp synchronization errors within the container. When media players f">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-true-hd-audio-drops-during-mkv-playback">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why TrueHD Audio Drops During MKV Playback - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-true-hd-audio-drops-during-mkv-playback" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Audio dropouts during the playback of MKV files containing high-bitrate Dolby TrueHD tracks typically occur due to hardware processing limitations, HDMI bandwidth constraints, and timestamp synchronization errors within the container. When media players f" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-truehd-audio-drops-during-mkv-playback">Why TrueHD Audio
+Drops During MKV Playback</h1>
+<p>Audio dropouts during the playback of MKV files containing
+high-bitrate Dolby TrueHD tracks typically occur due to hardware
+processing limitations, HDMI bandwidth constraints, and timestamp
+synchronization errors within the container. When media players fail to
+continuously buffer, decode, or pass through the massive volume of data
+associated with lossless audio, the stream stutters or cuts out
+entirely.</p>
+<h3 id="bandwidth-and-buffer-underruns">Bandwidth and Buffer
+Underruns</h3>
+<p>Dolby TrueHD is a lossless, variable bitrate codec that can peak at
+extremely high data rates, especially when combined with Dolby Atmos
+spatial metadata. Underpowered media players, smart TV system-on-chips
+(SoCs), or slow local network connections (such as weak Wi-Fi or slow
+SMB shares) struggle to sustain this continuous throughput. When the
+device's internal audio buffer empties faster than it can be filled, an
+audio dropout occurs while the decoder waits for the next valid data
+packet.</p>
+<h3 id="hdmi-arc-vs-earc-limitations">HDMI ARC vs. eARC Limitations</h3>
+<p>A common cause of audio loss is routing audio through incompatible
+HDMI connections:</p>
+<ul>
+<li><strong>Standard HDMI ARC:</strong> Lacks the required bandwidth for
+lossless Dolby TrueHD and is strictly limited to compressed formats like
+standard Dolby Digital, Dolby Digital Plus, or stereo PCM. Attempting to
+send TrueHD over ARC causes playback failure, silence, or intermittent
+signal drops.</li>
+<li><strong>HDMI eARC / Direct AVR Connection:</strong> TrueHD
+bitstreaming requires either an HDMI 2.1 eARC connection or connecting
+the media player directly to an AV receiver or compatible soundbar via
+HDMI before routing the video signal to the display.</li>
+</ul>
+<h3 id="timestamp-gaps-from-seamless-branching">Timestamp Gaps from
+Seamless Branching</h3>
+<p>Many MKV files are ripped from Blu-ray discs that utilize "seamless
+branching"—a technique where multiple video and audio segments are
+joined dynamically on the disc. If the muxing software does not properly
+calculate and align the Presentation Time Stamps (PTS) during the
+creation of the MKV file, tiny timing gaps or overlapping packets are
+introduced into the TrueHD track. While standard decoders can sometimes
+ignore these micro-gaps, sensitive hardware players lose lock on the
+audio bitstream and drop sound for several seconds while attempting to
+resynchronize.</p>
+<h3 id="lack-of-native-hardware-passthrough-support">Lack of Native
+Hardware Passthrough Support</h3>
+<p>Many lightweight media players, budget streaming sticks, and native
+smart TV media apps lack dedicated hardware licenses or processing
+architecture to decode or pass through raw TrueHD bitstreams. When
+forced to software-decode or transcode high-bitrate MLP (Meridian
+Lossless Packing) streams on the fly, the processor frequently maxes
+out, leading to dropped frames and intermittent audio cutouts.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

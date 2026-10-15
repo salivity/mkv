@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Custom Tags Without Breaking Playback - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container uses a flexible, hierarchical binary structure that allows users to embed custom metadata and user-defined tags seamlessly. By relying on the Extensible Binary Meta Language (EBML) framework, MKV stores custom tags">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-custom-tags-without-breaking-playback">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Custom Tags Without Breaking Playback - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-custom-tags-without-breaking-playback" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container uses a flexible, hierarchical binary structure that allows users to embed custom metadata and user-defined tags seamlessly. By relying on the Extensible Binary Meta Language (EBML) framework, MKV stores custom tags" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-custom-tags-without-breaking-playback">How MKV
+Stores Custom Tags Without Breaking Playback</h1>
+<p>The Matroska (MKV) multimedia container uses a flexible, hierarchical
+binary structure that allows users to embed custom metadata and
+user-defined tags seamlessly. By relying on the Extensible Binary Meta
+Language (EBML) framework, MKV stores custom tags within dedicated,
+standardized metadata elements. This design ensures that playback
+engines can either interpret known properties or safely skip unknown
+custom fields without disrupting the decoding of the underlying audio
+and video streams.</p>
+<h3 id="the-ebml-architecture-and-element-skipping">The EBML
+Architecture and Element Skipping</h3>
+<p>MKV containers are built on EBML, which acts as a binary equivalent
+of XML. Every piece of data inside an MKV file is stored as an EBML
+element composed of three primary components:</p>
+<ol type="1">
+<li><strong>Element ID:</strong> A variable-length binary identifier
+defining the element type.</li>
+<li><strong>Data Size:</strong> A descriptor indicating the exact length
+of the payload in bytes.</li>
+<li><strong>Data Payload:</strong> The actual content of the
+element.</li>
+</ol>
+<p>Because every element includes an explicit data size header, playback
+engines that encounter an unrecognized element ID simply read the size
+descriptor and skip forward that exact number of bytes. If a custom tag
+or an unsupported metadata structure is present, the parser bypasses it
+entirely rather than throwing a fatal parsing error.</p>
+<h3 id="hierarchical-organization-with-the-tags-element">Hierarchical
+Organization with the <code>Tags</code> Element</h3>
+<p>Matroska isolates all metadata within a top-level EBML element called
+<code>Tags</code>. This element is completely separated from the
+<code>Tracks</code> element (which defines codec settings) and the
+<code>Cluster</code> elements (which store the actual audio, video, and
+subtitle packets).</p>
+<p>Inside the <code>Tags</code> master element, metadata is organized
+hierarchically:</p>
+<ul>
+<li><strong><code>Tag</code>:</strong> A container that groups tags
+targeting a specific component of the file.</li>
+<li><strong><code>Targets</code>:</strong> Defines the scope of the tag
+(such as the entire file, a specific video track, an audio stream, a
+chapter, or an attachment) using a standardized numeric
+<code>TargetTypeValue</code>.</li>
+<li><strong><code>SimpleTag</code>:</strong> A nested key-value
+structure containing the actual metadata. It primarily consists of:
+<ul>
+<li><code>TagName</code>: A UTF-8 string representing the name of the
+attribute (e.g., <code>TITLE</code>, <code>ENCODER</code>, or any custom
+user-defined string like <code>INTERNAL_PROJECT_ID</code>).</li>
+<li><code>TagString</code>: The UTF-8 text value for the corresponding
+key.</li>
+<li><code>TagBinary</code>: An optional field used to store arbitrary
+binary data payloads instead of text.</li>
+<li><code>TagLanguage</code>: Specifies the language of the tag value to
+support localization.</li>
+</ul></li>
+</ul>
+<p>Because <code>SimpleTag</code> accepts arbitrary string values for
+<code>TagName</code>, users can define proprietary or custom keys
+without violating the Matroska specification.</p>
+<h3 id="separation-of-demuxing-and-metadata-parsing">Separation of
+Demuxing and Metadata Parsing</h3>
+<p>Media players divide the processing of an MKV file into two primary
+systems: the demuxer (which splits container data into raw packets for
+decoders) and the metadata reader.</p>
+<p>Because metadata is stored outside the media <code>Cluster</code>
+payloads, custom tags have no impact on the interleaving, timecodes, or
+packet boundaries of media streams. When a playback engine initializes
+an MKV file, it queries the <code>Tags</code> element for standardized
+keys (such as <code>TITLE</code>, <code>ARTIST</code>, or
+<code>COMMENT</code>) to display in the user interface. Any custom key
+names that the player does not recognize are simply left unparsed in
+memory or ignored completely, allowing the demuxer to stream media
+packets to the decoders without interruption.</p></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

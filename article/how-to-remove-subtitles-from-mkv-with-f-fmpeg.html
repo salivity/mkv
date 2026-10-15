@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Remove Subtitles from MKV with FFmpeg - mkv</title>
+    <meta name="description" content="Removing all subtitle tracks from an MKV (Matroska) container using FFmpeg can be done quickly without re-encoding your video or audio streams. By utilizing stream copying along with specific subtitle-disabling flags, you can generate a clean MKV file in">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-remove-subtitles-from-mkv-with-f-fmpeg">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Remove Subtitles from MKV with FFmpeg - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-remove-subtitles-from-mkv-with-f-fmpeg" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Removing all subtitle tracks from an MKV (Matroska) container using FFmpeg can be done quickly without re-encoding your video or audio streams. By utilizing stream copying along with specific subtitle-disabling flags, you can generate a clean MKV file in" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-remove-subtitles-from-mkv-with-ffmpeg">How to Remove
+Subtitles from MKV with FFmpeg</h1>
+<p>Removing all subtitle tracks from an MKV (Matroska) container using
+FFmpeg can be done quickly without re-encoding your video or audio
+streams. By utilizing stream copying along with specific
+subtitle-disabling flags, you can generate a clean MKV file in seconds
+while preserving the original video and audio quality.</p>
+<h2 id="the-standard-command">The Standard Command</h2>
+<p>The simplest and most efficient command to strip all subtitle streams
+from an MKV file is:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c</span> copy <span class="at">-sn</span> output.mkv</span></code></pre></div>
+<h3 id="parameter-breakdown">Parameter Breakdown</h3>
+<ul>
+<li><strong><code>-i input.mkv</code></strong>: Specifies the path to
+the input MKV file.</li>
+<li><strong><code>-c copy</code></strong>: Tells FFmpeg to copy all
+streams directly without re-encoding, which ensures the process is
+extremely fast and causes zero loss in visual or audio quality.</li>
+<li><strong><code>-sn</code></strong>: Stands for "subtitle no." This
+parameter disables the inclusion of any subtitle streams in the output
+file.</li>
+<li><strong><code>output.mkv</code></strong>: Specifies the name and
+container format for the generated output file.</li>
+</ul>
+<hr />
+<h2 id="alternative-method-using-stream-mapping">Alternative Method:
+Using Stream Mapping</h2>
+<p>You can achieve the same result using explicit stream mapping flags
+(<code>-map</code>). This method gives you fine-grained control if you
+are working with complex files containing multiple video or audio
+tracks:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-map</span> 0 <span class="at">-map</span> <span class="at">-0:s</span> <span class="at">-c</span> copy output.mkv</span></code></pre></div>
+<h3 id="parameter-breakdown-1">Parameter Breakdown</h3>
+<ul>
+<li><strong><code>-map 0</code></strong>: Selects all streams (video,
+audio, subtitles, attachments) from the first input file.</li>
+<li><strong><code>-map -0:s</code></strong>: The negative mapping
+specifically excludes all subtitle streams from the selection.</li>
+<li><strong><code>-c copy</code></strong>: Copies the remaining selected
+streams (video and audio) without re-encoding.</li>
+</ul>
+<hr />
+<h2 id="batch-processing-multiple-mkv-files">Batch Processing Multiple
+MKV Files</h2>
+<p>If you have a folder full of MKV files and want to remove subtitles
+from all of them at once, you can run a loop in your command line.</p>
+<h3 id="windows-command-prompt">Windows (Command Prompt)</h3>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode cmd"><code class="sourceCode dosbat"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> <span class="er">%i</span> <span class="er">in</span> <span class="er">(*.mkv)</span> <span class="er">do</span> <span class="er">ffmpeg</span> <span class="er">-i</span> <span class="er">&quot;%i&quot;</span> <span class="er">-c</span> <span class="er">copy</span> <span class="er">-sn</span> <span class="er">&quot;clean_%i&quot;</span></span></code></pre></div>
+<h3 id="linux--macos-bash">Linux / macOS (Bash)</h3>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.mkv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="ex">ffmpeg</span> <span class="at">-i</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span> <span class="at">-c</span> copy <span class="at">-sn</span> <span class="st">&quot;clean_</span><span class="va">${file}</span><span class="st">&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div></article>
+        <div id="comments-container"></div>
+        <script>
+            const utterancesScript = document.createElement('script');
+            utterancesScript.setAttribute('src', 'https://utteranc.es/client.js');
+            utterancesScript.setAttribute('repo', 'salivity/mkv'); 
+            utterancesScript.setAttribute('issue-term', 'pathname'); 
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            utterancesScript.setAttribute('theme', currentTheme === 'dark' ? 'github-dark' : 'github-light'); 
+            utterancesScript.setAttribute('crossorigin', 'anonymous');
+            utterancesScript.async = true;
+            document.getElementById('comments-container').appendChild(utterancesScript);
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>
