@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Smart TVs Freeze on MKVs With Many Chapters - mkv</title>
+    <meta name="description" content="When playing Matroska (MKV) video files with hundreds or thousands of chapter markers, many smart TV media players freeze, crash, or reboot. This issue occurs primarily because smart TV hardware operates under severe memory constraints and relies on simpl">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-smart-t-vs-freeze-on-mk-vs-with-many-chapters">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Smart TVs Freeze on MKVs With Many Chapters - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-smart-t-vs-freeze-on-mk-vs-with-many-chapters" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When playing Matroska (MKV) video files with hundreds or thousands of chapter markers, many smart TV media players freeze, crash, or reboot. This issue occurs primarily because smart TV hardware operates under severe memory constraints and relies on simpl" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-smart-tvs-freeze-on-mkvs-with-many-chapters">Why Smart TVs
+Freeze on MKVs With Many Chapters</h1>
+<p>When playing Matroska (MKV) video files with hundreds or thousands of
+chapter markers, many smart TV media players freeze, crash, or reboot.
+This issue occurs primarily because smart TV hardware operates under
+severe memory constraints and relies on simplified media-parsing engines
+that cannot handle massive metadata structures. Understanding the
+mechanics behind this crash—and knowing how to strip or optimize these
+chapter markers—can quickly resolve playback failures on affected
+devices.</p>
+<h3 id="1-limited-hardware-and-metadata-parsing">1. Limited Hardware and
+Metadata Parsing</h3>
+<p>Unlike desktop PCs, smart TVs use low-power System-on-Chip (SoC)
+architectures with limited random-access memory (RAM) allocated to their
+default media players. When an MKV container is opened, the TV's media
+framework attempts to read and parse the entire chapter element tree
+(the <code>Chapters</code> master element) into active memory before
+initiating playback. An excessive list of chapter points creates a
+significant memory spike, leading to an out-of-memory (OOM) error that
+crashes the media player process or locks the entire system.</p>
+<h3 id="2-timeline-and-ui-rendering-overload">2. Timeline and UI
+Rendering Overload</h3>
+<p>Most modern smart TV media player interfaces feature a visual seek
+bar that dynamically generates markers or tick points for every
+identified chapter. When a file contains an abnormally high volume of
+chapter points (such as frame-by-frame chapters or corrupted metadata),
+the graphics rendering engine attempts to draw every marker
+simultaneously on the interface. This creates a severe GPU and CPU
+bottleneck on the UI thread, causing the video frame to freeze while
+audio might continue, or locking the entire user interface
+completely.</p>
+<h3 id="3-rigid-buffer-allocation-in-tv-firmware">3. Rigid Buffer
+Allocation in TV Firmware</h3>
+<p>Smart TV firmware is often built with hardcoded buffer limits
+designed for standard commercial media, which rarely exceeds 30 to 40
+chapters per file. When a player encounters an MKV with hundreds of
+chapter nodes, the parser can experience a buffer overflow. Because many
+TV operating systems lack robust error-handling routines for
+non-standard or malformed metadata, the player enters an unrecoverable
+loop or simply terminates playback.</p>
+<h3 id="4-non-standard-or-nested-chapter-trees">4. Non-Standard or
+Nested Chapter Trees</h3>
+<p>The Matroska specification supports deeply nested chapter structures
+(ChapterAtoms within ChapterAtoms). Embedded players on TVs generally
+expect flat, linear chapter lists. When a TV parser encounters complex,
+deeply nested, or improperly indexed chapter hierarchies, the parsing
+thread can stall indefinitely while attempting to resolve the timeline
+positions.</p>
+<h3 id="how-to-resolve-the-issue">How to Resolve the Issue</h3>
+<p>To fix files affected by this issue, you can clean the MKV metadata
+without re-encoding the video:</p>
+<ul>
+<li><strong>Remove or Reduce Chapters Using MKVToolNix:</strong> Open
+the file in MKVToolNix GUI, navigate to the Chapter Editor, and remove
+the unnecessary chapter markers, or use the multiplexer tab to uncheck
+the chapter track entirely. This process takes only a few seconds
+because the video and audio streams are preserved without
+re-encoding.</li>
+<li><strong>Use Dedicated Media Servers:</strong> Running media through
+server software like Plex, Jellyfin, or Emby can bypass native TV parser
+bugs by processing metadata server-side before delivering the stream to
+the TV client app.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/why-smart-t-vs-freeze-on-mk-vs-with-many-chapters';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove Forced Subtitles from MKV Permanently - mkv</title>
+    <meta name="description" content="Forced subtitles in Matroska (MKV) containers are controlled by metadata header flags that instruct media players to display specific text tracks automatically. When an MKV subtitle track is tagged with a &quot;Forced display&quot; flag, players will render it rega">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/remove-forced-subtitles-from-mkv-permanently">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Remove Forced Subtitles from MKV Permanently - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/remove-forced-subtitles-from-mkv-permanently" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Forced subtitles in Matroska (MKV) containers are controlled by metadata header flags that instruct media players to display specific text tracks automatically. When an MKV subtitle track is tagged with a &quot;Forced display&quot; flag, players will render it rega" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="remove-forced-subtitles-from-mkv-permanently">Remove Forced
+Subtitles from MKV Permanently</h1>
+<p>Forced subtitles in Matroska (MKV) containers are controlled by
+metadata header flags that instruct media players to display specific
+text tracks automatically. When an MKV subtitle track is tagged with a
+"Forced display" flag, players will render it regardless of global
+subtitle preferences. You can permanently remove this parameter without
+re-encoding the video or audio streams, meaning the file quality remains
+100% intact and the modification process takes only a few seconds.</p>
+<hr />
+<h3 id="method-1-using-mkvtoolnix-header-editor-fastest">Method 1: Using
+MKVToolNix Header Editor (Fastest)</h3>
+<p>The Header Editor in the free, open-source MKVToolNix suite modifies
+the track properties directly inside the existing file without needing
+to generate a new copy.</p>
+<ol type="1">
+<li><strong>Download and open</strong> MKVToolNix GUI.</li>
+<li>Select the <strong>Header editor</strong> tool from the left-hand
+navigation panel.</li>
+<li>Click <strong>Open Matroska or WebM file</strong> and select your
+MKV file.</li>
+<li>In the track tree, expand the specific subtitle track that is set to
+forced.</li>
+<li>Click on the property labeled <strong>"Forced display"
+flag</strong>.</li>
+<li>In the right-hand panel, check the <strong>Modify value</strong>
+box.</li>
+<li>Change the dropdown selection from <strong>Yes</strong> to
+<strong>No</strong>.</li>
+<li>(Optional) If you also want to prevent the subtitle from loading
+automatically as the primary track, select the <strong>"Default track"
+flag</strong> property and set it to <strong>No</strong>.</li>
+<li>Click <strong>Header editor</strong> in the top menu and select
+<strong>Save</strong> (or press <code>Ctrl + S</code>).</li>
+</ol>
+<p>The change is applied instantly to the file.</p>
+<hr />
+<h3 id="method-2-using-mkvtoolnix-multiplexer-remuxing">Method 2: Using
+MKVToolNix Multiplexer (Remuxing)</h3>
+<p>If you prefer to create a new, clean output file or want to remove
+the subtitle track entirely:</p>
+<ol type="1">
+<li>Open MKVToolNix GUI and click on <strong>Multiplexer</strong>.</li>
+<li>Drag and drop your MKV file into the <strong>Source files</strong>
+section.</li>
+<li>Under the <strong>Tracks, chapters and tags</strong> section,
+highlight the target subtitle track.</li>
+<li>In the <strong>Properties</strong> panel on the right:
+<ul>
+<li>Set <strong>Forced track flag</strong> to <strong>No</strong>.</li>
+<li>Set <strong>Default track flag</strong> to <strong>No</strong>.</li>
+</ul></li>
+<li>Specify a destination folder and filename at the bottom in the
+<strong>Destination file</strong> field.</li>
+<li>Click <strong>Start multiplexing</strong>.</li>
+</ol>
+<hr />
+<h3 id="method-3-using-ffmpeg-command-line">Method 3: Using FFmpeg
+(Command Line)</h3>
+<p>If you prefer using the command line or need to batch process
+multiple MKV files, you can use FFmpeg to alter the stream disposition
+without re-encoding.</p>
+<p>Open your terminal or command prompt and run the following
+command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-map</span> 0 <span class="at">-c</span> copy <span class="at">-disposition:s:0</span> 0 output.mkv</span></code></pre></div>
+<h4 id="command-breakdown">Command breakdown:</h4>
+<ul>
+<li><code>-i input.mkv</code>: Specifies the source file.</li>
+<li><code>-map 0</code>: Selects all streams (video, audio, subtitles,
+chapters) from the input file.</li>
+<li><code>-c copy</code>: Copies all streams directly without
+re-encoding.</li>
+<li><code>-disposition:s:0 0</code>: Clears all special disposition
+flags (both "default" and "forced") from the first subtitle stream
+(<code>s:0</code>).</li>
+<li><code>output.mkv</code>: The new MKV file created with the modified
+parameters.</li>
+</ul>
+<p>If your MKV has multiple subtitle tracks and the forced track is the
+second one, change <code>-disposition:s:0 0</code> to
+<code>-disposition:s:1 0</code>.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/remove-forced-subtitles-from-mkv-permanently';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

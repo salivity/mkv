@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using mkvinfo to Inspect Low-Level MKV Files - mkv</title>
+    <meta name="description" content="The mkvinfo command-line utility, part of the open-source MKVToolNix suite, is a dedicated tool for analyzing and troubleshooting the internal structure of Matroska (MKV) and WebM media files. By parsing the underlying Extensible Binary Meta Language (EBM">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/using-mkvinfo-to-inspect-low-level-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Using mkvinfo to Inspect Low-Level MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/using-mkvinfo-to-inspect-low-level-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The mkvinfo command-line utility, part of the open-source MKVToolNix suite, is a dedicated tool for analyzing and troubleshooting the internal structure of Matroska (MKV) and WebM media files. By parsing the underlying Extensible Binary Meta Language (EBM" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="using-mkvinfo-to-inspect-low-level-mkv-files">Using mkvinfo to
+Inspect Low-Level MKV Files</h1>
+<p>The <code>mkvinfo</code> command-line utility, part of the
+open-source MKVToolNix suite, is a dedicated tool for analyzing and
+troubleshooting the internal structure of Matroska (MKV) and WebM media
+files. By parsing the underlying Extensible Binary Meta Language (EBML)
+architecture, it allows developers, video engineers, and power users to
+inspect the precise structural hierarchy of an MKV container without
+decoding the actual audio or video streams.</p>
+<h3 id="understanding-the-mkv-hierarchy">Understanding the MKV
+Hierarchy</h3>
+<p>Matroska files are organized using EBML, which operates similarly to
+binary XML. Data is stored in nested elements containing an ID, a data
+size descriptor, and the payload. <code>mkvinfo</code> reads these
+elements sequentially and outputs a structured tree view of the
+container.</p>
+<p>The primary structural components exposed by <code>mkvinfo</code>
+include:</p>
+<ul>
+<li><strong>EBML Header:</strong> Contains fundamental metadata about
+the container format version, EBML read version, and doctype (e.g.,
+<code>matroska</code> or <code>webm</code>).</li>
+<li><strong>Segment Header &amp; Info:</strong> Defines global
+properties for the file, including the Segment UID, multiplexing
+application, writing application, duration, and timestamp scale.</li>
+<li><strong>Tracks:</strong> Lists individual stream definitions (video,
+audio, subtitles), detailing codec IDs, track numbers, default durations
+(frame rates), resolution, channel counts, and codec-specific private
+data.</li>
+<li><strong>Clusters and SimpleBlocks:</strong> Houses the actual media
+frames. <code>mkvinfo</code> reveals cluster timestamps, block payloads,
+keyframe flags, and track references, which is vital for inspecting
+timecode alignment.</li>
+<li><strong>SeekHead and Cues:</strong> Contains indexing elements. The
+SeekHead points to major segment positions, while Cues map timestamps to
+specific file offsets for fast seeking.</li>
+<li><strong>Chapters and Tags:</strong> Displays rich metadata, segment
+editions, and custom descriptive tags.</li>
+</ul>
+<h3 id="key-use-cases-for-low-level-inspection">Key Use Cases for
+Low-Level Inspection</h3>
+<ol type="1">
+<li><strong>Diagnosing Playback and Seeking Errors:</strong> Corrupted
+Cue points or missing SeekHeads often lead to slow or broken seeking in
+media players. <code>mkvinfo</code> quickly verifies whether index
+tables are complete and properly mapped.</li>
+<li><strong>Analyzing A/V Synchronization Issues:</strong> By viewing
+cluster-level timestamps and individual Block durations, users can
+pinpoint timestamp drift, non-monotonic timecodes, or missing
+frames.</li>
+<li><strong>Validating Codec Configurations:</strong> Inspecting the
+<code>CodecPrivate</code> element helps verify whether stream
+initialization headers (such as AVC/HEVC parameter sets or Vorbis/Opus
+headers) are intact.</li>
+<li><strong>Header and Structural Corruption Analysis:</strong> If a
+file fails to open, running <code>mkvinfo</code> reveals the exact byte
+offset where parsing terminates, indicating where container damage has
+occurred.</li>
+</ol>
+<h3 id="command-line-usage-and-verbosity">Command-Line Usage and
+Verbosity</h3>
+<p>By default, <code>mkvinfo</code> provides a summary of tracks and
+top-level segment info. Increasing the verbosity level exposes deeper
+container layers:</p>
+<ul>
+<li><p><strong>Basic Summary:</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvinfo</span> input.mkv</span></code></pre></div></li>
+<li><p><strong>Detailed Hierarchy (Tracks, Clusters, and
+Timecodes):</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvinfo</span> <span class="at">-v</span> input.mkv</span></code></pre></div></li>
+<li><p><strong>Maximum Detail (Every Block, Frame Size, and Hex
+Dumps):</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvinfo</span> <span class="at">-v</span> <span class="at">-v</span> <span class="at">-X</span> input.mkv</span></code></pre></div>
+<p><em>(Using <code>-X</code> includes hexadecimal dumps of element
+payloads, useful for low-level byte analysis.)</em></p></li>
+</ul>
+<p>Through these capabilities, <code>mkvinfo</code> serves as a critical
+diagnostic tool, providing clear visibility into how media streams and
+metadata are multiplexed within the Matroska container format.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/using-mkvinfo-to-inspect-low-level-mkv-files';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

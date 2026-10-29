@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Files Store Vector Graphic Subtitles? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports embedded subtitle tracks containing complex vector graphic drawings. Through its open and extensible architecture, MKV can store text-based subtitle formats—most notably Advanced SubStation Alpha (ASS">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-files-store-vector-graphic-subtitles">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Files Store Vector Graphic Subtitles? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-files-store-vector-graphic-subtitles" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports embedded subtitle tracks containing complex vector graphic drawings. Through its open and extensible architecture, MKV can store text-based subtitle formats—most notably Advanced SubStation Alpha (ASS" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-files-store-vector-graphic-subtitles">Can MKV Files
+Store Vector Graphic Subtitles?</h1>
+<p>The Matroska (MKV) multimedia container fully supports embedded
+subtitle tracks containing complex vector graphic drawings. Through its
+open and extensible architecture, MKV can store text-based subtitle
+formats—most notably Advanced SubStation Alpha (ASS/SSA)—that utilize
+coordinate-based vector drawing commands and Bezier curves. This article
+explains how MKV handles vector subtitles, how the underlying subtitle
+formats render complex graphics, and the technical advantages of this
+approach compared to bitmap-based subtitles.</p>
+<h3 id="how-the-mkv-container-supports-vector-subtitles">How the MKV
+Container Supports Vector Subtitles</h3>
+<p>MKV does not compress or modify subtitle streams; instead, it acts as
+a digital envelope using the Extensible Binary Meta Language (EBML).
+Because EBML allows arbitrary data streams and binary attachments, an
+MKV file can package rich subtitle formats alongside video and audio
+without flattening the graphics into the video frame.</p>
+<p>MKV natively handles:</p>
+<ul>
+<li><strong>Subtitle Streams:</strong> Timed text tracks containing
+formatting and vector path scripts.</li>
+<li><strong>Font and Asset Attachments:</strong> Embedded TrueType
+(<code>.ttf</code>) and OpenType (<code>.otf</code>) font files required
+to render specific glyphs, vector shapes, or custom typography
+accurately across different devices.</li>
+</ul>
+<h3 id="vector-drawings-via-advanced-substation-alpha-ass">Vector
+Drawings via Advanced SubStation Alpha (ASS)</h3>
+<p>The primary format used to display vector graphics inside MKV files
+is Advanced SubStation Alpha (<code>.ass</code>). ASS includes a
+built-in vector drawing engine controlled by specific override tags.</p>
+<p>Key capabilities include:</p>
+<ul>
+<li><strong>Drawing Mode Tags:</strong> Using the <code>{\p1}</code> to
+<code>{\p4}</code> commands, the subtitle script switches from standard
+text to vector coordinate mode, treating the text string as coordinate
+instructions.</li>
+<li><strong>Vector Path Commands:</strong> The format supports commands
+for moving points (<code>m</code>), drawing lines (<code>l</code>), and
+creating cubic Bezier curves (<code>c</code>), allowing creators to draw
+complex logos, custom shapes, masks, and graphic overlays.</li>
+<li><strong>Transformations and Effects:</strong> Vector shapes can be
+dynamically scaled, rotated along X, Y, and Z axes, blurred, sheared,
+and animated across the screen frame by frame.</li>
+</ul>
+<h3 id="key-advantages-of-embedded-vector-subtitles">Key Advantages of
+Embedded Vector Subtitles</h3>
+<p>Storing subtitles as embedded vector paths rather than pre-rendered
+image formats (like VobSub or Blu-ray PGS) provides several practical
+benefits:</p>
+<ol type="1">
+<li><strong>Resolution Independence:</strong> Vector drawings scale
+dynamically to any playback resolution (from 720p to 4K or 8K) without
+pixelation or loss of clarity.</li>
+<li><strong>Compact File Sizes:</strong> A complex vector animation
+requires only a few kilobytes of coordinate text, whereas
+high-resolution bitmap subtitle streams require megabytes of image
+data.</li>
+<li><strong>Soft Subtitle Flexibility:</strong> Because the vector
+graphics remain in a separate, multiplexed track, viewers can toggle
+them on or off, select alternate tracks, or customize styling within
+capable media players.</li>
+</ol>
+<h3 id="playback-and-compatibility">Playback and Compatibility</h3>
+<p>To display embedded vector graphics properly, playback software must
+use a capable subtitle renderer such as <code>libass</code> or
+<code>VSFilter</code>. Modern media players—including mpv, VLC, and
+Media Player Classic (MPC-HC/MPC-BE)—as well as media servers like Plex
+and Jellyfin, provide native support for rendering embedded ASS vector
+graphics accurately.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-files-store-vector-graphic-subtitles';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

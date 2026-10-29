@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Mux Dolby Atmos Audio into an MKV Container - mkv</title>
+    <meta name="description" content="Muxing Dolby Atmos audio into an MKV (Matroska) container allows you to combine high-definition video with immersive, object-based surround sound in a single file without losing quality. This guide provides a straightforward, step-by-step walkthrough of t">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-mux-dolby-atmos-audio-into-an-mkv-container">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Mux Dolby Atmos Audio into an MKV Container - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-mux-dolby-atmos-audio-into-an-mkv-container" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Muxing Dolby Atmos audio into an MKV (Matroska) container allows you to combine high-definition video with immersive, object-based surround sound in a single file without losing quality. This guide provides a straightforward, step-by-step walkthrough of t" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-mux-dolby-atmos-audio-into-an-mkv-container">How to Mux
+Dolby Atmos Audio into an MKV Container</h1>
+<p>Muxing Dolby Atmos audio into an MKV (Matroska) container allows you
+to combine high-definition video with immersive, object-based surround
+sound in a single file without losing quality. This guide provides a
+straightforward, step-by-step walkthrough of the entire multiplexing
+process using MKVToolNix, the standard tool for managing MKV files,
+covering both lossless TrueHD and lossy Dolby Digital Plus Atmos
+tracks.</p>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>To complete the process, you need:</p>
+<ul>
+<li><strong>MKVToolNix:</strong> The free, open-source software suite
+designed for modifying and multiplexing MKV files.</li>
+<li><strong>Video Source:</strong> Your raw video file (e.g.,
+<code>.mkv</code>, <code>.mp4</code>, <code>.hevc</code>,
+<code>.264</code>).</li>
+<li><strong>Dolby Atmos Audio Track:</strong> The extracted audio
+stream, typically in <code>.thd</code> (Dolby TrueHD with Atmos) or
+<code>.eac3</code> / <code>.ddp</code> (Dolby Digital Plus with
+Atmos).</li>
+</ul>
+<hr />
+<h3 id="step-1-open-the-multiplexer-in-mkvtoolnix">Step 1: Open the
+Multiplexer in MKVToolNix</h3>
+<ol type="1">
+<li>Launch <strong>MKVToolNix GUI</strong>.</li>
+<li>Navigate to the <strong>Multiplexer</strong> tool from the left-hand
+navigation pane.</li>
+</ol>
+<hr />
+<h3 id="step-2-add-source-files">Step 2: Add Source Files</h3>
+<ol type="1">
+<li>Drag and drop your video file and your Dolby Atmos audio file into
+the <strong>Source files</strong> box.</li>
+<li>Alternatively, right-click inside the <strong>Source files</strong>
+window and select <strong>Add files</strong> to browse and select your
+video and audio tracks.</li>
+</ol>
+<hr />
+<h3 id="step-3-configure-tracks-and-metadata">Step 3: Configure Tracks
+and Metadata</h3>
+<p>Once the files are added, all available tracks (video, audio,
+subtitles, chapters) will appear in the <strong>Tracks, chapters and
+tags</strong> pane.</p>
+<ol type="1">
+<li><strong>Select the Atmos Track:</strong> Click on the audio track
+you wish to configure.</li>
+<li><strong>Set the Language:</strong> Under the
+<strong>Properties</strong> panel on the right, set the correct language
+tag (e.g., <code>English (eng)</code>).</li>
+<li><strong>Set the Track Name:</strong> Label the track descriptively
+(e.g., <code>Dolby Atmos / TrueHD 7.1</code> or
+<code>Dolby Atmos / EAC-3 5.1</code>).</li>
+<li><strong>Set Default/Forced Flags:</strong>
+<ul>
+<li>Set <strong>"Default track" flag</strong> to <strong>Yes</strong> if
+you want this track to play automatically.</li>
+<li>Set <strong>"Forced display" flag</strong> to <strong>No</strong>
+(unless specifically required).</li>
+</ul></li>
+<li><strong>Adjust Sync (Optional):</strong> If the audio requires a
+timing offset, navigate to the <strong>Timestamp and subtitle
+properties</strong> section and enter the delay in milliseconds in the
+<strong>Delay (in ms)</strong> field.</li>
+</ol>
+<hr />
+<h3 id="step-4-arrange-track-order">Step 4: Arrange Track Order</h3>
+<p>Use the up and down arrows on the right side of the tracks list to
+position your tracks logically. The standard order is:</p>
+<ol type="1">
+<li>Video track</li>
+<li>Primary audio track (Dolby Atmos)</li>
+<li>Secondary audio tracks (commentary, stereo downmix, etc.)</li>
+<li>Subtitles</li>
+</ol>
+<hr />
+<h3 id="step-5-choose-destination-and-start-muxing">Step 5: Choose
+Destination and Start Muxing</h3>
+<ol type="1">
+<li>In the <strong>Destination file</strong> field at the bottom, set
+the output path and filename for the final MKV file.</li>
+<li>Click the <strong>Start multiplexing</strong> button at the bottom
+of the interface.</li>
+<li>MKVToolNix will process the streams and create the new MKV container
+without re-encoding, preserving full audio and video fidelity.</li>
+</ol>
+<hr />
+<h3 id="verifying-the-output">Verifying the Output</h3>
+<p>To verify that the Atmos metadata is properly preserved:</p>
+<ul>
+<li>Open the completed <code>.mkv</code> file in
+<strong>MediaInfo</strong> and check the audio section for the
+<strong>Dolby Atmos</strong> profile under commercial name or format
+details.</li>
+<li>Play the file through an Atmos-capable AV Receiver or soundbar using
+a passthrough-capable media player (such as Kodi, Infuse, MPC-HC, or a
+compatible hardware player) to confirm the Atmos indicator
+triggers.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-to-mux-dolby-atmos-audio-into-an-mkv-container';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

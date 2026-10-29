@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert MKV to MP4 Without Re-encoding with FFmpeg - mkv</title>
+    <meta name="description" content="This article explains how to quickly change an MKV video file into an MP4 container using FFmpeg without re-encoding the underlying media streams. By using a process called remuxing (stream copying), you can switch the container format in just a few secon">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/convert-mkv-to-mp-4-without-re-encoding-with-f-fmpeg">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Convert MKV to MP4 Without Re-encoding with FFmpeg - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/convert-mkv-to-mp-4-without-re-encoding-with-f-fmpeg" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how to quickly change an MKV video file into an MP4 container using FFmpeg without re-encoding the underlying media streams. By using a process called remuxing (stream copying), you can switch the container format in just a few secon" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="convert-mkv-to-mp4-without-re-encoding-with-ffmpeg">Convert MKV
+to MP4 Without Re-encoding with FFmpeg</h1>
+<p>This article explains how to quickly change an MKV video file into an
+MP4 container using FFmpeg without re-encoding the underlying media
+streams. By using a process called remuxing (stream copying), you can
+switch the container format in just a few seconds while preserving the
+original video and audio quality with zero loss.</p>
+<h3 id="the-fast-remux-command">The Fast Remux Command</h3>
+<p>To convert an MKV container to MP4 without re-encoding, use the
+<code>-c copy</code> flag:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c</span> copy output.mp4</span></code></pre></div>
+<h3 id="how-the-command-works">How the Command Works</h3>
+<ul>
+<li><strong><code>-i input.mkv</code></strong>: Specifies the path to
+your source MKV file.</li>
+<li><strong><code>-c copy</code></strong>: Tells FFmpeg to bypass the
+decoding and encoding pipeline, copying all video, audio, and subtitle
+streams directly into the target container.</li>
+<li><strong><code>output.mp4</code></strong>: Defines the name and
+format of the newly created file.</li>
+</ul>
+<p>Because this command skips the resource-intensive encoding process,
+the conversion operates at the speed of your storage drive's read and
+write capabilities.</p>
+<h3 id="handling-potential-compatibility-issues">Handling Potential
+Compatibility Issues</h3>
+<p>While stream copying is fast, MP4 containers have stricter codec
+requirements than MKV containers.</p>
+<h4 id="incompatible-audio-eg-dts-to-aac">Incompatible Audio (e.g., DTS
+to AAC)</h4>
+<p>If the MKV contains an audio format unsupported by your target MP4
+player (such as DTS or Vorbis), you can copy the video stream while
+encoding only the audio to AAC:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c:v</span> copy <span class="at">-c:a</span> aac output.mp4</span></code></pre></div>
+<h4 id="incompatible-subtitles">Incompatible Subtitles</h4>
+<p>MKV files often use ASS/SSA or PGS subtitles, which are not natively
+supported in standard MP4 containers. To convert text-based subtitles to
+the MP4-compatible <code>mov_text</code> format, use:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c:v</span> copy <span class="at">-c:a</span> copy <span class="at">-c:s</span> mov_text output.mp4</span></code></pre></div>
+<p>If you do not need subtitles, you can exclude them entirely to avoid
+errors:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> input.mkv <span class="at">-c</span> copy <span class="at">-sn</span> output.mp4</span></code></pre></div></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/convert-mkv-to-mp-4-without-re-encoding-with-f-fmpeg';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

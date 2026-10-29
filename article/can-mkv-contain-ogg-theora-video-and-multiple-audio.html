@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Contain Ogg Theora Video and Multiple Audio? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports the encapsulation of legacy Ogg Theora video alongside multiple audio channels and separate audio tracks. Because Matroska is an open-standard, codec-agnostic container, it can multiplex almost any co">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-contain-ogg-theora-video-and-multiple-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Contain Ogg Theora Video and Multiple Audio? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-contain-ogg-theora-video-and-multiple-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports the encapsulation of legacy Ogg Theora video alongside multiple audio channels and separate audio tracks. Because Matroska is an open-standard, codec-agnostic container, it can multiplex almost any co" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-contain-ogg-theora-video-and-multiple-audio">Can MKV
+Contain Ogg Theora Video and Multiple Audio?</h1>
+<p>The Matroska (MKV) multimedia container fully supports the
+encapsulation of legacy Ogg Theora video alongside multiple audio
+channels and separate audio tracks. Because Matroska is an
+open-standard, codec-agnostic container, it can multiplex almost any
+combination of legacy or modern video and audio formats into a single
+file while preserving synchronization, metadata, and multi-stream
+capabilities.</p>
+<h2 id="matroska-support-for-the-theora-codec">Matroska Support for the
+Theora Codec</h2>
+<p>The Matroska specification explicitly defines support for the Theora
+video compression format using the standardized Codec ID
+<code>V_THEORA</code>. While Theora is historically associated with the
+Ogg container (<code>.ogv</code>), Matroska encapsulates the raw Theora
+packet stream without requiring transcoding. This allows legacy Theora
+video streams to be extracted from Ogg containers and remuxed directly
+into MKV without any generation loss.</p>
+<h2 id="multiple-audio-channels-vs-multiple-audio-tracks">Multiple Audio
+Channels vs. Multiple Audio Tracks</h2>
+<p>MKV handles complex audio configurations simultaneously in two
+distinct ways:</p>
+<ul>
+<li><strong>Multichannel Audio:</strong> A single audio stream
+containing surround sound configurations (such as 5.1 or 7.1 discrete
+channels) using codecs like Vorbis, Opus, FLAC, AAC, or AC-3 can be
+paired with the Theora stream.</li>
+<li><strong>Multiple Audio Tracks:</strong> MKV allows an unlimited
+number of independent audio tracks (such as multiple languages,
+commentary tracks, or descriptive audio) to exist alongside the same
+Theora video track. Each track can have its own codec, channel layout,
+language tag, and default/forced flags.</li>
+</ul>
+<h2 id="multiplexing-and-practical-implementation">Multiplexing and
+Practical Implementation</h2>
+<p>Remuxing an Ogg Theora video with multiple audio tracks into an MKV
+container can be accomplished using standard open-source tools such as
+FFmpeg or MKVToolNix (<code>mkvmerge</code>). A typical command using
+stream copying avoids re-encoding:</p>
+<p><code>ffmpeg -i video_theora.ogv -i audio1.ogg -i audio2.flac -map 0:v -map 1:a -map 2:a -c copy output.mkv</code></p>
+<h2 id="playback-and-compatibility">Playback and Compatibility</h2>
+<p>While modern hardware decoders rarely support Theora acceleration,
+software-based media players that rely on FFmpeg or Libav libraries
+(such as VLC, MPV, and MPC-HC) can parse the MKV container, decode the
+Theora video stream, and allow users to toggle between the various audio
+tracks or output multichannel sound seamlessly.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-contain-ogg-theora-video-and-multiple-audio';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

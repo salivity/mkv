@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Files Have Interactive Menus Like DVDs? - mkv</title>
+    <meta name="description" content="While the Matroska (MKV) container format is technically designed with the theoretical capability to support interactive menus, in practical everyday use, MKV files do not support DVD-like interactive menus. This article explains the technical limitations">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-files-have-interactive-menus-like-dv-ds">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Files Have Interactive Menus Like DVDs? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-files-have-interactive-menus-like-dv-ds" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="While the Matroska (MKV) container format is technically designed with the theoretical capability to support interactive menus, in practical everyday use, MKV files do not support DVD-like interactive menus. This article explains the technical limitations" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-files-have-interactive-menus-like-dvds">Can MKV Files
+Have Interactive Menus Like DVDs?</h1>
+<p>While the Matroska (MKV) container format is technically designed
+with the theoretical capability to support interactive menus, in
+practical everyday use, MKV files do not support DVD-like interactive
+menus. This article explains the technical limitations of the MKV format
+regarding menus, why they are not widely used, and how modern media
+players handle navigation within MKV files instead.</p>
+<h2 id="the-technical-specification-vs-practical-reality">The Technical
+Specification vs. Practical Reality</h2>
+<p>The Matroska specification actually includes a blueprint for a menu
+system. Theoretically, MKV can support complex menu structures using a
+system called "Matroska Script" or basic XML-based menu systems.
+However, this feature was never fully standardized or widely adopted by
+developers.</p>
+<p>Because of this lack of standardization, mainstream media
+players—such as VLC, Plex, MPC-HC, and hardware players like smart
+TVs—do not have the coding required to render or execute interactive MKV
+menus. If you attempt to author an MKV with a menu, the media player
+will simply ignore the menu data and play the video tracks
+sequentially.</p>
+<h2 id="how-mkv-handles-navigation-without-menus">How MKV Handles
+Navigation Without Menus</h2>
+<p>Instead of relying on interactive, on-screen visual menus, the MKV
+format uses other built-in features to allow users to navigate
+content:</p>
+<ul>
+<li><strong>Chapters:</strong> MKV files support highly detailed chapter
+markers. Users can jump to specific scenes, episodes, or segments using
+their media player's navigation menu. Chapters can also be named (e.g.,
+"Prologue," "Scene 1," "Credits").</li>
+<li><strong>Ordered Chapters:</strong> This is an advanced MKV feature
+that allows the file to play specific segments in a pre-defined order,
+or even link to external MKV files. For example, a TV show season can
+use ordered chapters to skip opening credits automatically or link to a
+single, separate file containing the theme song to save disk space.</li>
+<li><strong>Multiple Tracks:</strong> Unlike DVDs where you select audio
+and subtitle tracks from an on-screen menu, MKV files rely on the media
+player's interface to toggle between different audio languages,
+commentary tracks, and subtitle formats.</li>
+</ul>
+<h2 id="alternatives-for-interactive-menus">Alternatives for Interactive
+Menus</h2>
+<p>If keeping the original interactive DVD or Blu-ray menu is a
+requirement, you cannot convert the video into a standard MKV file.
+Instead, you must preserve the original disc structure. The best formats
+for preserving menus include:</p>
+<ul>
+<li><strong>ISO Files:</strong> An ISO is a literal sector-by-sector
+copy of an optical disc. When loaded into compatible players like VLC or
+Kodi, it will display and run the original DVD or Blu-ray interactive
+menu exactly as it would on a physical disc player.</li>
+<li><strong>VIDEO_TS / BDMV Folders:</strong> Copying the raw folder
+structure of a DVD (VIDEO_TS) or Blu-ray (BDMV) to a hard drive allows
+compatible software players to read the root files and run the
+interactive menus.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-files-have-interactive-menus-like-dv-ds';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Audio Editors Demux Multi-Track MKV Audio - mkv</title>
+    <meta name="description" content="Audio editing applications handle multi-track MKV (Matroska) files by separating the container’s multiplexed data into discrete audio streams and converting them into manageable waveforms. This technical process involves parsing the Extensible Binary Meta">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-audio-editors-demux-multi-track-mkv-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How Audio Editors Demux Multi-Track MKV Audio - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-audio-editors-demux-multi-track-mkv-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Audio editing applications handle multi-track MKV (Matroska) files by separating the container’s multiplexed data into discrete audio streams and converting them into manageable waveforms. This technical process involves parsing the Extensible Binary Meta" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-audio-editors-demux-multi-track-mkv-audio">How Audio Editors
+Demux Multi-Track MKV Audio</h1>
+<p>Audio editing applications handle multi-track MKV (Matroska) files by
+separating the container’s multiplexed data into discrete audio streams
+and converting them into manageable waveforms. This technical process
+involves parsing the Extensible Binary Meta Language (EBML) structure,
+demultiplexing the interleaved packets, decoding the audio codecs into
+uncompressed PCM data, and de-interleaving multi-channel layouts into
+individual audio tracks for editing and processing in a Digital Audio
+Workstation (DAW).</p>
+<h3 id="1-parsing-the-matroska-ebml-structure">1. Parsing the Matroska
+(EBML) Structure</h3>
+<p>The MKV format is built on EBML, a binary equivalent of XML. When an
+audio editor opens an MKV file, it first reads the EBML Header and
+Segment elements:</p>
+<ul>
+<li><strong>Segment Info:</strong> Provides global metadata such as
+timecode scale and file duration.</li>
+<li><strong>Tracks Element:</strong> Catalogs all streams within the
+container, identifying their TrackType (Audio, Video, Subtitle),
+TrackUID, CodecID (such as AAC, FLAC, AC3, or Opus), and audio-specific
+properties like sample rate, bit depth, and channel count.</li>
+<li><strong>Cues Element:</strong> Acts as an index for rapid seeking,
+mapping specific timestamps to byte offsets within the file.</li>
+</ul>
+<h3 id="2-stream-demultiplexing">2. Stream Demultiplexing</h3>
+<p>Once the editor locates the relevant audio tracks, it initializes a
+demuxing engine—typically powered by underlying multimedia frameworks
+like FFmpeg (<code>libavformat</code>), native OS media pipelines, or
+proprietary container parsers.</p>
+<p>The demuxer iterates through the MKV's <code>Cluster</code> elements,
+which contain <code>SimpleBlock</code> and <code>BlockGroup</code>
+structures holding time-stamped payload packets. The demuxer filters out
+the video and subtitle packets, isolating only the data packets
+associated with the specified audio track IDs.</p>
+<h3 id="3-codec-decoding-to-linear-pcm">3. Codec Decoding to Linear
+PCM</h3>
+<p>Because most audio stored in MKV containers is compressed (lossy or
+lossless), the isolated data packets must be decoded before an editor
+can process them:</p>
+<ol type="1">
+<li>The demuxed packets are sent to codec-specific decoders
+(<code>libavcodec</code> or platform decoders).</li>
+<li>The decoder reconstructs the raw, uncompressed Pulse Code Modulation
+(PCM) audio samples.</li>
+<li>The PCM samples are standardized to a 32-bit or 64-bit
+floating-point format to prevent clipping and preserve dynamic range
+during digital signal processing.</li>
+</ol>
+<h3 id="4-de-interleaving-and-channel-splitting">4. De-Interleaving and
+Channel Splitting</h3>
+<p>MKV audio streams can exist as discrete multi-tracks (multiple stereo
+or mono streams for different languages or commentary) or multi-channel
+surround sound streams (such as 5.1 or 7.1 audio).</p>
+<ul>
+<li><strong>Discrete Multi-Tracks:</strong> If an MKV contains multiple
+independent audio tracks, the application assigns each demuxed stream
+directly to a distinct track on the DAW timeline.</li>
+<li><strong>Multi-Channel Interleaved Streams:</strong> In surround
+formats, audio samples are typically interleaved (e.g., L, R, C, LFE,
+Ls, Rs). The application de-interleaves these samples by reading the
+stream's channel mask metadata. It separates the interleaved buffer into
+distinct, parallel memory arrays, with each channel mapped to its
+designated physical speaker role.</li>
+</ul>
+<h3 id="5-timeline-mapping-and-caching">5. Timeline Mapping and
+Caching</h3>
+<p>After demuxing and channel de-interleaving, the application generates
+waveform peak files for visual representation and caches the
+uncompressed audio—either in RAM or as temporary WAV/AIFF scratch files
+on disk. Each isolated channel is then exposed on the timeline as an
+independent track or sub-track, granting editors granular control over
+volume automation, phase alignment, equalization, dynamics processing,
+and spatial panning.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-audio-editors-demux-multi-track-mkv-audio';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

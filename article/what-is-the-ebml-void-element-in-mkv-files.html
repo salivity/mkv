@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Is the EBML Void Element in MKV Files? - mkv</title>
+    <meta name="description" content="The Void element in the Extensible Binary Meta Language (EBML) specification serves as designated padding or dummy data within Matroska (MKV) container files. Its primary purpose is to reserve byte space, facilitate rapid in-place metadata editing, optimi">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/what-is-the-ebml-void-element-in-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What Is the EBML Void Element in MKV Files? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/what-is-the-ebml-void-element-in-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Void element in the Extensible Binary Meta Language (EBML) specification serves as designated padding or dummy data within Matroska (MKV) container files. Its primary purpose is to reserve byte space, facilitate rapid in-place metadata editing, optimi" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="what-is-the-ebml-void-element-in-mkv-files">What Is the EBML
+Void Element in MKV Files?</h1>
+<p>The <code>Void</code> element in the Extensible Binary Meta Language
+(EBML) specification serves as designated padding or dummy data within
+Matroska (MKV) container files. Its primary purpose is to reserve byte
+space, facilitate rapid in-place metadata editing, optimize storage
+alignment, and allow non-destructive element removal without requiring
+the entire video file to be remuxed or rewritten.</p>
+<h3 id="purpose-and-mechanism-of-ebml-void">Purpose and Mechanism of
+EBML Void</h3>
+<p>Like all EBML elements, a <code>Void</code> element (EBML ID:
+<code>0xEC</code>) consists of a standard header—containing its
+identifier and a size descriptor—followed by payload data. The payload
+contains arbitrary, unparsed bytes. When an MKV-compliant parser or
+media player encounters a <code>Void</code> element, it reads the
+declared size and immediately skips forward in the byte stream,
+completely ignoring the content inside.</p>
+<h3 id="key-functions-in-mkv-files">Key Functions in MKV Files</h3>
+<ul>
+<li><strong>Reserving Space for Seek Tables and Headers:</strong> During
+the initial encoding or muxing of an MKV file, critical indexes such as
+the <code>SeekHead</code> or <code>Cues</code> (keyframe indexes) cannot
+be fully populated until the entire media stream is processed. Muxing
+tools frequently insert a <code>Void</code> element near the beginning
+of the file to reserve adequate space. Once encoding finishes, the index
+is written directly into that reserved space, and any remaining leftover
+bytes are left as a smaller <code>Void</code> element.</li>
+<li><strong>Fast In-Place Metadata Modification:</strong> When updating
+tags, chapter markers, track names, or default flags, rewriting a
+multi-gigabyte video file is computationally expensive. If the modified
+metadata is larger than the original, it can consume adjacent
+<code>Void</code> space. If the modified metadata is smaller, the freed
+space is converted into a <code>Void</code> element. This enables
+instant metadata updates directly on disk.</li>
+<li><strong>Efficient Element Deletion:</strong> If a user or tool
+removes an element (such as an unwanted subtitle track, chapter list, or
+attachment), the application does not need to shift all subsequent
+gigabytes of video and audio data backward. Instead, the application
+overwrites the deleted element's ID and data area with a
+<code>Void</code> element of equivalent length.</li>
+<li><strong>Storage and Sector Alignment:</strong> Certain playback
+devices and file systems perform better when data clusters align with
+specific storage boundaries (such as 4 KB disk sectors). A muxer can
+insert small <code>Void</code> elements between clusters or headers to
+ensure that keyframe video blocks start precisely at optimal sector
+boundaries.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/what-is-the-ebml-void-element-in-mkv-files';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

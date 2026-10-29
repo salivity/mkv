@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Audio Track Timecode Offsets - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container handles misaligned secondary audio streams primarily by embedding relative timestamps directly into individual frame blocks rather than relying on a separate, global offset tag. This article explains the technical mechanics of">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-audio-track-timecode-offsets">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Audio Track Timecode Offsets - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-audio-track-timecode-offsets" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container handles misaligned secondary audio streams primarily by embedding relative timestamps directly into individual frame blocks rather than relying on a separate, global offset tag. This article explains the technical mechanics of" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-audio-track-timecode-offsets">How MKV Stores
+Audio Track Timecode Offsets</h1>
+<p>The Matroska (MKV) container handles misaligned secondary audio
+streams primarily by embedding relative timestamps directly into
+individual frame blocks rather than relying on a separate, global offset
+tag. This article explains the technical mechanics of how MKV stores,
+calculates, and applies timecode offsets to secondary audio tracks to
+ensure proper audio-video synchronization during playback.</p>
+<h2 id="the-segment-and-cluster-timing-hierarchy">The Segment and
+Cluster Timing Hierarchy</h2>
+<p>Matroska does not synchronize tracks using a static "track delay"
+metadata field in modern implementations. Instead, it relies on a
+hierarchical timing structure:</p>
+<ol type="1">
+<li><strong>Segment Info (<code>TimestampScale</code>):</strong> Defines
+the base unit of time for the entire file, defaulting to 1,000,000
+nanoseconds (1 millisecond). All track timestamps are multiples of this
+scale.</li>
+<li><strong>Cluster (<code>Timestamp</code>):</strong> Media data is
+divided into sequential containers called Clusters. Each Cluster
+contains a base <code>Timestamp</code> marking the absolute start time
+of that group of frames on the timeline.</li>
+<li><strong>Block and SimpleBlock
+(<code>Relative Timestamp</code>):</strong> Individual audio frames are
+stored inside <code>Block</code> or <code>SimpleBlock</code> elements.
+Each block contains a 16-bit signed integer representing its timestamp
+relative to its parent Cluster's base timestamp.</li>
+</ol>
+<h2 id="applying-positive-delays-audio-starts-after-video">Applying
+Positive Delays (Audio Starts After Video)</h2>
+<p>When a secondary audio track needs a positive delay (for example,
+starting +500ms after the video begins), the multiplexer adjusts the
+presentation timestamps (PTS) of that specific track's blocks.</p>
+<ul>
+<li>The first audio packet of the misaligned track is assigned a PTS
+equal to the desired offset (e.g., 500ms).</li>
+<li>The multiplexer places the first audio block into a Cluster whose
+base timestamp accommodates this offset, or sets the block's relative
+timestamp to match the target time.</li>
+<li>The player reads the PTS of the audio block, compares it against the
+master video clock, and holds playback of that audio stream until the
+presentation time is reached.</li>
+</ul>
+<h2 id="applying-negative-delays-audio-starts-before-video">Applying
+Negative Delays (Audio Starts Before Video)</h2>
+<p>When an audio track needs a negative offset (the audio needs to start
+earlier, or initial audio data must be skipped):</p>
+<ul>
+<li><strong>Timestamp Truncation and Pruning:</strong> Multiplexers
+typically discard all audio packets that fall entirely before timestamp
+<code>0</code>.</li>
+<li><strong>Partial Frame Trimming
+(<code>DiscardPadding</code>):</strong> If an audio codec requires
+decoding to start before time zero (or mid-frame), the container uses
+the <code>DiscardPadding</code> element within a
+<code>BlockGroup</code>. This tells the decoder to process the audio
+frame for continuity but discard the specified number of nanoseconds
+from the start of the decoded output.</li>
+<li><strong><code>CodecDelay</code> Element:</strong> For lossy codecs
+that have inherent encoder delay (such as Opus or AAC priming samples),
+the <code>TrackEntry</code> contains a <code>CodecDelay</code> value.
+The demuxer uses this value to shift timestamps backward so that the
+actual decoded audio aligns perfectly with the intended zero-mark.</li>
+</ul>
+<h2 id="the-role-of-matroska-editions-and-edit-lists">The Role of
+Matroska Editions and Edit Lists</h2>
+<p>For complex timeline offsets or non-destructive editing, Matroska
+supports <code>EditionEntry</code> structures within its Chapter
+system:</p>
+<ul>
+<li>An Edition can specify <code>ChapterAtom</code> elements with
+<code>ChapterTimeStart</code> and <code>ChapterTimeEnd</code>.</li>
+<li>By defining a ordered chapter list, the container can map specific
+segments of an audio track to specific segments of the video timeline,
+effectively offsetting, looping, or re-ordering streams without
+modifying the underlying raw <code>Block</code> timestamps.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-audio-track-timecode-offsets';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

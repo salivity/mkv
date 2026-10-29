@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Audio Desync When Cutting Without Keyframes - mkv</title>
+    <meta name="description" content="Cutting an MKV file without aligning the cut point to a keyframe is one of the most common reasons for audio and video desynchronization. This issue arises because modern compressed video streams rely on inter-frame dependencies, meaning non-keyframe vide">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-audio-desync-when-cutting-without-keyframes">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Audio Desync When Cutting Without Keyframes - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-audio-desync-when-cutting-without-keyframes" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Cutting an MKV file without aligning the cut point to a keyframe is one of the most common reasons for audio and video desynchronization. This issue arises because modern compressed video streams rely on inter-frame dependencies, meaning non-keyframe vide" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-audio-desync-when-cutting-without-keyframes">MKV Audio
+Desync When Cutting Without Keyframes</h1>
+<p>Cutting an MKV file without aligning the cut point to a keyframe is
+one of the most common reasons for audio and video desynchronization.
+This issue arises because modern compressed video streams rely on
+inter-frame dependencies, meaning non-keyframe video frames cannot be
+decoded independently. When a cut is made between keyframes without
+re-encoding, video decoders drop or freeze invalid frames while the
+audio continues to play, creating an offset between the audio and video
+timestamps within the Matroska (MKV) container.</p>
+<h3
+id="understanding-keyframes-and-inter-frame-compression">Understanding
+Keyframes and Inter-Frame Compression</h3>
+<p>Digital video codecs such as H.264, H.265 (HEVC), and AV1 use
+temporal compression to save bandwidth. Instead of storing every frame
+as a complete picture, the video is organized into a Group of Pictures
+(GOP) comprising three main frame types:</p>
+<ul>
+<li><strong>I-Frames (Keyframes/Intra-frames):</strong> Complete,
+standalone images that do not require data from other frames to
+decode.</li>
+<li><strong>P-Frames (Predicted frames):</strong> Frames that only store
+changes relative to previous frames.</li>
+<li><strong>B-Frames (Bi-directional predicted frames):</strong> Frames
+that rely on both preceding and subsequent frames to reconstruct the
+image.</li>
+</ul>
+<p>When you cut a video using "stream copy" mode (trimming without
+re-encoding), the software extracts raw packets directly from the
+container.</p>
+<h3 id="why-audio-desync-occurs-at-non-keyframe-cuts">Why Audio Desync
+Occurs at Non-Keyframe Cuts</h3>
+<h4 id="1-incomplete-video-decoding-chains">1. Incomplete Video Decoding
+Chains</h4>
+<p>If a cut starts on a P-frame or a B-frame, the decoder lacks the
+preceding I-frame required to construct the initial images.
+Consequently, the media player cannot display these initial frames. Most
+media players handle these missing reference frames by discarding all
+video packets until the next valid keyframe arrives.</p>
+<h4 id="2-continuous-audio-stream-vs-dropped-video-packets">2.
+Continuous Audio Stream vs. Dropped Video Packets</h4>
+<p>Audio streams (such as AAC, AC3, or DTS) are divided into very small,
+independent packets that do not rely on complex temporal GOP structures.
+When a cut is made, the audio begins decoding and playing immediately
+from the designated start time. Because the player must discard the
+corrupted video frames leading up to the next keyframe while playing the
+audio continuously, the video appears late, leading to an immediate
+audio lead (audio ahead of video).</p>
+<h4 id="3-presentation-timestamp-pts-and-start-time-mismatches">3.
+Presentation Timestamp (PTS) and Start-Time Mismatches</h4>
+<p>The MKV container synchronizes streams using Presentation Timestamps
+(PTS), which tell the player exactly when to render each frame and audio
+sample. When cutting without keyframe alignment:</p>
+<ul>
+<li>The video stream's valid start timestamp shifts forward to the first
+decodable keyframe.</li>
+<li>The audio stream's start timestamp remains at the exact split
+point.</li>
+<li>Depending on how the splitting tool handles timestamps, it may leave
+a timestamp gap or reset the audio PTS to zero without shifting the
+video, resulting in persistent synchronization offsets throughout the
+remainder of the clip.</li>
+</ul>
+<h3 id="how-to-prevent-desynchronization">How to Prevent
+Desynchronization</h3>
+<p>To avoid audio desync when editing MKV files:</p>
+<ul>
+<li><strong>Cut Strictly on Keyframes:</strong> Ensure the editing
+software snaps cut markers directly to I-frames. This preserves clean
+playback without requiring re-encoding.</li>
+<li><strong>Smart Rendering:</strong> Use tools capable of "smart
+cutting," which re-encodes only the small GOP surrounding the cut point
+to create a new keyframe while leaving the rest of the stream
+untouched.</li>
+<li><strong>Full Re-encoding:</strong> If precise, frame-accurate cuts
+are required on non-keyframes, fully re-encode the video stream so every
+cut point begins with a newly generated keyframe.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/mkv-audio-desync-when-cutting-without-keyframes';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Handles Variable Frame Rate Video - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format is highly efficient at handling variable frame rate (VFR) video due to its native, timestamp-based architecture. Unlike older container formats that rely on a fixed global frame rate, MKV stores individual timecodes for">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-handles-variable-frame-rate-video">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Handles Variable Frame Rate Video - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-handles-variable-frame-rate-video" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format is highly efficient at handling variable frame rate (VFR) video due to its native, timestamp-based architecture. Unlike older container formats that rely on a fixed global frame rate, MKV stores individual timecodes for" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-handles-variable-frame-rate-video">How MKV Handles
+Variable Frame Rate Video</h1>
+<p>The Matroska (MKV) container format is highly efficient at handling
+variable frame rate (VFR) video due to its native, timestamp-based
+architecture. Unlike older container formats that rely on a fixed global
+frame rate, MKV stores individual timecodes for every single video
+frame, allowing seamless playback of media with changing frame rates.
+This article explains the technical mechanism behind MKV's VFR handling,
+how timecodes dictate playback, and the advantages of this system for
+modern video compression.</p>
+<h3 id="the-timecode-based-architecture">The Timecode-Based
+Architecture</h3>
+<p>At its core, the MKV container does not have a setting for a
+"default" or "constant" frame rate. Instead, it uses a timecode-oriented
+system. Each video frame, audio packet, and subtitle block packaged
+inside an MKV file is assigned a specific Timestamp (historically
+referred to as a Timecode in Matroska specifications).</p>
+<p>During playback, the media player does not calculate when to show a
+frame based on a mathematical division of a global frame rate (e.g., 1
+second divided by 24 frames). Instead, the player reads the timestamp
+attached to the specific video frame and displays it at that exact
+millisecond. Because each frame has its own independent presentation
+timestamp, the duration of time between frames can vary wildly without
+disrupting playback.</p>
+<h3 id="the-role-of-timecodescale">The Role of TimecodeScale</h3>
+<p>To ensure high precision and compatibility, MKV utilizes a header
+parameter called <code>TimecodeScale</code>. By default, this is set to
+1,000,000 nanoseconds (which equals 1 millisecond).</p>
+<p>Every individual block of video data contains a relative timestamp.
+The playback engine multiplies this relative timestamp by the
+<code>TimecodeScale</code> to determine the precise millisecond the
+frame must appear on screen. Because this calculation happens on a
+frame-by-frame basis, the video can transition from 60 frames per second
+(fps) in an action scene to 1 fps during a static screen, or even pause
+completely on a single frame, all within the same video track.</p>
+<h3 id="advantages-of-mkvs-vfr-handling">Advantages of MKV's VFR
+Handling</h3>
+<ul>
+<li><strong>Bandwidth and Space Efficiency:</strong> VFR allows encoders
+to drop the frame rate during static scenes (like slide presentations or
+talking-head videos) and increase it only when motion occurs. MKV
+handles this natively without needing to insert duplicate "filler"
+frames, keeping file sizes minimal.</li>
+<li><strong>Flawless Audio-Video Sync:</strong> Since audio tracks also
+rely on the same <code>TimecodeScale</code> synchronization system, the
+audio and video tracks remain perfectly aligned, regardless of how often
+or drastically the video frame rate fluctuates.</li>
+<li><strong>Streamlined Demuxing:</strong> When a media player demuxes
+(unpacks) an MKV file, it reads the timestamps directly from the
+container level. The player does not need to parse the underlying video
+bitstream (like H.264 or H.265) to calculate frame timings, which
+reduces CPU overhead during playback.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-handles-variable-frame-rate-video';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

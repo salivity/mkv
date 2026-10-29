@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store HE-AAC v2 with Parametric Stereo? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports High-Efficiency Advanced Audio Coding version 2 (HE-AAC v2) along with its Parametric Stereo (PS) feature. Because MKV is designed as a flexible, codec-agnostic container, it can store the full MPEG-4">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-he-aac-v-2-with-parametric-stereo">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store HE-AAC v2 with Parametric Stereo? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-he-aac-v-2-with-parametric-stereo" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports High-Efficiency Advanced Audio Coding version 2 (HE-AAC v2) along with its Parametric Stereo (PS) feature. Because MKV is designed as a flexible, codec-agnostic container, it can store the full MPEG-4" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-he-aac-v2-with-parametric-stereo">Can MKV Store
+HE-AAC v2 with Parametric Stereo?</h1>
+<p>The Matroska (MKV) multimedia container fully supports
+High-Efficiency Advanced Audio Coding version 2 (HE-AAC v2) along with
+its Parametric Stereo (PS) feature. Because MKV is designed as a
+flexible, codec-agnostic container, it can store the full MPEG-4 Audio
+bitstream without discarding or altering the high-efficiency extensions.
+This article explains how MKV encapsulates HE-AAC v2 streams, how
+Parametric Stereo operates within the container, and what is required
+for proper playback.</p>
+<h2 id="how-mkv-handles-he-aac-v2">How MKV Handles HE-AAC v2</h2>
+<p>Matroska identifies AAC audio streams using the standard
+<code>A_AAC</code> Codec ID. To accommodate HE-AAC v2, MKV places the
+stream's configuration data inside the <code>CodecPrivate</code>
+container header element as an <code>AudioSpecificConfig</code>
+structure.</p>
+<p>This configuration informs the demuxer and decoder about:</p>
+<ul>
+<li><strong>Core AAC-LC:</strong> The base low-complexity audio data
+(typically encoded as a single mono channel to save bandwidth).</li>
+<li><strong>Spectral Band Replication (SBR):</strong> The extension that
+reconstructs higher-frequency audio content (HE-AAC v1).</li>
+<li><strong>Parametric Stereo (PS):</strong> The extension that
+describes the stereo image using metadata (HE-AAC v2).</li>
+</ul>
+<p>Because MKV passes this bitstream directly to the decoder, the
+Parametric Stereo metadata remains intact inside the audio frames.</p>
+<h2 id="how-parametric-stereo-functions-inside-the-container">How
+Parametric Stereo Functions Inside the Container</h2>
+<p>Parametric Stereo achieves high audio quality at extremely low
+bitrates (typically 16–48 kbps) by encoding the audio as a single mono
+channel accompanied by a small sideband stream of spatial parameters
+(such as inter-channel intensity differences and phase differences).</p>
+<p>Within an MKV file:</p>
+<ol type="1">
+<li>The container multiplexes the audio packets alongside video and
+subtitle tracks.</li>
+<li>The packet payload contains both the mono core audio and the
+embedded SBR/PS extension data.</li>
+<li>The container's track header typically reports the stream as
+2-channel stereo, reflecting the intended final output format rather
+than the mono core.</li>
+</ol>
+<h2 id="playback-and-decoder-compatibility">Playback and Decoder
+Compatibility</h2>
+<p>While MKV has no issue storing HE-AAC v2 with Parametric Stereo,
+correct audio reproduction depends on the decoder:</p>
+<ul>
+<li><strong>HE-AAC v2 Capable Decoders:</strong> Modern media players
+(such as VLC, mpv, and players utilizing FFmpeg or CoreAudio) read the
+Parametric Stereo metadata and reconstruct the full stereo
+soundstage.</li>
+<li><strong>Legacy AAC Decoders:</strong> If an older decoder does not
+support HE-AAC v2, it will ignore the SBR and PS extensions and decode
+only the core stream, resulting in mono audio with reduced
+high-frequency response (fallback compatibility).</li>
+</ul>
+<h2 id="muxing-tools">Muxing Tools</h2>
+<p>Standard multiplexing tools handle HE-AAC v2 in MKV without special
+workarounds:</p>
+<ul>
+<li><strong>MKVToolNix (<code>mkvmerge</code>):</strong> Automatically
+parses AAC bitstreams with SBR and PS data, correctly writing the
+<code>AudioSpecificConfig</code> to ensure decoders recognize the stream
+as HE-AAC v2.</li>
+<li><strong>FFmpeg:</strong> Preserves the complete HE-AAC v2 stream
+when remuxing audio into the Matroska container using the stream copy
+(<code>-c:a copy</code>) command.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-store-he-aac-v-2-with-parametric-stereo';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

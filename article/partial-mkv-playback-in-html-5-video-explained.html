@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partial MKV Playback in HTML5 Video Explained - mkv</title>
+    <meta name="description" content="Modern web browsers handle partial MKV (Matroska) playback in HTML5 &lt;video&gt; elements through a combination of HTTP range requests, container parsing, native decoding pipelines, and client-side transmuxing via Media Source Extensions (MSE). This article br">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/partial-mkv-playback-in-html-5-video-explained">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Partial MKV Playback in HTML5 Video Explained - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/partial-mkv-playback-in-html-5-video-explained" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Modern web browsers handle partial MKV (Matroska) playback in HTML5 &lt;video&gt; elements through a combination of HTTP range requests, container parsing, native decoding pipelines, and client-side transmuxing via Media Source Extensions (MSE). This article br" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="partial-mkv-playback-in-html5-video-explained">Partial MKV
+Playback in HTML5 Video Explained</h1>
+<p>Modern web browsers handle partial MKV (Matroska) playback in HTML5
+<code>&lt;video&gt;</code> elements through a combination of HTTP range
+requests, container parsing, native decoding pipelines, and client-side
+transmuxing via Media Source Extensions (MSE). This article breaks down
+the underlying mechanisms—from EBML metadata retrieval and range-based
+streaming to chunk-based buffer management—that allow browsers to seek
+and play MKV files progressively without downloading the entire
+file.</p>
+<h3 id="ebml-parsing-and-metadata-extraction">EBML Parsing and Metadata
+Extraction</h3>
+<p>MKV files are structured using EBML (Extensible Binary Meta
+Language), a hierarchical binary format. For an HTML5
+<code>&lt;video&gt;</code> element to initialize playback, the browser
+must first parse the file’s structural metadata:</p>
+<ol type="1">
+<li><strong>EBML Header:</strong> Declares the container version and
+format parameters.</li>
+<li><strong>Segment Information:</strong> Contains global playback
+metrics, such as overall duration and timestamp scale.</li>
+<li><strong>Track Entries:</strong> Defines the video and audio codecs
+(e.g., VP9, AV1, H.264, Opus, AAC) and their configuration data.</li>
+<li><strong>Cues (Seek Index):</strong> Maps specific timestamps to byte
+offsets for clusters containing keyframes (I-frames).</li>
+</ol>
+<p>If the <code>Cues</code> element is located at the beginning of the
+file, the browser can map timestamps to byte offsets immediately. If the
+index is stored at the end of the file, the browser must issue separate
+requests to read the tail of the file before enabling accurate
+seeking.</p>
+<h3 id="http-range-requests-status-code-206">HTTP Range Requests (Status
+Code 206)</h3>
+<p>Partial playback relies fundamentally on HTTP range requests:</p>
+<ul>
+<li><strong>Initial Request:</strong> The browser sends an initial
+<code>Range: bytes=0-</code> request to fetch the EBML header and
+identify the stream properties.</li>
+<li><strong>Partial Chunk Loading:</strong> As playback progresses, the
+media pipeline requests specific byte ranges rather than streaming the
+full file sequentially.</li>
+<li><strong>On-Demand Seeking:</strong> When a user seeks to an
+unbuffered timestamp, the browser references the <code>Cues</code>
+element, calculates the byte offset of the nearest preceding keyframe,
+aborts the current fetch, and issues a new HTTP 206 (Partial Content)
+request targeting that specific byte range.</li>
+</ul>
+<h3 id="webm-relationship-and-native-demuxing">WebM Relationship and
+Native Demuxing</h3>
+<p>Native MKV support varies across browser engines:</p>
+<ul>
+<li><strong>WebM Derivation:</strong> WebM is a restricted subset of the
+Matroska specification that mandates specific codecs (VP8, VP9, AV1 for
+video; Vorbis, Opus for audio). Because all major browsers natively
+parse WebM, their core demuxers already contain the structural logic
+required to parse Matroska EBML trees.</li>
+<li><strong>Format Flags and Codecs:</strong> In environments where full
+MKV containers are accepted natively, the browser demuxer parses the
+generic MKV container, extracts the elementary audio/video streams, and
+passes them to the platform's hardware or software decoders, provided
+the underlying codec is supported.</li>
+</ul>
+<h3
+id="client-side-transmuxing-via-media-source-extensions-mse">Client-Side
+Transmuxing via Media Source Extensions (MSE)</h3>
+<p>Because standard HTML5 <code>&lt;video&gt;</code> implementations do
+not uniformly support the full MKV container across all operating
+systems, modern web applications frequently handle partial playback in
+JavaScript:</p>
+<ol type="1">
+<li><strong>Range Fetching:</strong> The player uses the
+<code>Fetch</code> API with custom <code>Range</code> headers to
+download MKV byte segments on demand.</li>
+<li><strong>Demuxing (JS/WASM):</strong> Client-side parsers read the
+incoming EBML chunks, extract the elementary video and audio packets,
+and retrieve their Presentation Time Stamps (PTS) and Decode Time Stamps
+(DTS).</li>
+<li><strong>Transmuxing to Fragmented MP4 (fMP4):</strong> The extracted
+media frames are packaged into ISO Base Media File Format (ISOBMFF/fMP4)
+boxes (<code>moof</code> and <code>mdat</code>).</li>
+<li><strong>MSE Pipeline Insertion:</strong> The generated fMP4 segments
+are appended to a <code>SourceBuffer</code> via the Media Source
+Extensions API, allowing the native browser decoders to render the video
+seamlessly without requiring server-side transcoding.</li>
+</ol>
+<h3 id="buffer-management-and-cluster-streaming">Buffer Management and
+Cluster Streaming</h3>
+<p>Data inside an MKV container is stored in sequential structures
+called <code>Clusters</code>, each containing a collection of video and
+audio <code>SimpleBlocks</code> or <code>BlockGroups</code>:</p>
+<ul>
+<li><strong>Linear Playback:</strong> The playback engine continuously
+streams clusters, feeding parsed frames into the presentation queue to
+maintain a forward buffer (typically 10 to 30 seconds ahead of the
+playhead).</li>
+<li><strong>Buffer Eviction:</strong> To conserve memory, the media
+engine automatically discards previously played clusters from memory
+while retaining the indexed offset table for future reverse
+seeking.</li>
+<li><strong>Time Synchronization:</strong> The browser maintains
+synchronization between audio and video tracks by using the timestamp
+scale defined in the Segment header to normalize the relative timecodes
+present in individual block headers.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/partial-mkv-playback-in-html-5-video-explained';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

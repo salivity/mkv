@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Dolby Vision Dynamic Metadata - mkv</title>
+    <meta name="description" content="This article explains how the Matroska (MKV) container encapsulates and delivers Dolby Vision dynamic metadata for frame-by-frame tone mapping. It covers the role of the Reference Processing Unit (RPU), how metadata is embedded within elementary video str">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-dolby-vision-dynamic-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Dolby Vision Dynamic Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-dolby-vision-dynamic-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how the Matroska (MKV) container encapsulates and delivers Dolby Vision dynamic metadata for frame-by-frame tone mapping. It covers the role of the Reference Processing Unit (RPU), how metadata is embedded within elementary video str" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-dolby-vision-dynamic-metadata">How MKV Stores
+Dolby Vision Dynamic Metadata</h1>
+<p>This article explains how the Matroska (MKV) container encapsulates
+and delivers Dolby Vision dynamic metadata for frame-by-frame tone
+mapping. It covers the role of the Reference Processing Unit (RPU), how
+metadata is embedded within elementary video streams as Network
+Abstraction Layer (NAL) units, and how MKV container-level signaling
+allows media players and decoders to extract and apply dynamic HDR
+instructions seamlessly.</p>
+<h3 id="the-role-of-the-reference-processing-unit-rpu">The Role of the
+Reference Processing Unit (RPU)</h3>
+<p>Unlike static HDR formats like HDR10—which apply a single set of
+brightness parameters across an entire video—Dolby Vision utilizes
+dynamic tone mapping to adjust brightness, contrast, and color balance
+scene-by-scene or frame-by-frame. The instructional data that drives
+this process is packaged into a data structure called the Reference
+Processing Unit (RPU).</p>
+<p>The RPU contains all Dolby Vision dynamic metadata, including:</p>
+<ul>
+<li>Content-dependent metadata (trim passes, minimum/maximum/mid-point
+luminance targets).</li>
+<li>Color-remapping coefficients (polynomial and look-up table
+parameters for dual-layer enhancements).</li>
+<li>Display mastering properties.</li>
+</ul>
+<h3 id="bitstream-level-storage-via-nal-units">Bitstream-Level Storage
+via NAL Units</h3>
+<p>The MKV container does not store Dolby Vision dynamic metadata in a
+separate proprietary metadata track. Instead, MKV preserves the metadata
+embedded directly inside the elementary video bitstream (typically
+HEVC/H.265 or AVC/H.264).</p>
+<ol type="1">
+<li><strong>NAL Unit Encapsulation:</strong> In an HEVC stream, the
+Dolby Vision RPU is wrapped inside an ITU-T / ISO standard Network
+Abstraction Layer (NAL) unit. Specifically, Dolby Vision designates
+specific NAL unit types (such as Unspecified NAL unit type 62 or Prefix
+SEI messages) to carry the binary RPU payload.</li>
+<li><strong>Access Unit Ordering:</strong> The RPU NAL unit is placed
+immediately before the slice data NAL units for the corresponding video
+frame within each Access Unit (AU).</li>
+<li><strong>Block Preservation:</strong> When MKV muxers (such as
+MKVToolNix) package the video, each frame's Access Unit—including its
+slice data, parameter sets, and RPU NAL units—is placed inside standard
+Matroska <code>SimpleBlock</code> or <code>BlockGroup</code> structures
+without stripping the Dolby Vision NAL units.</li>
+</ol>
+<h3 id="container-level-signaling">Container-Level Signaling</h3>
+<p>To ensure hardware and software decoders recognize that the video
+stream contains Dolby Vision data, the MKV specification utilizes
+specific track-level elements:</p>
+<ul>
+<li><strong>CodecID:</strong> The video stream is typically identified
+with standard identifiers such as <code>V_MPEGH/ISO/HEVC</code>.</li>
+<li><strong>Dolby Vision Configuration Record (<code>dvcC</code> /
+<code>dvvC</code>):</strong> Placed within the Matroska
+<code>CodecPrivate</code> data, this descriptor explicitly signals the
+Dolby Vision profile (e.g., Profile 5, Profile 7, Profile 8.1),
+compatibility level, and whether the stream uses standard HDR10 or HLG
+as a fallback base layer.</li>
+<li><strong>Colour Header Elements:</strong> Standard Matroska
+elements—such as <code>ColourPrimaries</code>,
+<code>TransferCharacteristics</code>, and
+<code>MatrixCoefficients</code>—provide the baseline signaling (e.g.,
+BT.2020 and SMPTE ST 2084/PQ) required if a non-Dolby Vision decoder
+falls back to standard HDR10.</li>
+</ul>
+<h3 id="handling-single-layer-vs-dual-layer-profiles">Handling
+Single-Layer vs. Dual-Layer Profiles</h3>
+<p>Dolby Vision profiles vary based on delivery formats:</p>
+<ul>
+<li><strong>Single-Layer Streams (Profiles 5 and 8.1):</strong> The
+single HEVC stream contains both the base image and the RPU NAL units.
+In Profile 8.1, the video uses standard HDR10 encoding, allowing players
+that lack Dolby Vision support to ignore the RPU NAL units and output
+standard HDR10.</li>
+<li><strong>Dual-Layer Streams (Profile 7):</strong> Originally found on
+Ultra HD Blu-ray discs as two separate video tracks (a Base Layer and an
+Enhancement Layer), MKV tools can interleave both layers into a single
+track inside the MKV container. The Base Layer, Enhancement Layer (FEL
+or MEL), and RPU NAL units are merged sequentially into single Access
+Units inside the MKV <code>SimpleBlock</code> elements, preserving
+synchronization between the layers and the dynamic metadata.</li>
+</ul>
+<h3 id="how-demuxers-and-decoders-process-the-metadata">How Demuxers and
+Decoders Process the Metadata</h3>
+<p>When a compatible player opens the MKV file:</p>
+<ol type="1">
+<li>The demuxer reads the <code>CodecPrivate</code> block to verify
+Dolby Vision compatibility.</li>
+<li>The demuxer passes the raw HEVC Access Units to the video
+decoder.</li>
+<li>The decoder separates the video frame slices from the RPU NAL
+unit.</li>
+<li>The decoded base image and the raw RPU metadata are passed to the
+Dolby Vision display management engine, which performs dynamic tone
+mapping mapped precisely to the target display's peak brightness and
+color volume.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-dolby-vision-dynamic-metadata';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Files Support MPEG-H 3D Spatial Audio? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format fully supports the encapsulation of spatial audio encoded in MPEG-H 3D Audio. As an advanced multimedia container, Matroska is designed to carry Next-Generation Audio (NGA) streams, including object-based and channel-ba">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-files-support-mpeg-h-3-d-spatial-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Files Support MPEG-H 3D Spatial Audio? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-files-support-mpeg-h-3-d-spatial-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format fully supports the encapsulation of spatial audio encoded in MPEG-H 3D Audio. As an advanced multimedia container, Matroska is designed to carry Next-Generation Audio (NGA) streams, including object-based and channel-ba" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-files-support-mpeg-h-3d-spatial-audio">Can MKV Files
+Support MPEG-H 3D Spatial Audio?</h1>
+<p>The Matroska (MKV) container format fully supports the encapsulation
+of spatial audio encoded in MPEG-H 3D Audio. As an advanced multimedia
+container, Matroska is designed to carry Next-Generation Audio (NGA)
+streams, including object-based and channel-based immersive audio
+formats. This article details how the MKV specification integrates
+MPEG-H 3D Audio, its technical implementation via MHAS packets, and
+current software and hardware compatibility.</p>
+<h2 id="mkv-and-mpeg-h-3d-audio-integration">MKV and MPEG-H 3D Audio
+Integration</h2>
+<p>The Matroska specification accommodates MPEG-H 3D Audio (ISO/IEC
+23008-3) through dedicated Codec IDs. MPEG-H 3D Audio is transported
+inside the MKV container encapsulated in an MPEG-H 3D Audio Stream
+(MHAS) format.</p>
+<p>To identify these streams correctly, Matroska utilizes specific Codec
+IDs:</p>
+<ul>
+<li><strong><code>A_MPEGH/ISO/SP</code></strong>: Matroska identifier
+for the MPEG-H 3D Audio Simple Profile.</li>
+<li><strong><code>A_MPEGH/ISO/LC</code></strong>: Matroska identifier
+for the Low Complexity Profile.</li>
+<li><strong><code>A_MPEGH/ISO/BL</code></strong>: Matroska identifier
+for the Baseline Profile.</li>
+</ul>
+<p>The container stores the raw MHAS packets as audio frames, preserving
+all spatial metadata, audio objects, channel beds, and Higher-Order
+Ambisonics (HOA) signals without loss of spatial positioning.</p>
+<h2 id="key-features-supported-inside-mkv">Key Features Supported Inside
+MKV</h2>
+<p>Encapsulating MPEG-H 3D Audio in MKV retains the full suite of
+interactive and immersive capabilities provided by the codec:</p>
+<ul>
+<li><strong>Object-Based Audio:</strong> Dynamic audio objects and their
+real-time 3D coordinate metadata are maintained.</li>
+<li><strong>Channel and Scene-Based Audio:</strong> Support for standard
+5.1/7.1 beds up to 22.2 configurations and Ambisonics.</li>
+<li><strong>User Interactivity:</strong> Metadata allowing end users to
+adjust dialogue levels, switch languages, or modify audio element
+positioning remains functional during playback.</li>
+<li><strong>Binaural Rendering:</strong> Headphone-rendered 3D spatial
+audio profiles defined within the MPEG-H payload can be processed
+directly by compatible renderers.</li>
+</ul>
+<h2 id="tools-and-playback-compatibility">Tools and Playback
+Compatibility</h2>
+<p>Muxing and demuxing MPEG-H 3D Audio in MKV is supported across
+several modern multimedia frameworks:</p>
+<ul>
+<li><strong>FFmpeg:</strong> Recent versions of FFmpeg and
+<code>libavformat</code> support the demuxing and remuxing of MPEG-H
+audio streams within the Matroska container.</li>
+<li><strong>MKVToolNix:</strong> Current builds of <code>mkvmerge</code>
+recognize MPEG-H elementary streams and can package them into an
+<code>.mkv</code> file alongside high-definition video formats such as
+HEVC/H.265 or AV1.</li>
+<li><strong>Media Players and Decoders:</strong> Media players built on
+FFmpeg (such as VLC or mpv) can demux the stream, passing the raw
+bitstream to an MPEG-H-capable AVR/soundbar or using an MPEG-H software
+decoder library to render spatial audio locally.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-files-support-mpeg-h-3-d-spatial-audio';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

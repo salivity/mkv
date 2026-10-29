@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores DCI-P3 Color Primaries Metadata - mkv</title>
+    <meta name="description" content="This article explains how the Matroska (MKV) container format defines and stores custom color primaries metadata for video mastered in the DCI-P3 color space. It covers the hierarchical structure of the Matroska Colour element, the use of standard primary">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-dci-p-3-color-primaries-metadata">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores DCI-P3 Color Primaries Metadata - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-dci-p-3-color-primaries-metadata" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="This article explains how the Matroska (MKV) container format defines and stores custom color primaries metadata for video mastered in the DCI-P3 color space. It covers the hierarchical structure of the Matroska Colour element, the use of standard primary" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-dci-p3-color-primaries-metadata">How MKV Stores
+DCI-P3 Color Primaries Metadata</h1>
+<p>This article explains how the Matroska (MKV) container format defines
+and stores custom color primaries metadata for video mastered in the
+DCI-P3 color space. It covers the hierarchical structure of the Matroska
+<code>Colour</code> element, the use of standard primary enumeration
+values, and the integration of explicit chromaticity coordinates inside
+the <code>MasteringMetadata</code> block to ensure accurate wide color
+gamut reproduction.</p>
+<h3 id="the-matroska-color-metadata-hierarchy">The Matroska Color
+Metadata Hierarchy</h3>
+<p>Matroska defines color properties at the container level within its
+standard EBML (Extensible Binary Meta Language) tree structure. Color
+information is placed inside the track header rather than relying solely
+on the underlying video bitstream. The hierarchy follows this path:</p>
+<pre class="text"><code>Segment
+└── Tracks
+    └── TrackEntry
+        └── Video
+            └── Colour</code></pre>
+<p>The <code>Colour</code> element contains sub-elements that define the
+transfer characteristics, matrix coefficients, color range, and color
+primaries of the video track.</p>
+<h3 id="predefined-dci-p3-primaries-enumeration">Predefined DCI-P3
+Primaries Enumeration</h3>
+<p>For standard implementations of the DCI-P3 color space, the MKV
+container provides the <code>Primaries</code> element (EBML ID
+<code>0x55BB</code>). This element takes an unsigned integer
+corresponding to ITU-T H.273 / ISO/IEC 23091-2 values:</p>
+<ul>
+<li><strong>Value 11 (SMPTE RP 431-2):</strong> Standard DCI-P3 with the
+theater DCI white point (<span class="math inline">\(x = 0.314, y =
+0.351\)</span>).</li>
+<li><strong>Value 12 (SMPTE EG 432-1):</strong> Display P3 (DCI-P3
+primaries with a standard D65 white point: <span class="math inline">\(x
+= 0.3127, y = 0.3290\)</span>).</li>
+</ul>
+<p>Setting these values informs the demuxer and player of the base color
+space without requiring raw video bitstream decoding.</p>
+<h3 id="storing-custom-coordinates-with-masteringmetadata">Storing
+Custom Coordinates with <code>MasteringMetadata</code></h3>
+<p>When a video uses a custom DCI-P3 calibration profile or requires
+precise mastering display parameters (common in HDR and wide color gamut
+workflows), MKV uses the <code>MasteringMetadata</code> container (EBML
+ID <code>0x55D0</code>) inside the <code>Colour</code> element.</p>
+<p>Custom color primaries and white points are stored as floating-point
+CIE 1931 <span class="math inline">\((x, y)\)</span> chromaticity
+coordinates using the following specific elements:</p>
+<ul>
+<li><strong>PrimaryRChromaticityX / PrimaryRChromaticityY:</strong>
+Defines the red primary coordinate (standard DCI-P3 uses <span
+class="math inline">\(x = 0.680, y = 0.320\)</span>).</li>
+<li><strong>PrimaryGChromaticityX / PrimaryGChromaticityY:</strong>
+Defines the green primary coordinate (standard DCI-P3 uses <span
+class="math inline">\(x = 0.265, y = 0.690\)</span>).</li>
+<li><strong>PrimaryBChromaticityX / PrimaryBChromaticityY:</strong>
+Defines the blue primary coordinate (standard DCI-P3 uses <span
+class="math inline">\(x = 0.150, y = 0.060\)</span>).</li>
+<li><strong>WhitePointChromaticityX / WhitePointChromaticityY:</strong>
+Defines the custom mastering display white point.</li>
+</ul>
+<p>These elements accept exact floating-point values, allowing mastering
+facilities to signal non-standard or calibrated variations of P3
+primaries directly at the container level.</p>
+<h3 id="container-and-bitstream-synchronization">Container and Bitstream
+Synchronization</h3>
+<p>In standard encoding pipelines (such as HEVC or AV1), color metadata
+is also embedded directly inside the video elementary stream via Video
+Usability Information (VUI) and Mastering Display Colour Volume
+Supplemental Enhancement Information (SEI) messages.</p>
+<p>MKV preserves this data inside the codec bitstream while
+simultaneously exposing the coordinates in the container headers. This
+redundancy allows media players, renderers, and display pipelines to
+configure display color management, tone mapping, and gamut conversion
+immediately upon demuxing.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-dci-p-3-color-primaries-metadata';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

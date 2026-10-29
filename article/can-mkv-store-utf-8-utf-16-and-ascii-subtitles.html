@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store UTF-8, UTF-16, and ASCII Subtitles? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container natively supports text subtitle tracks encoded in UTF-8 and standard ASCII, but it does not support raw UTF-16 for standard subtitle streams. While ASCII works seamlessly because it is a direct subset of UTF-8, the Matroska sp">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-utf-8-utf-16-and-ascii-subtitles">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store UTF-8, UTF-16, and ASCII Subtitles? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-utf-8-utf-16-and-ascii-subtitles" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container natively supports text subtitle tracks encoded in UTF-8 and standard ASCII, but it does not support raw UTF-16 for standard subtitle streams. While ASCII works seamlessly because it is a direct subset of UTF-8, the Matroska sp" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-utf-8-utf-16-and-ascii-subtitles">Can MKV Store
+UTF-8, UTF-16, and ASCII Subtitles?</h1>
+<p>The Matroska (MKV) container natively supports text subtitle tracks
+encoded in UTF-8 and standard ASCII, but it does not support raw UTF-16
+for standard subtitle streams. While ASCII works seamlessly because it
+is a direct subset of UTF-8, the Matroska specification strictly
+mandates UTF-8 encoding for all text-based subtitles. Consequently, any
+subtitles originally formatted in UTF-16 must be converted to UTF-8
+before or during the process of muxing them into an MKV file.</p>
+<h3 id="utf-8-the-matroska-standard">UTF-8: The Matroska Standard</h3>
+<p>The Matroska specification requires all text-based subtitle
+formats—such as SubRip (SRT), SubStation Alpha (SSA/ASS), and WebVTT—to
+use UTF-8 character encoding. UTF-8 provides universal compatibility
+across multiple languages and alphabets while maintaining efficient file
+sizes. When players read text subtitle tracks from an MKV container,
+they parse the data expecting UTF-8.</p>
+<h3 id="ascii-compatibility">ASCII Compatibility</h3>
+<p>Standard 7-bit ASCII text is fully compatible with the MKV format.
+Because UTF-8 is designed to be backward-compatible with ASCII, the
+first 128 characters of UTF-8 are identical to standard ASCII
+byte-for-byte. As a result, any pure ASCII subtitle file is already
+valid UTF-8 and can be stored directly within an MKV track without
+modification or loss of data.</p>
+<h3 id="utf-16-handling">UTF-16 Handling</h3>
+<p>MKV cannot store text subtitle tracks in UTF-16 directly. If you
+attempt to mux a UTF-16 encoded subtitle file using standard tools like
+MKVToolNix or FFmpeg, the software will automatically detect the
+encoding and transcode the text into UTF-8 before embedding it into the
+container.</p>
+<p>If raw UTF-16 bytes were forced into a text subtitle track without
+conversion, media players would fail to render the subtitles properly,
+resulting in garbled text (mojibake) or playback errors. The only way to
+store a UTF-16 file in its original format inside an MKV without
+conversion is as a general file attachment, but attachments cannot be
+rendered on-screen as synchronized subtitle tracks by media players.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-store-utf-8-utf-16-and-ascii-subtitles';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

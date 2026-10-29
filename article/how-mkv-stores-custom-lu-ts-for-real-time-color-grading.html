@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Custom LUTs for Real-Time Color Grading - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format stores custom Look-Up Tables (LUTs) primarily through its extensible binary attachment subsystem and dedicated metadata tagging structure, enabling non-destructive, real-time color transformation during playback. This a">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-custom-lu-ts-for-real-time-color-grading">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Custom LUTs for Real-Time Color Grading - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-custom-lu-ts-for-real-time-color-grading" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format stores custom Look-Up Tables (LUTs) primarily through its extensible binary attachment subsystem and dedicated metadata tagging structure, enabling non-destructive, real-time color transformation during playback. This a" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-custom-luts-for-real-time-color-grading">How MKV
+Stores Custom LUTs for Real-Time Color Grading</h1>
+<p>The Matroska (MKV) container format stores custom Look-Up Tables
+(LUTs) primarily through its extensible binary attachment subsystem and
+dedicated metadata tagging structure, enabling non-destructive,
+real-time color transformation during playback. This article examines
+the internal architecture of MKV container specifications, the method
+for embedding 1D and 3D LUT data files, and how video rendering
+pipelines extract and apply these tables dynamically on the GPU.</p>
+<h3 id="the-matroska-ebml-architecture-and-attachments">The Matroska
+EBML Architecture and Attachments</h3>
+<p>Matroska is built on Extensible Binary Meta Language (EBML), a
+hierarchical binary format analogous to XML. This architecture allows
+MKV to encapsulate arbitrary binary assets alongside traditional audio
+and video elementary streams without requiring separate sidecar
+files.</p>
+<p>To store a LUT (such as a <code>.cube</code>, <code>.3dl</code>, or
+<code>.lut</code> file), the container utilizes the standard
+<code>&lt;Attachments&gt;</code> element (EBML ID
+<code>0x1941A469</code>). Within this master element, one or more
+<code>&lt;AttachedFile&gt;</code> entries are created with specific
+sub-elements:</p>
+<ul>
+<li><strong>FileName (<code>0x466E</code>):</strong> Stores the name of
+the LUT file (e.g., <code>creative_grade.cube</code>).</li>
+<li><strong>FileMediaType (<code>0x4660</code>):</strong> Defines the
+MIME type, typically set to an application-specific or generic type like
+<code>application/x-lut</code> or <code>text/plain</code>.</li>
+<li><strong>FileData (<code>0x465C</code>):</strong> Contains the raw
+binary or plaintext data of the Look-Up Table.</li>
+<li><strong>FileUID (<code>0x46AE</code>):</strong> A unique 64-bit
+integer used to reference the specific attachment across other parts of
+the container.</li>
+</ul>
+<h3 id="linking-luts-to-video-streams-via-tags">Linking LUTs to Video
+Streams via Tags</h3>
+<p>Embedding the file is only the first step; the container must also
+signal to the demuxer which video stream the LUT should be applied to.
+This is handled through the <code>&lt;Tags&gt;</code> element (EBML ID
+<code>0x1254C367</code>).</p>
+<p>A tag targets the specific video track using the
+<code>&lt;TargetTypeValue&gt;</code> and <code>&lt;TrackUID&gt;</code>.
+Inside the <code>&lt;SimpleTag&gt;</code> structure, a metadata field
+(such as <code>LUT_ATTACHMENT_UID</code> or a custom processing
+directive) points directly to the <code>FileUID</code> of the attached
+LUT. This enables multi-track or multi-version MKV files to map distinct
+color profiles to specific video streams without altering the underlying
+encoded video frames.</p>
+<h3 id="color-metadata-elements-for-hardware-mapping">Color Metadata
+Elements for Hardware Mapping</h3>
+<p>For standardized color grading and high dynamic range (HDR)
+transformations, Matroska provides dedicated video color metadata
+elements within the <code>&lt;Colour&gt;</code> track header (EBML ID
+<code>0x55B0</code>). While full custom 3D LUTs reside in attachments,
+the <code>&lt;Colour&gt;</code> element defines baseline
+characteristics:</p>
+<ul>
+<li><strong>MatrixCoefficients (<code>0x55B1</code>):</strong> Defines
+color space conversion matrices (e.g., BT.709, BT.2020).</li>
+<li><strong>TransferCharacteristics (<code>0x55B5</code>):</strong>
+Signals the transfer function (e.g., PQ, HLG, sRGB).</li>
+<li><strong>MasteringDisplayColorVolume (<code>0x55D0</code>):</strong>
+Contains primary chromaticity coordinates and luminance ranges.</li>
+</ul>
+<p>These elements provide the baseline color state, allowing rendering
+engines to properly interpret the input values before routing them
+through the custom 3D LUT stored in the attachments.</p>
+<h3 id="real-time-decoding-and-gpu-application-pipeline">Real-Time
+Decoding and GPU Application Pipeline</h3>
+<p>When an MKV file containing a custom LUT is played, the media player
+and video renderer execute the following pipeline:</p>
+<ol type="1">
+<li><strong>Demuxing &amp; Attachment Extraction:</strong> The demuxer
+identifies the video stream and parses the container's
+<code>&lt;Attachments&gt;</code> table to extract the LUT payload into
+memory.</li>
+<li><strong>GPU Texture Upload:</strong> The renderer parses the LUT
+grid (e.g., a 33x33x33 or 65x65x65 3D cube) and loads the values into
+video memory as a 3D texture buffer using graphics APIs such as OpenGL,
+DirectX, or Vulkan.</li>
+<li><strong>Shader-Based Transformation:</strong> In the display pass,
+after the video decoder outputs decoded YUV frames and converts them to
+RGB, a pixel (fragment) shader samples the 3D LUT texture. Using
+trilinear interpolation, the shader maps the source RGB values to the
+target graded color values on a per-frame basis in real time.</li>
+</ol>
+<p>By utilizing EBML attachments combined with GPU shader execution, MKV
+enables fully reversible, real-time color grading workflows without
+re-encoding the original video data.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-custom-lu-ts-for-real-time-color-grading';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

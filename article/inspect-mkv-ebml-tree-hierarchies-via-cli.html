@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspect MKV EBML Tree Hierarchies via CLI - mkv</title>
+    <meta name="description" content="The Extensible Binary Meta Language (EBML) serves as the foundational binary format for Matroska (MKV) multimedia containers. This guide explores the dedicated command-line tools used to inspect, parse, and analyze the raw EBML tree hierarchy inside any M">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/inspect-mkv-ebml-tree-hierarchies-via-cli">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Inspect MKV EBML Tree Hierarchies via CLI - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/inspect-mkv-ebml-tree-hierarchies-via-cli" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Extensible Binary Meta Language (EBML) serves as the foundational binary format for Matroska (MKV) multimedia containers. This guide explores the dedicated command-line tools used to inspect, parse, and analyze the raw EBML tree hierarchy inside any M" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="inspect-mkv-ebml-tree-hierarchies-via-cli">Inspect MKV EBML Tree
+Hierarchies via CLI</h1>
+<p>The Extensible Binary Meta Language (EBML) serves as the foundational
+binary format for Matroska (MKV) multimedia containers. This guide
+explores the dedicated command-line tools used to inspect, parse, and
+analyze the raw EBML tree hierarchy inside any MKV file, detailing
+installation, essential command syntax, and practical examples for deep
+container inspection.</p>
+<h2 id="the-primary-tool-mkvinfo">The Primary Tool: mkvinfo</h2>
+<p>The definitive command-line utility for inspecting Matroska EBML
+trees is <code>mkvinfo</code>, which is distributed as part of the
+open-source <strong>MKVToolNix</strong> package. It directly parses the
+binary MKV structure and prints every element, container, cluster, and
+track parameter in a human-readable hierarchical tree.</p>
+<h3 id="installation">Installation</h3>
+<ul>
+<li><strong>Debian/Ubuntu:</strong>
+<code>sudo apt install mkvtoolnix</code></li>
+<li><strong>macOS (Homebrew):</strong>
+<code>brew install mkvtoolnix</code></li>
+<li><strong>Arch Linux:</strong>
+<code>sudo pacman -S mkvtoolnix-cli</code></li>
+<li><strong>Windows (Chocolatey):</strong>
+<code>choco install mkvtoolnix</code></li>
+</ul>
+<h3 id="basic-ebml-inspection">Basic EBML Inspection</h3>
+<p>Running <code>mkvinfo</code> on an MKV file provides a standard view
+of the segment header, track specifications, and metadata:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvinfo</span> input.mkv</span></code></pre></div>
+<h3 id="full-ebml-tree-parsing-verbose-mode">Full EBML Tree Parsing
+(Verbose Mode)</h3>
+<p>To view the complete EBML tree hierarchy, including all child
+elements, positions, and binary sizes, increase the verbosity level by
+passing the <code>-v</code> or <code>--verbose</code> flag multiple
+times:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvinfo</span> <span class="at">-v</span> <span class="at">-v</span> input.mkv</span></code></pre></div>
+<p>Using <code>-v -v</code> forces <code>mkvinfo</code> to show all
+structural levels, down to individual cluster entries, frame references,
+timestamps, and EBML element IDs.</p>
+<h3 id="showing-element-byte-offsets-and-hex-dumps">Showing Element Byte
+Offsets and Hex Dumps</h3>
+<p>To inspect the exact byte offsets and hexadecimal representations of
+EBML elements:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvinfo</span> <span class="at">-s</span> <span class="at">-v</span> <span class="at">-v</span> input.mkv</span></code></pre></div>
+<ul>
+<li><code>-s</code> (or <code>--summary</code>): Displays a concise tree
+structure with element sizes.</li>
+<li><code>-v -v</code>: Expands clusters and sub-elements with element
+IDs and file positions (offsets).</li>
+</ul>
+<hr />
+<h2 id="alternative-tools-for-ebml-inspection">Alternative Tools for
+EBML Inspection</h2>
+<p>While <code>mkvinfo</code> is the standard, other command-line
+utilities can inspect or validate EBML tree structures:</p>
+<h3 id="1-mkvalidator">1. mkvalidator</h3>
+<p>Part of the Matroska specification tools, <code>mkvalidator</code>
+checks MKV files for technical compliance and can print the element
+tree:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvalidator</span> <span class="at">--details</span> input.mkv</span></code></pre></div>
+<h3 id="2-mediainfo-cli">2. MediaInfo CLI</h3>
+<p>MediaInfo provides raw container details when configured with the
+full debug level:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mediainfo</span> <span class="at">--Details</span><span class="op">=</span>1 input.mkv</span></code></pre></div>
+<p>This output reveals the underlying EBML tags, element sizes, and
+hierarchy starting from the root header.</p>
+<hr />
+<h2 id="key-ebml-elements-in-an-mkv-file">Key EBML Elements in an MKV
+File</h2>
+<p>When inspecting an MKV EBML tree, you will typically observe the
+following root structure:</p>
+<ul>
+<li><strong>EBML Header (<code>0x1A45DFA3</code>):</strong> Contains
+EBML versioning, read version, and DocType (<code>matroska</code>).</li>
+<li><strong>Segment (<code>0x18538067</code>):</strong> The root
+container containing all payload data.
+<ul>
+<li><strong>Info:</strong> General timeline, segment UID, duration, and
+muxing application.</li>
+<li><strong>Tracks:</strong> Codec IDs, video resolutions, audio sample
+rates, and language metadata.</li>
+<li><strong>Clusters:</strong> Block groups containing actual encoded
+audio/video/subtitle packets.</li>
+<li><strong>Cues:</strong> Index points for fast seeking.</li>
+<li><strong>Tags &amp; Chapters:</strong> Nested metadata trees for
+chapters and tagging.</li>
+</ul></li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/inspect-mkv-ebml-tree-hierarchies-via-cli';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

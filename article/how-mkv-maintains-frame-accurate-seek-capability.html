@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Maintains Frame-Accurate Seek Capability - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format maintains frame-accurate seek capability across long-duration recordings by combining a robust indexing system called Cues, high-resolution timecode scales, hierarchical metadata structures, and precise keyframe referen">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-maintains-frame-accurate-seek-capability">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Maintains Frame-Accurate Seek Capability - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-maintains-frame-accurate-seek-capability" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format maintains frame-accurate seek capability across long-duration recordings by combining a robust indexing system called Cues, high-resolution timecode scales, hierarchical metadata structures, and precise keyframe referen" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-maintains-frame-accurate-seek-capability">How MKV
+Maintains Frame-Accurate Seek Capability</h1>
+<p>The Matroska (MKV) container format maintains frame-accurate seek
+capability across long-duration recordings by combining a robust
+indexing system called Cues, high-resolution timecode scales,
+hierarchical metadata structures, and precise keyframe referencing.
+Instead of guessing frame positions based on average bitrates, MKV
+provides media players with exact byte offsets for keyframes and time
+offsets for dependent frames. This architecture allows decoders to
+instantly jump to the nearest reference frame and decode forward to the
+exact target frame, regardless of how many hours or days the recording
+lasts.</p>
+<h3 id="the-cues-indexing-system">The Cues Indexing System</h3>
+<p>At the heart of MKV's seeking mechanism is the <code>Cues</code>
+element. A Cue in Matroska serves as a built-in search index containing
+multiple <code>CuePoint</code> entries. Each <code>CuePoint</code> maps
+a specific timestamp (<code>CueTime</code>) to a physical byte location
+(<code>CueClusterPosition</code>) inside the file.</p>
+<p>When a user requests a jump to a specific timestamp in a multi-hour
+recording, the playback engine queries the <code>Cues</code> table
+instead of scanning sequentially through gigabytes of data. This index
+provides the exact cluster where the target video segment resides,
+minimizing disk I/O and enabling near-instantaneous navigation across
+massive files.</p>
+<h3 id="high-precision-timestamping">High-Precision Timestamping</h3>
+<p>MKV natively handles time using nanosecond precision. The file header
+defines a <code>TimestampScale</code> (defaulting to 1,000,000
+nanoseconds, or 1 millisecond), and every individual data packet—stored
+in <code>SimpleBlock</code> or <code>BlockGroup</code>
+structures—contains its own relative timestamp.</p>
+<p>Because every frame is stamped with its exact Presentation Time Stamp
+(PTS), the container eliminates timestamp drift over long recording
+periods. Variable Frame Rate (VFR) content, which often breaks seek
+accuracy in simpler container formats, remains fully synchronized and
+frame-accurate in MKV because no frame relies on an assumed fixed
+duration.</p>
+<h3 id="keyframe-indexing-and-decoder-prerolling">Keyframe Indexing and
+Decoder Prerolling</h3>
+<p>Compressed video codecs (like H.264, H.265, or AV1) use inter-frame
+prediction, meaning most frames (P-frames and B-frames) cannot be
+decoded without referencing preceding keyframes (I-frames / IDR-frames).
+MKV addresses this by primarily indexing keyframes within its
+<code>CueTrackPositions</code>.</p>
+<p>To achieve frame accuracy when seeking to a non-keyframe:</p>
+<ol type="1">
+<li>The demuxer reads the Cue index to find the nearest keyframe
+preceding the target timestamp.</li>
+<li>The player jumps to that byte offset and begins feeding frames to
+the decoder.</li>
+<li>The video decoder processes the preceding frames (prerolling)
+without displaying them until it hits the exact target frame matching
+the requested PTS.</li>
+</ol>
+<h3 id="hierarchical-seekheads-and-large-file-handling">Hierarchical
+SeekHeads and Large File Handling</h3>
+<p>For long recordings, MKV uses <code>SeekHead</code> elements, which
+act as a table of contents pointing to other structural metadata,
+including the <code>Cues</code>, <code>Tracks</code>, and
+<code>Tags</code> sections.</p>
+<p>MKV uses Variable Size Integers (EBML VINTs) for data lengths and
+offsets, allowing it to address virtually unlimited file sizes without
+encountering 32-bit integer overflow limits (such as the 4 GB file
+boundary). Even if a recording spans hundreds of gigabytes, the 64-bit
+capable addressing ensures that byte offsets in the <code>Cues</code>
+table point precisely to the correct memory sector without truncation or
+mathematical rounding errors.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-maintains-frame-accurate-seek-capability';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

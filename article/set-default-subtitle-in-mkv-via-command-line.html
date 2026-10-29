@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Default Subtitle in MKV via Command Line - mkv</title>
+    <meta name="description" content="Setting the default subtitle track in a Matroska (MKV) container does not require slow and quality-degrading video re-encoding. By using the dedicated command-line tool mkvpropedit, which is part of the open-source MKVToolNix suite, you can modify track h">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/set-default-subtitle-in-mkv-via-command-line">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Set Default Subtitle in MKV via Command Line - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/set-default-subtitle-in-mkv-via-command-line" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Setting the default subtitle track in a Matroska (MKV) container does not require slow and quality-degrading video re-encoding. By using the dedicated command-line tool mkvpropedit, which is part of the open-source MKVToolNix suite, you can modify track h" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="set-default-subtitle-in-mkv-via-command-line">Set Default
+Subtitle in MKV via Command Line</h1>
+<p>Setting the default subtitle track in a Matroska (MKV) container does
+not require slow and quality-degrading video re-encoding. By using the
+dedicated command-line tool <strong><code>mkvpropedit</code></strong>,
+which is part of the open-source MKVToolNix suite, you can modify track
+headers and flags directly within the file in a matter of seconds.</p>
+<h3 id="the-tool-mkvpropedit">The Tool: mkvpropedit</h3>
+<p>The standard tool for this task is <code>mkvpropedit</code>. Unlike
+general media encoders, <code>mkvpropedit</code> modifies existing MKV
+metadata in place without rewriting the video or audio streams.</p>
+<h3 id="step-1-identify-the-subtitle-track-number">Step 1: Identify the
+Subtitle Track Number</h3>
+<p>Before setting the default flag, identify the track number of your
+subtitle stream using <code>mkvmerge</code>:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-i</span> input.mkv</span></code></pre></div>
+<p>This output displays all tracks in the file. Note the track ID or the
+subtitle track index (e.g.,
+<code>Track ID 2: subtitles (SubRip/SRT)</code>).</p>
+<h3 id="step-2-set-the-default-subtitle-flag">Step 2: Set the Default
+Subtitle Flag</h3>
+<p>To set a specific subtitle track as the default, you need to set its
+<code>flag-default</code> property to <code>1</code>. If another
+subtitle track is currently set as default, set its flag to
+<code>0</code>.</p>
+<h4 id="example-1-targeting-by-subtitle-track-index">Example 1:
+Targeting by Subtitle Track Index</h4>
+<p>If you want the first subtitle track (<code>s1</code>) to be the
+default:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;video.mkv&quot;</span> <span class="at">--edit</span> track:s1 <span class="at">--set</span> flag-default=1</span></code></pre></div>
+<h4 id="example-2-setting-default-and-language-simultaneously">Example
+2: Setting Default and Language Simultaneously</h4>
+<p>To ensure the language code is properly marked (e.g., English) while
+setting it as default:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;video.mkv&quot;</span> <span class="at">--edit</span> track:s1 <span class="at">--set</span> flag-default=1 <span class="at">--set</span> language=eng</span></code></pre></div>
+<h4 id="example-3-disabling-previous-defaults">Example 3: Disabling
+Previous Defaults</h4>
+<p>If a second subtitle track (<code>s2</code>) was previously set as
+the default, you can update both tracks in a single command:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;video.mkv&quot;</span> <span class="at">--edit</span> track:s1 <span class="at">--set</span> flag-default=1 <span class="at">--edit</span> track:s2 <span class="at">--set</span> flag-default=0</span></code></pre></div>
+<h3 id="key-arguments-explained">Key Arguments Explained</h3>
+<ul>
+<li><strong><code>--edit track:sN</code></strong>: Selects the
+<em>N</em>th subtitle track in the container (e.g., <code>s1</code> for
+the first subtitle track, <code>s2</code> for the second). You can also
+target by exact track ID with <code>track:@&lt;ID&gt;</code>.</li>
+<li><strong><code>--set flag-default=1</code></strong>: Enables the
+default flag for playback on the selected track.</li>
+<li><strong><code>--set language=&lt;code&gt;</code></strong>: Updates
+the ISO 639-2 language tag (e.g., <code>eng</code>, <code>spa</code>,
+<code>fre</code>, <code>ger</code>).</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/set-default-subtitle-in-mkv-via-command-line';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

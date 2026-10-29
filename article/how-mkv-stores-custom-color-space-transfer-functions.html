@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Custom Color Space Transfer Functions - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container stores custom color space and transfer function data through structured Extensible Binary Meta Language (EBML) elements located within its video track headers, supplemented by bitstream-level metadata and container">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-custom-color-space-transfer-functions">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Custom Color Space Transfer Functions - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-custom-color-space-transfer-functions" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container stores custom color space and transfer function data through structured Extensible Binary Meta Language (EBML) elements located within its video track headers, supplemented by bitstream-level metadata and container" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-custom-color-space-transfer-functions">How MKV
+Stores Custom Color Space Transfer Functions</h1>
+<p>The Matroska (MKV) multimedia container stores custom color space and
+transfer function data through structured Extensible Binary Meta
+Language (EBML) elements located within its video track headers,
+supplemented by bitstream-level metadata and container attachments. By
+combining standardized ITU-T H.273 enumerations in the
+<code>Colour</code> master element, precise mastering display
+chromaticity coordinates, and raw bitstream signaling like Supplemental
+Enhancement Information (SEI) NAL units, MKV enables rendering engines
+and professional grading suites to accurately reconstruct custom
+electro-optical transfer functions (EOTFs) and cinematic color
+volumes.</p>
+<h3 id="the-ebml-colour-element-hierarchy">The EBML <code>Colour</code>
+Element Hierarchy</h3>
+<p>Matroska defines color grading parameters inside the
+<code>TrackEntry</code> element using the <code>Colour</code> master
+element (EBML ID: <code>0x55B0</code>). This section provides
+container-level signaling for display pipelines without requiring full
+decoding of the video payload.</p>
+<p>The key child elements governing color interpretation include:</p>
+<ul>
+<li><strong><code>TransferCharacteristics</code>
+(<code>0x55BA</code>):</strong> Identifies the opto-electronic or
+electro-optical transfer function. It uses integer values mapped to
+ITU-T H.273 / ISO/IEC 23001-8 standards, such as BT.709 (Value 1), SMPTE
+ST 2084 / PQ (Value 16), and ARIB STD-B67 / HLG (Value 18).</li>
+<li><strong><code>ColourPrimaries</code> (<code>0x55BB</code>):</strong>
+Defines the chromaticity coordinates of the source color primaries
+(e.g., BT.2020, DCI-P3, or BT.709).</li>
+<li><strong><code>MatrixCoefficients</code>
+(<code>0x55B1</code>):</strong> Specifies the matrix coefficients used
+to derive luma and chroma signals from primary color inputs.</li>
+<li><strong><code>Range</code> (<code>0x55B9</code>):</strong>
+Explicitly flags the clipping boundaries of the signal (broadcast legal
+range, full range, or unspecified).</li>
+</ul>
+<h3 id="handling-custom-mastering-color-volumes">Handling Custom
+Mastering Color Volumes</h3>
+<p>When cinematic grading relies on a custom color volume rather than
+standard broadcast targets, MKV utilizes the
+<code>MasteringMetadata</code> element (<code>0x55D0</code>). This
+sub-element defines the physical color capabilities of the display used
+during the color grading process according to SMPTE ST 2086
+specifications.</p>
+<p>The container explicitly stores floating-point coordinates for:</p>
+<ol type="1">
+<li><strong>Primary Chromaticities:</strong>
+<code>PrimaryRChromaticityX</code>/<code>Y</code>,
+<code>PrimaryGChromaticityX</code>/<code>Y</code>, and
+<code>PrimaryBChromaticityX</code>/<code>Y</code> define the exact
+triangular gamut of the mastering monitor.</li>
+<li><strong>White Point Chromaticities:</strong>
+<code>WhitePointChromaticityX</code>/<code>Y</code> define the
+calibrated target white (such as D65 or DCI white).</li>
+<li><strong>Luminance Range:</strong> <code>LuminanceMax</code> and
+<code>LuminanceMin</code> specify the peak brightness and black level
+capabilities in candelas per square meter (<span
+class="math inline">\(\text{cd/m}^2\)</span> or nits).</li>
+</ol>
+<h3
+id="bitstream-level-custom-transfer-curves-and-dynamic-metadata">Bitstream-Level
+Custom Transfer Curves and Dynamic Metadata</h3>
+<p>MKV acts as a transparent carrier for codecs (such as HEVC, AV1, or
+ProRes) that carry custom or dynamic transfer curves directly inside the
+elementary video bitstream:</p>
+<ul>
+<li><strong>SEI NAL Units:</strong> In codecs like HEVC (H.265), custom
+tone-mapping curves, parametric transfer functions, and dynamic HDR
+metadata (such as HDR10+ SMPTE ST 2094-40 or Dolby Vision RPU data) are
+embedded within Video Usability Information (VUI) and Supplemental
+Enhancement Information (SEI) packets. MKV preserves these bitstream
+elements intact.</li>
+<li><strong>BlockAdditions:</strong> MKV supports auxiliary block data
+structures (<code>BlockAdditions</code>) to associate dynamic metadata
+layers directly with individual frame blocks for advanced multi-layer
+video workflows.</li>
+</ul>
+<h3
+id="embedding-custom-luts-and-calibration-data-via-attachments">Embedding
+Custom LUTs and Calibration Data via Attachments</h3>
+<p>For proprietary production formats, logarithmic curves (such as ARRI
+LogC or REDLogFilm), or custom 3D Look-Up Tables (LUTs) that fall
+outside standardized ITU-T enumerations, MKV utilizes its native
+attachment framework.</p>
+<p>The <code>AttachedFile</code> element stores <code>.cube</code>,
+<code>.clut</code>, or ICC profiles alongside the video track with
+designated MIME types (e.g., <code>application/x-lut</code> or
+<code>application/vnd.iccprofile</code>). Video players and digital
+audio workstations with advanced color management engines can extract
+these attachments and apply the specific non-linear transformation
+curves during real-time playback.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-custom-color-space-transfer-functions';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>
