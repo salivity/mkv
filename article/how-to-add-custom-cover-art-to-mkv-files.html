@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Add Custom Cover Art to MKV Files - mkv</title>
+    <meta name="description" content="You can easily add a custom cover art image to an MKV (Matroska) video file, allowing compatible media players and file managers to display your preferred thumbnail or poster. This process does not require re-encoding the video; instead, the image is embe">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-add-custom-cover-art-to-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Add Custom Cover Art to MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-add-custom-cover-art-to-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="You can easily add a custom cover art image to an MKV (Matroska) video file, allowing compatible media players and file managers to display your preferred thumbnail or poster. This process does not require re-encoding the video; instead, the image is embe" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-add-custom-cover-art-to-mkv-files">How to Add Custom
+Cover Art to MKV Files</h1>
+<p>You can easily add a custom cover art image to an MKV (Matroska)
+video file, allowing compatible media players and file managers to
+display your preferred thumbnail or poster. This process does not
+require re-encoding the video; instead, the image is embedded directly
+into the file container as an attachment. This article explains how to
+do this quickly using free, widely-used tools like MKVToolNix and
+Mp3tag.</p>
+<p><strong>Understanding MKV Cover Art Requirements</strong></p>
+<p>The Matroska specification recognizes specific file names for cover
+art. To ensure your media player (such as VLC, Kodi, or Plex) displays
+the image correctly, you should follow these naming conventions:</p>
+<ul>
+<li><strong>Portrait Cover (Standard):</strong> Name the image file
+<code>cover.jpg</code> or <code>cover.png</code>.</li>
+<li><strong>Landscape Cover:</strong> Name the image file
+<code>cover_land.jpg</code> or <code>cover_land.png</code>.</li>
+<li><strong>File Size:</strong> Keep the image resolution reasonable
+(e.g., 600x800 or 1000x1500 pixels) to avoid unnecessarily bloating the
+video file size.</li>
+</ul>
+<p><strong>Method 1: Using MKVToolNix (Recommended)</strong></p>
+<p>MKVToolNix is the official, open-source suite of tools for editing
+MKV files.</p>
+<ol type="1">
+<li>Download and install <strong>MKVToolNix</strong>.</li>
+<li>Open the <strong>Multiplexer</strong> tool.</li>
+<li>Drag and drop your MKV file into the "Source files" window.</li>
+<li>Click on the <strong>Attachments</strong> tab (located in the middle
+section of the interface).</li>
+<li>Right-click inside the "Attachments" box and select <strong>Add
+attachments</strong>, then select your custom cover art image.</li>
+<li>Ensure the image is named exactly <code>cover.jpg</code> or
+<code>cover.png</code> in the "File name" column. If it is not, rename
+it within the tool.</li>
+<li>Set the "MIME type" to <code>image/jpeg</code> or
+<code>image/png</code> (MKVToolNix usually detects this
+automatically).</li>
+<li>Click the <strong>Start multiplexing</strong> button at the bottom
+of the window. A new MKV file will be created with the embedded cover
+art in just a few seconds.</li>
+</ol>
+<p><strong>Method 2: Using Mp3tag</strong></p>
+<p>While originally designed for audio files, Mp3tag also supports
+editing tags and cover art for MP4 and MKV video files.</p>
+<ol type="1">
+<li>Download and install <strong>Mp3tag</strong>.</li>
+<li>Drag and drop your MKV file into the main Mp3tag window.</li>
+<li>Click on the MKV file to select it.</li>
+<li>In the left-hand metadata panel, right-click the empty disc
+icon/cover art placeholder and select <strong>Add cover...</strong></li>
+<li>Choose your custom image from your computer.</li>
+<li>Click the <strong>Save</strong> icon (the floppy disk) in the
+top-left toolbar to write the image directly to the MKV file.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-to-add-custom-cover-art-to-mkv-files';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

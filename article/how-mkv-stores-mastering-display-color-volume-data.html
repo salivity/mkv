@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Mastering Display Color Volume Data - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format stores High Dynamic Range (HDR) mastering display color volume data natively as structured metadata elements inside the video track header. By integrating the SMPTE ST 2086 standard directly into its containe">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-mastering-display-color-volume-data">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Mastering Display Color Volume Data - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-mastering-display-color-volume-data" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format stores High Dynamic Range (HDR) mastering display color volume data natively as structured metadata elements inside the video track header. By integrating the SMPTE ST 2086 standard directly into its containe" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-mastering-display-color-volume-data">How MKV
+Stores Mastering Display Color Volume Data</h1>
+<p>The Matroska (MKV) multimedia container format stores High Dynamic
+Range (HDR) mastering display color volume data natively as structured
+metadata elements inside the video track header. By integrating the
+SMPTE ST 2086 standard directly into its container specifications,
+Matroska allows media splitters, decoders, and playback hardware to
+extract mastering display color primaries, white point coordinates, and
+luminance boundaries without having to parse the underlying elementary
+video bitstream.</p>
+<h3 id="the-matroska-colour-element-hierarchy">The Matroska
+<code>Colour</code> Element Hierarchy</h3>
+<p>In an MKV file, track configurations are organized hierarchically
+under the <code>Segment</code> master element. Video-specific parameters
+reside within the <code>TrackEntry</code> element, which contains a
+<code>Video</code> master element.</p>
+<p>Within the <code>Video</code> element, Matroska provides a dedicated
+<code>Colour</code> master element (EBML ID <code>0x55B0</code>). This
+element serves as the parent container for all colorimetry settings,
+including color space, transfer characteristics, matrix coefficients,
+and HDR metadata.</p>
+<h3 id="mastering-display-metadata-smpte-st-2086">Mastering Display
+Metadata (SMPTE ST 2086)</h3>
+<p>To define the color volume of the display used to master the video
+content, Matroska includes a specific sub-element inside
+<code>Colour</code> called <code>MasteringMetadata</code> (EBML ID
+<code>0x55D0</code>). This element contains floating-point values
+representing the chromaticity coordinates defined by the CIE 1931 color
+space and the luminance bounds in candelas per square meter (<span
+class="math inline">\(\text{cd/m}^2\)</span> or nits):</p>
+<ul>
+<li><strong>Color Primaries:</strong> Defines the coordinates for the
+red, green, and blue primaries used by the mastering monitor:
+<ul>
+<li><code>PrimaryRChromaticityX</code> (<code>0x55D1</code>) and
+<code>PrimaryRChromaticityY</code> (<code>0x55D2</code>)</li>
+<li><code>PrimaryGChromaticityX</code> (<code>0x55D3</code>) and
+<code>PrimaryGChromaticityY</code> (<code>0x55D4</code>)</li>
+<li><code>PrimaryBChromaticityX</code> (<code>0x55D5</code>) and
+<code>PrimaryBChromaticityY</code> (<code>0x55D6</code>)</li>
+</ul></li>
+<li><strong>White Point Coordinates:</strong> Defines the chromaticity
+of the reference white point (typically D65 for standard HDR10 content):
+<ul>
+<li><code>WhitePointChromaticityX</code> (<code>0x55D7</code>) and
+<code>WhitePointChromaticityY</code> (<code>0x55D8</code>)</li>
+</ul></li>
+<li><strong>Luminance Range:</strong> Defines the physical output
+capabilities of the mastering display:
+<ul>
+<li><code>LuminanceMax</code> (<code>0x55D9</code>): The maximum display
+luminance (e.g., 1000 or 4000 nits).</li>
+<li><code>LuminanceMin</code> (<code>0x55DA</code>): The minimum display
+luminance (e.g., 0.005 or 0.0001 nits).</li>
+</ul></li>
+</ul>
+<h3 id="content-light-level-metadata">Content Light Level Metadata</h3>
+<p>In addition to the physical mastering monitor parameters, MKV stores
+the dynamic light levels of the actual video content directly within the
+<code>Colour</code> element as companion metadata:</p>
+<ul>
+<li><code>MaxCLL</code> (<code>0x55BC</code>): Maximum Content Light
+Level, representing the highest single-pixel brightness value across the
+entire video.</li>
+<li><code>MaxFALL</code> (<code>0x55BD</code>): Maximum Frame-Average
+Light Level, representing the highest average frame brightness across
+the entire video.</li>
+</ul>
+<h3 id="container-level-vs-bitstream-level-storage">Container-Level vs.
+Bitstream-Level Storage</h3>
+<p>HDR video codecs such as HEVC (H.265) and AV1 typically carry
+mastering display color volume data inside the encoded video stream
+using Supplemental Enhancement Information (SEI) messages or
+sequence-level metadata.</p>
+<p>MKV replicates this data at the container level to optimize playback
+workflows:</p>
+<ol type="1">
+<li><strong>Fast Extraction:</strong> Demuxers and source filters can
+read the container headers instantly upon loading the file, passing the
+HDR characteristics directly to the display pipeline or renderer before
+decoding begins.</li>
+<li><strong>Hardware Handshaking:</strong> The player can configure
+HDMI/DisplayPort output and trigger display HDR switching without
+waiting for the video decoder to encounter the first in-band SEI NAL
+unit.</li>
+<li><strong>Tone Mapping Assistance:</strong> If playback occurs on a
+Standard Dynamic Range (SDR) or lower-luminance display, tone-mapping
+algorithms can prepare look-up tables (LUTs) in advance based on the
+container's declared luminance boundaries and color coordinates.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-mastering-display-color-volume-data';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

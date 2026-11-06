@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samsung TV MKV Audio Format Not Supported Fix - mkv</title>
+    <meta name="description" content="If you encounter the &quot;audio format not supported&quot; error while trying to play an MKV video file on your Samsung TV, it is because the TV cannot decode the specific audio codec contained within the MKV file. While Samsung TVs support the MKV video container">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/samsung-tv-mkv-audio-format-not-supported-fix">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Samsung TV MKV Audio Format Not Supported Fix - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/samsung-tv-mkv-audio-format-not-supported-fix" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="If you encounter the &quot;audio format not supported&quot; error while trying to play an MKV video file on your Samsung TV, it is because the TV cannot decode the specific audio codec contained within the MKV file. While Samsung TVs support the MKV video container" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="samsung-tv-mkv-audio-format-not-supported-fix">Samsung TV MKV
+Audio Format Not Supported Fix</h1>
+<p>If you encounter the "audio format not supported" error while trying
+to play an MKV video file on your Samsung TV, it is because the TV
+cannot decode the specific audio codec contained within the MKV file.
+While Samsung TVs support the MKV video container, they do not support
+all audio codecs that can be packaged inside it, most notably DTS and
+Dolby TrueHD. This article explains why this compatibility issue occurs
+and provides straightforward solutions to resolve it, including audio
+conversion and using external media players.</p>
+<h3 id="why-the-error-occurs">Why the Error Occurs</h3>
+<p>An MKV (Matroska) file is not a single video format, but a
+"container" that holds video tracks, audio tracks, subtitles, and
+metadata. While your Samsung TV might easily decode the video track
+(usually encoded in H.264 or HEVC), it may fail to decode the
+accompanying audio track.</p>
+<p>Beginning in 2018, Samsung dropped licensing and native support for
+several major audio codecs, most notably <strong>DTS (Digital Theater
+Systems)</strong> and <strong>Dolby TrueHD</strong>. If your MKV file
+utilizes a DTS or DTS-HD audio track, your Samsung TV will play the
+video perfectly but display the "audio format not supported" message on
+the screen, resulting in complete silence.</p>
+<h3 id="how-to-fix-the-unsupported-mkv-audio-error">How to Fix the
+Unsupported MKV Audio Error</h3>
+<p>There are three primary methods to resolve this compatibility
+issue:</p>
+<h4 id="1-convert-the-audio-codec-to-a-supported-format">1. Convert the
+Audio Codec to a Supported Format</h4>
+<p>The most permanent solution is to convert the unsupported audio track
+within the MKV file into a format that Samsung TVs natively support,
+such as <strong>AAC</strong> or <strong>AC3 (Dolby Digital)</strong>.
+This process, often called "remuxing," changes only the audio track
+while keeping the original video quality intact.</p>
+<ul>
+<li><strong>Using VLC Media Player:</strong> Open VLC, go to
+<em>Media</em> &gt; <em>Convert / Save</em>, add your MKV file, and
+select a profile with AAC audio.</li>
+<li><strong>Using HandBrake:</strong> Import your MKV file, go to the
+<em>Audio</em> tab, change the audio codec to AAC or AC3, and export the
+file.</li>
+<li><strong>Using dedicated remuxing tools:</strong> Software like
+<em>XMedia Recode</em> or <em>PopCorn MKV AudioConverter</em> allows you
+to convert only the audio track in just a few minutes without
+re-encoding the video.</li>
+</ul>
+<h4 id="2-use-a-media-server-with-transcoding">2. Use a Media Server
+with Transcoding</h4>
+<p>If you do not want to manually convert your files, you can stream
+them to your TV using a home media server like <strong>Plex</strong> or
+<strong>Emby</strong>.</p>
+<p>By installing the Plex server software on your computer or NAS drive
+and the Plex app on your Samsung TV, the server will automatically
+detect that your TV does not support the DTS audio track. The server
+will then "transcode" (convert on-the-fly) the audio into a compatible
+format as it streams, allowing you to watch the video with sound
+instantly.</p>
+<h4 id="3-use-an-external-media-player">3. Use an External Media
+Player</h4>
+<p>Instead of playing the MKV file directly from a USB drive connected
+to the TV or via the TV's native browser, you can use an external
+streaming device connected to your TV via HDMI.</p>
+<p>Devices such as the <strong>Apple TV, Nvidia Shield, Google
+Chromecast, or Amazon Fire TV Stick</strong> have much broader audio
+codec support. These devices will decode the DTS or Dolby TrueHD audio
+internally and send it to your Samsung TV as a standard, compatible PCM
+audio signal.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/samsung-tv-mkv-audio-format-not-supported-fix';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

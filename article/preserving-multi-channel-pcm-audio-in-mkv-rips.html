@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserving Multi-Channel PCM Audio in MKV Rips - mkv</title>
+    <meta name="description" content="Ripping multi-channel Pulse-Code Modulation (PCM or LPCM) audio from physical media into the Matroska (MKV) container requires tools to extract, convert, and package uncompressed sound streams without lossy degradation. Media ripping applications achieve">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/preserving-multi-channel-pcm-audio-in-mkv-rips">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Preserving Multi-Channel PCM Audio in MKV Rips - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/preserving-multi-channel-pcm-audio-in-mkv-rips" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Ripping multi-channel Pulse-Code Modulation (PCM or LPCM) audio from physical media into the Matroska (MKV) container requires tools to extract, convert, and package uncompressed sound streams without lossy degradation. Media ripping applications achieve" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="preserving-multi-channel-pcm-audio-in-mkv-rips">Preserving
+Multi-Channel PCM Audio in MKV Rips</h1>
+<p>Ripping multi-channel Pulse-Code Modulation (PCM or LPCM) audio from
+physical media into the Matroska (MKV) container requires tools to
+extract, convert, and package uncompressed sound streams without lossy
+degradation. Media ripping applications achieve this preservation by
+reading the raw audio bitstream from the source disc, maintaining
+precise channel layout metadata, standardizing sample formats, and
+packaging the data directly into MKV audio tracks using stream
+passthrough.</p>
+<h3 id="demuxing-the-raw-audio-stream">Demuxing the Raw Audio
+Stream</h3>
+<p>Physical media formats like Blu-ray discs store uncompressed
+multi-channel audio tracks as LPCM streams alongside video and subtitle
+packets within MPEG-2 Transport Stream (M2TS) files. When a ripping tool
+processes this data, it first demuxes the container. Rather than
+decoding and re-encoding the audio through a lossy codec (such as AAC or
+AC3), the software extracts the uncompressed pulse-code samples directly
+from the multiplexed stream. This process is functionally a direct
+stream copy, ensuring that no audio samples are discarded, compressed,
+or dynamically altered.</p>
+<h3 id="byte-order-and-endianness-handling">Byte Order and Endianness
+Handling</h3>
+<p>Blu-ray specifications typically store LPCM audio in big-endian byte
+order (often referred to as BD-LPCM). Most modern multimedia containers,
+operating systems, and media players expect uncompressed PCM audio to
+use little-endian byte ordering, following the standard Microsoft WAVE
+format.</p>
+<p>To preserve compatibility without compromising fidelity, ripping
+tools perform an endian conversion during the remuxing phase. The tool
+reads the 16-bit or 24-bit samples and reverses the byte order for each
+individual sample. Because this transformation only rearranges how the
+binary data is read rather than altering sample values, the audio
+remains mathematically identical to the source recording.</p>
+<h3 id="matroska-codec-identification-and-header-metadata">Matroska
+Codec Identification and Header Metadata</h3>
+<p>The Matroska container natively supports raw PCM streams through
+dedicated codec identifiers, primarily <code>A_PCM/INT/LIT</code>
+(uncompressed integer PCM in little-endian format). When the ripping
+tool muxes the extracted PCM data into an MKV file, it constructs a
+Matroska track header containing essential technical parameters:</p>
+<ul>
+<li><strong>Sampling Frequency:</strong> Preserves source rates such as
+48 kHz, 96 kHz, or 192 kHz.</li>
+<li><strong>Bit Depth:</strong> Explicitly defines whether samples are
+16-bit, 24-bit, or 32-bit.</li>
+<li><strong>Channel Count:</strong> Identifies the total number of audio
+streams (e.g., 6 channels for 5.1 surround or 8 channels for 7.1
+surround).</li>
+</ul>
+<p>By writing these parameters into the MKV track definition, the
+container ensures that downstream media splitters and audio renderers
+allocate the correct buffer sizes and decoding pipelines during
+playback.</p>
+<h3 id="channel-mapping-and-spatial-positioning">Channel Mapping and
+Spatial Positioning</h3>
+<p>Multi-channel PCM relies on explicit channel ordering to ensure that
+individual audio tracks route to their intended speakers (such as Front
+Left, Center, Front Right, Low-Frequency Effects, and Surround
+channels). Blu-ray LPCM tracks use specific channel assignment tables
+defined by SMPTE standards.</p>
+<p>During the muxing phase, ripping software maps the input channel
+configuration into standard channel assignment masks compatible with the
+Matroska specification and modern audio APIs (like
+WAVEFORMATEXTENSIBLE). The software interleaves the multi-channel
+samples in the designated playback order—such as Left, Right, Center,
+LFE, Left Surround, Right Surround—ensuring that surround sound staging
+and multi-channel separation remain intact across any playback
+hardware.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/preserving-multi-channel-pcm-audio-in-mkv-rips';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

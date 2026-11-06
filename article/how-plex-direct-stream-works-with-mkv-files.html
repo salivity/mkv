@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Plex Direct Stream Works with MKV Files - mkv</title>
+    <meta name="description" content="Plex Media Server uses a process called Direct Stream when a client device supports the audio and video codecs inside a media file, but cannot natively read the container format, such as MKV (Matroska). Instead of performing a resource-intensive full tran">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-plex-direct-stream-works-with-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How Plex Direct Stream Works with MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-plex-direct-stream-works-with-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Plex Media Server uses a process called Direct Stream when a client device supports the audio and video codecs inside a media file, but cannot natively read the container format, such as MKV (Matroska). Instead of performing a resource-intensive full tran" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-plex-direct-stream-works-with-mkv-files">How Plex Direct
+Stream Works with MKV Files</h1>
+<p>Plex Media Server uses a process called Direct Stream when a client
+device supports the audio and video codecs inside a media file, but
+cannot natively read the container format, such as MKV (Matroska).
+Instead of performing a resource-intensive full transcode, Plex demuxes
+the original data streams from the MKV container and remuxes them into a
+compatible container—such as MP4 or MPEG-TS—in real time. This article
+explains the technical mechanics of Direct Stream, how Plex determines
+compatibility, and its impact on server performance.</p>
+<h3 id="containers-vs-codecs-in-plex">Containers vs. Codecs in Plex</h3>
+<p>To understand Direct Stream, it is essential to distinguish between a
+file container and a codec:</p>
+<ul>
+<li><strong>Container (MKV):</strong> A wrapper format that holds video,
+audio, subtitle tracks, and metadata.</li>
+<li><strong>Codecs (e.g., H.264, HEVC, AAC, AC3):</strong> The
+compression formats used to encode the actual audio and video data
+inside the container.</li>
+</ul>
+<p>Many modern playback devices (such as Apple TV, Safari, or smart TVs)
+natively support H.264 or HEVC video streams but lack native
+operating-system-level support to parse the MKV container.</p>
+<h3 id="the-direct-stream-process">The Direct Stream Process</h3>
+<p>When a client initiates playback of an MKV file, Plex Media Server
+executes the following steps:</p>
+<ol type="1">
+<li><strong>Profile Evaluation:</strong> The client sends its playback
+profile to the server, detailing supported containers, video codecs,
+audio codecs, and subtitle formats.</li>
+<li><strong>Compatibility Check:</strong> Plex inspects the MKV file. If
+the video stream (e.g., H.264) and audio stream (e.g., AAC) match the
+client profile, but the MKV container does not, Plex initiates Direct
+Stream.</li>
+<li><strong>Demuxing and Remuxing:</strong> The server extracts
+(demuxes) the raw compressed audio and video packets directly from the
+MKV container without decoding or altering the underlying data.</li>
+<li><strong>Repackaging on the Fly:</strong> The server repackages
+(remuxes) these unaltered streams into a compatible target container
+(typically an MP4 wrapper or an HLS/HTTP Live Streaming segmented
+stream).</li>
+<li><strong>Delivery:</strong> The newly wrapped stream is transmitted
+over the network to the client for immediate decoding by the client's
+native hardware.</li>
+</ol>
+<h3 id="server-resource-impact">Server Resource Impact</h3>
+<p>Because Direct Stream avoids decoding and re-encoding video frames,
+it bypasses the most computationally expensive part of media
+streaming.</p>
+<ul>
+<li><strong>CPU/GPU Usage:</strong> Full video transcoding requires
+substantial CPU or GPU resources to render frames. In contrast, Direct
+Stream is essentially a stream-copy operation, resulting in near-zero
+CPU usage (typically 1–2%).</li>
+<li><strong>Video and Audio Quality:</strong> Because the elementary
+streams are copied bit-for-bit, there is zero loss in video or audio
+fidelity.</li>
+<li><strong>Bandwidth:</strong> The bandwidth requirement remains
+identical to the original bitrate of the media file.</li>
+</ul>
+<h3 id="partial-direct-stream-scenarios">Partial Direct Stream
+Scenarios</h3>
+<p>Plex can apply Direct Stream independently to individual tracks
+within the same MKV file:</p>
+<ul>
+<li><strong>Direct Stream Video + Transcode Audio:</strong> If the
+client supports the video codec (e.g., HEVC) but does not support the
+audio codec (e.g., TrueHD 7.1), Plex will Direct Stream the video track
+while converting only the audio track to a compatible format (e.g., AAC
+or EAC3), repackaging both into the new container.</li>
+<li><strong>Subtitles Influence:</strong> Text-based subtitles (like
+SRT) can often be transmitted alongside a Direct Stream. However,
+image-based subtitles embedded in the MKV (such as PGS or VOBSUB) may
+force the server to burn the subtitles directly into the video frames,
+which disables Direct Stream and triggers a full video transcode.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-plex-direct-stream-works-with-mkv-files';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

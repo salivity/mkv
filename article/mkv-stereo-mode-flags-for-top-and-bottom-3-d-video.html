@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV StereoMode Flags for Top-and-Bottom 3D Video - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container stores stereoscopic 3D metadata directly within its track header parameters, using a dedicated integer element to define layout orientation and eye arrangement. For top-and-bottom (also known as over-under) 3D content, the con">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-stereo-mode-flags-for-top-and-bottom-3-d-video">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV StereoMode Flags for Top-and-Bottom 3D Video - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-stereo-mode-flags-for-top-and-bottom-3-d-video" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container stores stereoscopic 3D metadata directly within its track header parameters, using a dedicated integer element to define layout orientation and eye arrangement. For top-and-bottom (also known as over-under) 3D content, the con" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-stereomode-flags-for-top-and-bottom-3d-video">MKV StereoMode
+Flags for Top-and-Bottom 3D Video</h1>
+<p>The Matroska (MKV) container stores stereoscopic 3D metadata directly
+within its track header parameters, using a dedicated integer element to
+define layout orientation and eye arrangement. For top-and-bottom (also
+known as over-under) 3D content, the container relies on the
+<code>StereoMode</code> EBML element to instruct compatible media
+players, splitters, and displays on how to unpack and render the
+vertically stacked frames for the left and right eyes without requiring
+changes to the underlying video stream.</p>
+<h3 id="the-matroska-track-hierarchy-and-stereomode-element">The
+Matroska Track Hierarchy and StereoMode Element</h3>
+<p>Inside the structure of an MKV file, metadata is organized in an
+Extensible Binary Meta Language (EBML) tree. Video settings exist within
+the <code>Segment</code> -&gt; <code>Tracks</code> -&gt;
+<code>TrackEntry</code> -&gt; <code>Video</code> hierarchy.</p>
+<p>To signal 3D video, Matroska provides the <code>StereoMode</code>
+element:</p>
+<ul>
+<li><strong>Element Name:</strong> <code>StereoMode</code></li>
+<li><strong>EBML ID:</strong> <code>0x53B8</code></li>
+<li><strong>Data Type:</strong> Unsigned Integer (uinteger)</li>
+</ul>
+<h3 id="specific-flag-values-for-top-and-bottom-3d">Specific Flag Values
+for Top-and-Bottom 3D</h3>
+<p>Matroska differentiates between layouts based on both orientation and
+eye dominance (which eye occupies the top half of the frame). For
+top-and-bottom configurations, two primary flag values are used:</p>
+<ul>
+<li><strong>Value <code>2</code>:</strong> Top - bottom (Right eye is
+first / top)</li>
+<li><strong>Value <code>3</code>:</strong> Top - bottom (Left eye is
+first / top)</li>
+</ul>
+<p>When set to <code>3</code>, the video renderer reads the upper half
+of each decoded frame as the left-eye view and the lower half as the
+right-eye view. If set to <code>2</code>, the upper half is assigned to
+the right eye and the lower half to the left eye.</p>
+<h3 id="decoding-and-presentation-behavior">Decoding and Presentation
+Behavior</h3>
+<p>The <code>StereoMode</code> element operates purely at the container
+level. The underlying video stream (typically encoded with AVC/H.264 or
+HEVC/H.265) remains a standard 2D video containing both images stacked
+vertically.</p>
+<p>When a compliant player reads the <code>0x53B8</code> flag:</p>
+<ol type="1">
+<li>It parses the video frame dimensions (e.g., standard 1920x1080 for
+Half Top-and-Bottom, or 1920x2160 for Full Top-and-Bottom).</li>
+<li>It splits the vertical resolution in half.</li>
+<li>It assigns each half to the appropriate eye buffer according to
+whether flag <code>2</code> or <code>3</code> is defined.</li>
+<li>It stretches or scales the half-resolution images to the target
+display aspect ratio for 3D presentation (e.g., frame sequential,
+polarized, or VR headset display).</li>
+</ol>
+<h3 id="inspecting-and-modifying-the-flag">Inspecting and Modifying the
+Flag</h3>
+<p>The <code>StereoMode</code> parameter can be added, inspected, or
+modified without re-encoding the video stream. Software suites such as
+MKVToolNix expose this property via GUI header editors or the
+command-line utility <code>mkvpropedit</code> by modifying the
+<code>stereo-mode</code> property on the target video track.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/mkv-stereo-mode-flags-for-top-and-bottom-3-d-video';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

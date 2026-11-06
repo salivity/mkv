@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Is CueBlockNumber in MKV Cue Points? - mkv</title>
+    <meta name="description" content="The CueBlockNumber element inside a Matroska (MKV) cue point identifies the specific sequential block within a cluster that corresponds to a given timestamp. By providing the exact block index of a target frame, typically a keyframe, this element helps me">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/what-is-cue-block-number-in-mkv-cue-points">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="What Is CueBlockNumber in MKV Cue Points? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/what-is-cue-block-number-in-mkv-cue-points" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The CueBlockNumber element inside a Matroska (MKV) cue point identifies the specific sequential block within a cluster that corresponds to a given timestamp. By providing the exact block index of a target frame, typically a keyframe, this element helps me" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="what-is-cueblocknumber-in-mkv-cue-points">What Is CueBlockNumber
+in MKV Cue Points?</h1>
+<p>The <code>CueBlockNumber</code> element inside a Matroska (MKV) cue
+point identifies the specific sequential block within a cluster that
+corresponds to a given timestamp. By providing the exact block index of
+a target frame, typically a keyframe, this element helps media players
+and demuxers optimize seeking operations and access specific video or
+audio samples without parsing the entire cluster from the beginning.</p>
+<p>In the Matroska container format, seeking is managed through an index
+structure known as <code>Cues</code>. The <code>Cues</code> element
+contains multiple <code>CuePoint</code> entries, each marking a specific
+point in playback time. Within each cue point,
+<code>CueTrackPositions</code> defines where the media data for a
+particular track resides.</p>
+<p>Inside <code>CueTrackPositions</code>, several elements work together
+to pinpoint data:</p>
+<ul>
+<li><strong><code>CueTrack</code></strong>: Specifies the track
+number.</li>
+<li><strong><code>CueClusterPosition</code></strong>: Indicates the byte
+offset of the cluster containing the target data.</li>
+<li><strong><code>CueRelativePosition</code></strong>: Provides the byte
+offset of the target block relative to the start of the cluster.</li>
+<li><strong><code>CueBlockNumber</code></strong>: Specifies the
+sequential number (1-based) of the block within that cluster.</li>
+</ul>
+<p>When a media player seeks to a specific timestamp, it uses the cue
+point to find the exact byte position of the target cluster via
+<code>CueClusterPosition</code>. Once the cluster is located, the player
+must locate the relevant <code>SimpleBlock</code> or
+<code>BlockGroup</code>.</p>
+<p>Without <code>CueBlockNumber</code> or
+<code>CueRelativePosition</code>, a demuxer must read and parse every
+block header from the start of the cluster sequentially until it
+encounters the target timestamp. When <code>CueBlockNumber</code> is
+present, the demuxer can simply count the blocks as it parses,
+immediately knowing when it has arrived at the indexed block.</p>
+<p>While <code>CueBlockNumber</code> is an optional element in the
+Matroska specification, its primary function is reducing parser
+overhead, improving seeking performance, and ensuring precise frame
+retrieval during playback and editing.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/what-is-cue-block-number-in-mkv-cue-points';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

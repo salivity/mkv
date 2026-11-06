@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClusterPosition in MKV CuePoint Explained - mkv</title>
+    <meta name="description" content="In a Matroska (MKV) multimedia file, the ClusterPosition (formally designated as CueClusterPosition) element within a CuePoint serves as a critical byte-offset reference that enables fast and efficient seeking. This article outlines the purpose of Cluster">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/cluster-position-in-mkv-cue-point-explained">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ClusterPosition in MKV CuePoint Explained - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/cluster-position-in-mkv-cue-point-explained" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In a Matroska (MKV) multimedia file, the ClusterPosition (formally designated as CueClusterPosition) element within a CuePoint serves as a critical byte-offset reference that enables fast and efficient seeking. This article outlines the purpose of Cluster" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="clusterposition-in-mkv-cuepoint-explained">ClusterPosition in
+MKV CuePoint Explained</h1>
+<p>In a Matroska (MKV) multimedia file, the <code>ClusterPosition</code>
+(formally designated as <code>CueClusterPosition</code>) element within
+a <code>CuePoint</code> serves as a critical byte-offset reference that
+enables fast and efficient seeking. This article outlines the purpose of
+<code>ClusterPosition</code>, how it fits into the Matroska index
+structure, and how media players utilize it to provide instant playback
+navigation without scanning the entire file.</p>
+<h3 id="the-role-of-cues-in-matroska">The Role of Cues in Matroska</h3>
+<p>MKV files organize multimedia data into structures called
+<code>Clusters</code>, where each <code>Cluster</code> contains a
+sequence of video, audio, or subtitle blocks along with a timestamp. To
+facilitate random access (seeking) to specific timestamps, Matroska
+includes an optional but essential index element called
+<code>Cues</code>.</p>
+<p>The <code>Cues</code> element contains multiple <code>CuePoint</code>
+entries. Each <code>CuePoint</code> pairs a specific presentation
+timestamp (<code>CueTime</code>) with information on where to find the
+corresponding media data in the file.</p>
+<h3 id="function-of-the-clusterposition-element">Function of the
+ClusterPosition Element</h3>
+<p>The <code>ClusterPosition</code> element defines the exact byte
+offset of the target <code>Cluster</code> relative to the start of the
+<code>Segment</code> element's data payload.</p>
+<p>When an MKV file is created:</p>
+<ul>
+<li>A <code>CuePoint</code> is typically generated for keyframes
+(intra-frames) or specific time intervals.</li>
+<li>The <code>CueTime</code> records the presentation timestamp of that
+keyframe.</li>
+<li>The <code>ClusterPosition</code> stores the integer value
+representing the byte location where the <code>Cluster</code> containing
+that keyframe begins.</li>
+</ul>
+<h3 id="how-seeking-works-using-clusterposition">How Seeking Works Using
+ClusterPosition</h3>
+<p>When a user skips to a specific timestamp in a video player, the
+player performs the following steps:</p>
+<ol type="1">
+<li><strong>Index Lookup:</strong> The player searches the
+<code>Cues</code> table for the <code>CuePoint</code> closest to the
+requested playback time.</li>
+<li><strong>Offset Retrieval:</strong> The player reads the
+<code>ClusterPosition</code> value associated with that
+<code>CuePoint</code>.</li>
+<li><strong>Direct File Seek:</strong> Using the
+<code>ClusterPosition</code> offset, the player immediately jumps
+directly to that byte location in the MKV file, bypassing all
+intermediate data.</li>
+<li><strong>Decoding:</strong> The player reads the <code>Cluster</code>
+header, locates the keyframe block, and begins decoding video from that
+point onward.</li>
+</ol>
+<h3 id="importance-for-performance">Importance for Performance</h3>
+<p>Without the <code>ClusterPosition</code> element and the
+<code>Cues</code> index, a media player would have to linearly read and
+parse through <code>Clusters</code> sequentially from the beginning of
+the file to reach a desired timestamp. By providing direct byte offsets,
+<code>ClusterPosition</code> eliminates latency, reduces CPU and disk
+usage, and allows smooth, instant scrubbing across local storage and
+network streams.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/cluster-position-in-mkv-cue-point-explained';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

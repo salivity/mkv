@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Non-Monotonous MKV Timestamps in Video Editors - mkv</title>
+    <meta name="description" content="When working with Matroska (MKV) video files, video editing suites frequently encounter non-monotonous timestamps—instances where the presentation time of video frames does not strictly increase in sequential order. This article breaks down how profession">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/handling-non-monotonous-mkv-timestamps-in-video-editors">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Handling Non-Monotonous MKV Timestamps in Video Editors - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/handling-non-monotonous-mkv-timestamps-in-video-editors" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When working with Matroska (MKV) video files, video editing suites frequently encounter non-monotonous timestamps—instances where the presentation time of video frames does not strictly increase in sequential order. This article breaks down how profession" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1
+id="handling-non-monotonous-mkv-timestamps-in-video-editors">Handling
+Non-Monotonous MKV Timestamps in Video Editors</h1>
+<p>When working with Matroska (MKV) video files, video editing suites
+frequently encounter non-monotonous timestamps—instances where the
+presentation time of video frames does not strictly increase in
+sequential order. This article breaks down how professional Non-Linear
+Editors (NLEs) and their underlying media engines detect, parse, and
+reconcile these timestamp discrepancies to ensure accurate frame
+ordering, smooth playback, and reliable audio/video synchronization on
+the editing timeline.</p>
+<h3 id="understanding-non-monotonous-timestamps-in-mkv">Understanding
+Non-Monotonous Timestamps in MKV</h3>
+<p>The Matroska container format organizes multimedia data into
+hierarchical structures called EBML (Extensible Binary Meta Language).
+Within an MKV file, video data is stored in <code>Cluster</code>
+elements containing <code>BlockGroup</code> or <code>SimpleBlock</code>
+structures. Each block carries a relative timecode that, when added to
+the Cluster's base timecode, yields the Presentation Timestamp (PTS) for
+that frame.</p>
+<p>Timestamps become non-monotonous due to:</p>
+<ul>
+<li><strong>Out-of-Order B-Frames:</strong> Bidirectional predictive
+frames (B-frames) require decoding future reference frames first,
+creating an offset between Decode Timestamps (DTS) and Presentation
+Timestamps (PTS).</li>
+<li><strong>Muxing Errors:</strong> Flawed recording software, live
+streams, or multiplexers failing to calculate correct packet
+intervals.</li>
+<li><strong>Variable Frame Rate (VFR) Jitter:</strong> Fluctuations in
+capture rates causing micro-gaps or overlapping presentation times.</li>
+</ul>
+<h3 id="step-1-demuxing-and-index-scanning">Step 1: Demuxing and Index
+Scanning</h3>
+<p>When an MKV file is imported into an NLE (such as DaVinci Resolve,
+Adobe Premiere Pro, or Final Cut Pro), the container parser first scans
+the file's index table (the <code>Cues</code> element). If the
+<code>Cues</code> element is missing, corrupted, or exhibits non-linear
+temporal offsets, the editor reads the stream sequentially.</p>
+<p>During this pass, the demuxer extracts both the DTS (the order the
+decoder needs the packets) and the PTS (the order frames must appear on
+screen). If a frame's PTS is lower than the PTS of a preceding decoded
+frame where no B-frame relationship exists, the demuxer flags a
+non-monotonous sequence.</p>
+<h3 id="step-2-decoding-pipeline-and-frame-reordering">Step 2: Decoding
+Pipeline and Frame Reordering</h3>
+<p>The editor’s underlying decoder (such as an FFmpeg-based wrapper,
+Apple Core Media, or Microsoft Media Foundation) pushes encoded packets
+into a decoded picture buffer (DPB).</p>
+<ol type="1">
+<li><strong>Reordering Buffer:</strong> The decoder uses the DTS to
+arrange packets for decoding.</li>
+<li><strong>PTS Sort:</strong> Once decoded into raw pixel buffers
+(e.g., YUV420p), the frames are sorted by their PTS rather than their
+decode order.</li>
+<li><strong>Temporal Monotonicity Enforcement:</strong> If adjacent
+frames possess identical or backward-jumping presentation timestamps,
+the engine identifies whether it is an intentional display delay or a
+malformed container timestamp.</li>
+</ol>
+<h3 id="step-3-normalization-and-synthetic-timebase-generation">Step 3:
+Normalization and Synthetic Timebase Generation</h3>
+<p>Timelines inside editing suites require fixed, predictable timebases
+(Constant Frame Rate or CFR) to allow frame-accurate trimming, effects
+processing, and audio alignment. Because NLEs cannot natively place two
+frames at the exact same timeline tick, they apply reconciliation
+algorithms:</p>
+<ul>
+<li><strong>Monotonic Offsetting (Delta Clamping):</strong> If a
+timestamp jump is negative, the parser clamps the delta to a minimum
+positive interval (<span class="math inline">\(PTS_{current} =
+PTS_{previous} + \Delta t_{nominal}\)</span>), effectively pushing the
+misplaced frame forward.</li>
+<li><strong>Frame Dropping and Padding:</strong> For duplicate
+timestamps, the engine typically retains the first parsed frame and
+discards the collision, or duplicates the nearest valid frame if a gap
+occurs, maintaining consistent audio/video duration.</li>
+<li><strong>Linear Interpolation:</strong> For VFR streams with erratic
+time delta values, the editor recalculates a uniform synthetic timecode
+track, interpolating presentation positions relative to the continuous
+audio stream clock.</li>
+</ul>
+<h3 id="step-4-audio-video-synchronization-anchoring">Step 4:
+Audio-Video Synchronization Anchoring</h3>
+<p>Because audio streams in MKV containers rarely suffer from
+out-of-order delivery, NLEs use the continuous audio track as the
+absolute master clock. When video timestamps drift or reset:</p>
+<ol type="1">
+<li>The parser correlates the video track's running duration with the
+uncompressed PCM or decoded AAC/AC3 audio sample count.</li>
+<li>Frame positions are adjusted to match the master audio clock at
+regular sync intervals (keyframes or seek points).</li>
+<li>Any residual timeline discrepancy is resolved before the frames are
+placed on the track, preventing cumulative audio-video drift across long
+timelines.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/handling-non-monotonous-mkv-timestamps-in-video-editors';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

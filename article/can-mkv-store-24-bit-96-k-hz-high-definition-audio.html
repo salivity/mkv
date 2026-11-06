@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store 24-bit 96kHz High-Definition Audio? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format fully supports high-definition audio tracks, including 24-bit/96kHz streams, without any downsampling or quality degradation. Because MKV acts strictly as an envelope for multimedia data rather than a compression algori">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-24-bit-96-k-hz-high-definition-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store 24-bit 96kHz High-Definition Audio? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-24-bit-96-k-hz-high-definition-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format fully supports high-definition audio tracks, including 24-bit/96kHz streams, without any downsampling or quality degradation. Because MKV acts strictly as an envelope for multimedia data rather than a compression algori" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-24-bit-96khz-high-definition-audio">Can MKV Store
+24-bit 96kHz High-Definition Audio?</h1>
+<p>The Matroska (MKV) container format fully supports high-definition
+audio tracks, including 24-bit/96kHz streams, without any downsampling
+or quality degradation. Because MKV acts strictly as an envelope for
+multimedia data rather than a compression algorithm, it preserves the
+exact bit depth, sample rate, and channel layout of the original audio
+track.</p>
+<h3 id="mkv-as-a-universal-container">MKV as a Universal Container</h3>
+<p>MKV is a flexible, open-standard container format designed to hold an
+unlimited number of video, audio, picture, and subtitle tracks. It does
+not encode or compress data itself; instead, it packages already-encoded
+streams into a single file. Consequently, when you mux a 24-bit/96kHz
+audio stream into an MKV container, the file stores the raw stream
+bit-for-bit without applying conversion, compression, or
+downsampling.</p>
+<h3 id="supported-high-definition-audio-formats">Supported
+High-Definition Audio Formats</h3>
+<p>MKV supports virtually all modern lossless and high-resolution audio
+codecs capable of carrying 24-bit/96kHz (and even 24-bit/192kHz or
+32-bit float) audio:</p>
+<ul>
+<li><strong>FLAC (Free Lossless Audio Codec):</strong> Natively supports
+high-resolution audio up to 32-bit/655kHz.</li>
+<li><strong>Linear PCM (LPCM):</strong> Uncompressed, studio-quality
+audio streams.</li>
+<li><strong>Dolby TrueHD:</strong> A lossless multichannel codec widely
+used on Blu-ray media, capable of 24-bit/96kHz across multiple
+channels.</li>
+<li><strong>DTS-HD Master Audio (DTS-HD MA):</strong> A bit-for-bit
+lossless format supporting high-resolution surround sound.</li>
+<li><strong>ALAC (Apple Lossless Audio Codec):</strong> Lossless format
+supporting up to 24-bit/192kHz.</li>
+</ul>
+<h3 id="requirements-for-lossless-playback">Requirements for Lossless
+Playback</h3>
+<p>While the MKV file will preserve the 24-bit/96kHz stream intact,
+actual playback at native resolution depends on your playback hardware
+and software pipeline:</p>
+<ol type="1">
+<li><strong>Software Players:</strong> Media players like VLC, MPC-HC,
+mpv, or Kodi must be configured to pass the audio stream without
+software-level resampling.</li>
+<li><strong>Audio Drivers and Operating Systems:</strong> Windows (via
+WASAPI Exclusive Mode or ASIO) or macOS/Linux audio settings must allow
+the exact sample rate and bit depth to bypass the OS audio mixer.</li>
+<li><strong>DAC and Receiver:</strong> The external Digital-to-Analog
+Converter (DAC) or AV receiver must natively support 24-bit/96kHz
+decoding.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-store-24-bit-96-k-hz-high-definition-audio';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

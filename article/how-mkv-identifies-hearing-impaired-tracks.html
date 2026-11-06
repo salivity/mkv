@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Identifies Hearing Impaired Tracks - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container identifies tracks designed for hearing-impaired accessibility primarily through a dedicated metadata element called FlagHearingImpaired. Alongside standard track naming conventions and language tagging, this built-i">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-identifies-hearing-impaired-tracks">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Identifies Hearing Impaired Tracks - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-identifies-hearing-impaired-tracks" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container identifies tracks designed for hearing-impaired accessibility primarily through a dedicated metadata element called FlagHearingImpaired. Alongside standard track naming conventions and language tagging, this built-i" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-identifies-hearing-impaired-tracks">How MKV Identifies
+Hearing Impaired Tracks</h1>
+<p>The Matroska (MKV) multimedia container identifies tracks designed
+for hearing-impaired accessibility primarily through a dedicated
+metadata element called <code>FlagHearingImpaired</code>. Alongside
+standard track naming conventions and language tagging, this built-in
+Extensible Binary Meta Language (EBML) flag allows modern media players
+to automatically recognize, categorize, and display subtitles for the
+deaf and hard of hearing (SDH) or enhanced dialogue audio streams.</p>
+<h2 id="the-flaghearingimpaired-ebml-element">The
+<code>FlagHearingImpaired</code> EBML Element</h2>
+<p>Matroska uses EBML to organize track information within the
+<code>TrackEntry</code> section of an MKV file. To identify
+accessibility features, the Matroska specification defines a specific
+boolean element:</p>
+<ul>
+<li><strong>Element Name:</strong> <code>FlagHearingImpaired</code></li>
+<li><strong>EBML ID:</strong> <code>0x55B9</code></li>
+<li><strong>Type:</strong> Unsigned Integer / Boolean</li>
+<li><strong>Default Value:</strong> <code>0</code> (False)</li>
+</ul>
+<p>When set to <code>1</code> (True), this flag explicitly signals to
+the demuxer and media player that the track contains content tailored
+for the hearing impaired.</p>
+<h2 id="application-to-subtitles-and-audio">Application to Subtitles and
+Audio</h2>
+<p>The hearing-impaired flag can be applied to different types of media
+streams within the MKV container:</p>
+<ul>
+<li><strong>Subtitle Tracks (SDH):</strong> Applied to subtitle streams
+to indicate that they include not only spoken dialogue but also sound
+effects, speaker identification, and ambient audio descriptions.</li>
+<li><strong>Audio Tracks:</strong> Applied to specialized audio mixes,
+such as clear voice or high-dialogue-enhancement streams designed to
+make speech more intelligible for individuals with hearing loss.</li>
+</ul>
+<h2 id="additional-track-flags-and-metadata">Additional Track Flags and
+Metadata</h2>
+<p>While <code>FlagHearingImpaired</code> is the primary standardized
+method, MKV containers also use surrounding metadata to provide complete
+context:</p>
+<ul>
+<li><strong>Language Tags (<code>Language</code> /
+<code>LanguageIETF</code>):</strong> Identifies the language of the
+track using ISO 639-2 codes or BCP 47 language tags.</li>
+<li><strong>Track Name (<code>Name</code>):</strong> Historically, and
+for legacy players that do not parse the
+<code>FlagHearingImpaired</code> element, creators often add text
+descriptors to the track title, such as "English (SDH)" or "English
+[CC]".</li>
+<li><strong>Related Accessibility Flags:</strong> Matroska includes
+companion flags such as <code>FlagVisualImpaired</code>
+(<code>0x55BA</code>) for audio descriptions and
+<code>FlagDescriptions</code> (<code>0x55BB</code>) for textual
+descriptions of video content.</li>
+</ul>
+<h2 id="how-media-players-use-this-information">How Media Players Use
+This Information</h2>
+<p>When an MKV file is opened, modern playback software (such as VLC,
+mpv, or Kodi) parses the <code>TrackEntry</code> elements. If the user
+has enabled accessibility preferences in the player settings, the player
+reads <code>FlagHearingImpaired</code> to automatically select the
+appropriate SDH subtitle track or present clear visual indicators (like
+an "SDH" badge) in the track selection menu.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-identifies-hearing-impaired-tracks';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

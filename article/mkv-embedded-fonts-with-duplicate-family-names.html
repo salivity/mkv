@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Embedded Fonts with Duplicate Family Names - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format allows subtitle fonts to be embedded directly as attachments, but it remains agnostic to the internal metadata of those font files. When an MKV contains multiple embedded fonts with identical font family names, the cont">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-embedded-fonts-with-duplicate-family-names">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Embedded Fonts with Duplicate Family Names - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-embedded-fonts-with-duplicate-family-names" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format allows subtitle fonts to be embedded directly as attachments, but it remains agnostic to the internal metadata of those font files. When an MKV contains multiple embedded fonts with identical font family names, the cont" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-embedded-fonts-with-duplicate-family-names">MKV Embedded
+Fonts with Duplicate Family Names</h1>
+<p>The Matroska (MKV) container format allows subtitle fonts to be
+embedded directly as attachments, but it remains agnostic to the
+internal metadata of those font files. When an MKV contains multiple
+embedded fonts with identical font family names, the container itself
+does not resolve or prevent the conflict; instead, handling and conflict
+resolution depend entirely on how media splitters, demuxers, and
+subtitle rendering engines process the attached data.</p>
+<h3 id="container-level-handling-in-matroska">Container-Level Handling
+in Matroska</h3>
+<p>At the container level, MKV treats fonts simply as binary attachments
+within the <code>Attachments</code> element. Each font file is
+encapsulated in an <code>AttachedFile</code> entry containing distinct
+elements:</p>
+<ul>
+<li><strong><code>FileName</code></strong>: The file name as authored
+(e.g., <code>font_bold.ttf</code>).</li>
+<li><strong><code>FileMediaType</code></strong> (or
+<code>FileMimeType</code>): Usually
+<code>application/x-truetype-font</code> or
+<code>application/vnd.ms-opentype</code>.</li>
+<li><strong><code>FileData</code></strong>: The raw binary data of the
+font.</li>
+<li><strong><code>FileUID</code></strong>: A unique 64-bit integer
+generated at the time of muxing.</li>
+</ul>
+<p>Because identification relies on <code>FileUID</code> and file names,
+the container allows multiple attachments to exist simultaneously, even
+if their internal TrueType or OpenType <code>name</code> tables contain
+identical <code>Font Family</code> or <code>Full Name</code> strings.
+The MKV specification does not parse font tables or enforce unique font
+family naming.</p>
+<h3 id="how-subtitle-renderers-resolve-duplicates">How Subtitle
+Renderers Resolve Duplicates</h3>
+<p>When playing a video with embedded subtitles (such as Advanced
+SubStation Alpha, or ASS/SSA), the media player extracts the font
+attachments and passes them to a subtitle renderer (such as
+<code>libass</code>, <code>DirectVobSub</code>, or
+<code>VSFilter</code>). The renderer builds an in-memory font cache to
+map style requests in the subtitle script to available font files.</p>
+<p>When encountering duplicate family names, renderers apply specific
+conflict resolution logic:</p>
+<ol type="1">
+<li><p><strong>Sub-Family and Weight Differentiation:</strong> If two
+embedded fonts share a family name (e.g., "CustomFont") but have
+different sub-family properties (e.g., Regular vs. Bold, or different
+weights/slants in their <code>OS/2</code> and <code>head</code> tables),
+modern engines like <code>libass</code> register both as variants of the
+same family. The subtitle engine will query the appropriate font variant
+based on the script's bold or italic tags.</p></li>
+<li><p><strong>Attachment Order Precedence (Shadowing):</strong> If two
+embedded fonts have completely identical family, style, and weight
+metadata, the rendering engine registers the fonts sequentially based on
+their order in the MKV attachment list. In most implementations
+(including <code>libass</code> and <code>FreeType</code>-based
+pipelines), the first font loaded into the memory provider claims the
+family name, and the duplicate is effectively shadowed or
+ignored.</p></li>
+<li><p><strong>Priority Over System Fonts:</strong> Embedded MKV fonts
+are almost universally prioritized over local system fonts. If an
+embedded font shares a family name with a font installed on the host
+operating system, the renderer binds the embedded version to the
+subtitle canvas to ensure consistent cross-platform visual
+presentation.</p></li>
+<li><p><strong>Filename Matching Fallbacks:</strong> Some legacy
+renderers (like older builds of <code>VSFilter</code>) fallback to
+matching the attachment's <code>FileName</code> against font names
+defined in the subtitle script if internal metadata resolution produces
+an ambiguous result or fails.</p></li>
+</ol>
+<h3 id="practical-implications">Practical Implications</h3>
+<p>Duplicate family names with conflicting glyph sets or styles can
+cause unexpected rendering artifacts, such as missing characters,
+mismatched weights, or layout shifts, because the renderer cannot
+deterministically identify the author's intended file beyond
+registration order. To avoid undefined behavior across different media
+players, muxing tools (such as <code>mkvmerge</code>) recommend
+stripping redundant fonts and ensuring all embedded font files contain
+distinct family and sub-family metadata prior to packaging.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/mkv-embedded-fonts-with-duplicate-family-names';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

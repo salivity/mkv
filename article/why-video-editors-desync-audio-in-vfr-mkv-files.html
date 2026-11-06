@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Video Editors Desync Audio in VFR MKV Files - mkv</title>
+    <meta name="description" content="Importing MKV files with Variable Frame Rate (VFR) footage into professional video editing software frequently leads to audio desynchronization, where the audio gradually drifts ahead of or behind the video over time. This issue occurs because non-linear">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-video-editors-desync-audio-in-vfr-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Video Editors Desync Audio in VFR MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-video-editors-desync-audio-in-vfr-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Importing MKV files with Variable Frame Rate (VFR) footage into professional video editing software frequently leads to audio desynchronization, where the audio gradually drifts ahead of or behind the video over time. This issue occurs because non-linear" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-video-editors-desync-audio-in-vfr-mkv-files">Why Video
+Editors Desync Audio in VFR MKV Files</h1>
+<p>Importing MKV files with Variable Frame Rate (VFR) footage into
+professional video editing software frequently leads to audio
+desynchronization, where the audio gradually drifts ahead of or behind
+the video over time. This issue occurs because non-linear editing
+systems (NLEs) are built to work with a Constant Frame Rate (CFR) and a
+fixed timeline grid. When an NLE attempts to place variable-timed video
+frames onto a constant timebase alongside a continuous audio stream, the
+mismatch creates timing errors that compound over the duration of the
+clip.</p>
+<h3 id="constant-frame-rate-cfr-vs-variable-frame-rate-vfr">Constant
+Frame Rate (CFR) vs. Variable Frame Rate (VFR)</h3>
+<ul>
+<li><strong>Constant Frame Rate (CFR):</strong> The video displays a
+strictly uniform number of frames per second (e.g., exactly 24, 30, or
+60 fps). Every single frame has the exact same display duration.</li>
+<li><strong>Variable Frame Rate (VFR):</strong> The frame rate
+fluctuates dynamically throughout the recording to conserve storage or
+adapt to hardware performance drops. For example, a clip targeting 60
+fps may drop to 42 fps during heavy scenes and jump to 59 fps during
+lighter scenes.</li>
+</ul>
+<p>VFR is commonly produced by smartphones, webcams, and screen
+recording software like OBS Studio.</p>
+<h3 id="the-conflict-inside-the-video-editor">The Conflict Inside the
+Video Editor</h3>
+<p>Professional editing software—such as Adobe Premiere Pro, DaVinci
+Resolve, and Final Cut Pro—relies on a fixed sequence timebase.</p>
+<ol type="1">
+<li><strong>Fixed Timeline Grid:</strong> An NLE calculates time by
+counting individual frames on a fixed grid (e.g., Frame 1, Frame 2,
+Frame 3 at 1/60th of a second each).</li>
+<li><strong>Continuous Audio Track:</strong> Audio is recorded using a
+sample rate (such as 48 kHz), which is entirely linear and independent
+of video frames.</li>
+<li><strong>The Timing Misalignment:</strong> When VFR video is
+imported, the editor attempts to snap variable-length frames onto its
+rigid, uniform timeline. If the software ignores or misinterprets the
+dynamic presentation timestamps (PTS) embedded in the video stream, it
+treats the footage as if it were CFR, causing the visual action to play
+faster or slower than the linear audio track.</li>
+</ol>
+<h3 id="the-role-of-the-mkv-container">The Role of the MKV
+Container</h3>
+<p>The Matroska (MKV) format is a flexible container that easily stores
+complex codecs, multiple audio tracks, and variable presentation
+timestamps. However, many editing suites have historically had limited
+or unstable native support for MKV demuxing compared to standardized
+production containers like MOV or standard MP4.</p>
+<p>When an editor attempts to parse a VFR stream inside an MKV
+container, it often reads the header's average frame rate instead of
+decoding each frame's exact timestamp. This flawed interpretation leads
+to immediate timeline miscalculations.</p>
+<h3 id="why-the-desynchronization-worsens-over-time">Why the
+Desynchronization Worsens Over Time</h3>
+<p>Audio desynchronization in VFR footage is typically cumulative:</p>
+<ul>
+<li>At the beginning of the clip, the video and audio appear
+synchronized because they share the same starting point.</li>
+<li>Over minutes or hours, the small fractions of a second gained or
+lost by fluctuating frame durations accumulate.</li>
+<li>By the end of a long recording, the audio may be out of sync by
+several seconds.</li>
+</ul>
+<h3 id="how-to-fix-vfr-audio-desynchronization">How to Fix VFR Audio
+Desynchronization</h3>
+<p>To eliminate audio drift caused by VFR MKV files, the footage must be
+converted to a Constant Frame Rate before editing.</p>
+<ol type="1">
+<li><strong>Transcode to CFR using HandBrake:</strong> Open the file in
+HandBrake, navigate to the <strong>Video</strong> tab, select
+<strong>Constant Framerate</strong>, and choose a standard frame rate
+(e.g., 60 fps).</li>
+<li><strong>Convert using FFmpeg:</strong> Run the following command to
+re-encode the video into a production-friendly CFR format:
+<code>ffmpeg -i input.mkv -vsync cfr -c:v libx264 -crf 18 -c:a aac -b:a 192k output.mp4</code></li>
+<li><strong>Adjust Recording Settings:</strong> In recording
+applications like OBS Studio, set the output to a constant frame rate
+mode and use formats natively optimized for editing to prevent VFR
+generation at the source.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/why-video-editors-desync-audio-in-vfr-mkv-files';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

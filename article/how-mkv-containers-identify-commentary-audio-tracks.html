@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Containers Identify Commentary Audio Tracks - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format identifies commentary audio tracks primarily through standardized Extensible Binary Meta Language (EBML) track headers, most notably the dedicated FlagCommentary element and descriptive TrackName metadata. By combining">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-containers-identify-commentary-audio-tracks">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Containers Identify Commentary Audio Tracks - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-containers-identify-commentary-audio-tracks" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format identifies commentary audio tracks primarily through standardized Extensible Binary Meta Language (EBML) track headers, most notably the dedicated FlagCommentary element and descriptive TrackName metadata. By combining" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-containers-identify-commentary-audio-tracks">How MKV
+Containers Identify Commentary Audio Tracks</h1>
+<p>The Matroska (MKV) container format identifies commentary audio
+tracks primarily through standardized Extensible Binary Meta Language
+(EBML) track headers, most notably the dedicated
+<code>FlagCommentary</code> element and descriptive
+<code>TrackName</code> metadata. By combining standardized track flags,
+language descriptors, and structural track properties, the container
+allows media players and demuxers to recognize and present commentary
+tracks accurately to users.</p>
+<h3 id="the-standard-flagcommentary-element">The Standard
+<code>FlagCommentary</code> Element</h3>
+<p>In modern Matroska specifications, a dedicated boolean element named
+<code>FlagCommentary</code> (EBML ID <code>0x55EE</code>) is placed
+inside the <code>TrackEntry</code> master element. When set to
+<code>1</code> (true), it programmatically signals to media players that
+the audio track contains commentary (such as director, cast, or crew
+discussions) rather than standard primary or alternative dialogue.
+Setting it to <code>0</code> (false) indicates standard audio. This flag
+eliminates the need for software to parse arbitrary text strings to
+detect commentary.</p>
+<h3 id="the-trackname-element">The <code>TrackName</code> Element</h3>
+<p>Historically and in tandem with modern flags, MKV files use the
+<code>Name</code> or <code>TrackName</code> element (EBML ID
+<code>0x536E</code>) to specify commentary tracks. This string field
+contains human-readable labels such as "Director's Commentary" or "Cast
+Commentary." While legacy software relies on parsing this string to
+identify track content, modern muxing tools typically write both the
+<code>TrackName</code> string and the <code>FlagCommentary</code>
+element to ensure broad compatibility.</p>
+<h3 id="supporting-metadata-and-properties">Supporting Metadata and
+Properties</h3>
+<p>A commentary track is contextualized within the MKV container using
+several complementary EBML elements within the
+<code>TrackEntry</code>:</p>
+<ul>
+<li><strong><code>TrackType</code> (EBML ID <code>0x83</code>):</strong>
+Set to <code>2</code> to identify the stream as an audio track.</li>
+<li><strong><code>Language</code> / <code>LanguageIETF</code> (EBML IDs
+<code>0x22B59C</code> and <code>0x22B59D</code>):</strong> Specifies the
+language code (such as ISO 639-2 or BCP 47) spoken in the
+commentary.</li>
+<li><strong><code>FlagDefault</code> (EBML ID
+<code>0x88</code>):</strong> Typically set to <code>0</code> (false) for
+commentary tracks, ensuring media players do not automatically play the
+commentary over the main feature audio on initial playback.</li>
+<li><strong><code>FlagOriginal</code> (EBML ID
+<code>0x55E7</code>):</strong> Distinguishes whether the track is in the
+original production language alongside the commentary flag.</li>
+</ul>
+<p>When modern media players, transcoders, and tools like MKVToolNix or
+FFmpeg process an MKV file, they read the <code>TrackEntry</code> header
+to evaluate these combined tags. If <code>FlagCommentary</code> is
+active or a recognized commentary label is present in the
+<code>TrackName</code>, the audio stream is tagged accordingly in the
+player's track selection menu.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-containers-identify-commentary-audio-tracks';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

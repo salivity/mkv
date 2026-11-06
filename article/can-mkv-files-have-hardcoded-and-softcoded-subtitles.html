@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Files Have Hardcoded and Softcoded Subtitles? - mkv</title>
+    <meta name="description" content="Yes, an MKV (Matroska) video file can simultaneously contain both hardcoded and softcoded subtitles. This article explains how this coexistence works, the structural differences between these two subtitle formats within an MKV container, and how media pla">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-files-have-hardcoded-and-softcoded-subtitles">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Files Have Hardcoded and Softcoded Subtitles? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-files-have-hardcoded-and-softcoded-subtitles" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Yes, an MKV (Matroska) video file can simultaneously contain both hardcoded and softcoded subtitles. This article explains how this coexistence works, the structural differences between these two subtitle formats within an MKV container, and how media pla" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-files-have-hardcoded-and-softcoded-subtitles">Can MKV
+Files Have Hardcoded and Softcoded Subtitles?</h1>
+<p>Yes, an MKV (Matroska) video file can simultaneously contain both
+hardcoded and softcoded subtitles. This article explains how this
+coexistence works, the structural differences between these two subtitle
+formats within an MKV container, and how media players handle them
+during playback.</p>
+<h2 id="how-hardcoded-and-softcoded-subtitles-coexist">How Hardcoded and
+Softcoded Subtitles Coexist</h2>
+<p>To understand how an MKV file can hold both types of subtitles, it
+helps to understand how they are stored.</p>
+<ul>
+<li><strong>Hardcoded subtitles</strong> (also known as "burned-in" or
+"hard" subs) are merged directly into the video frames during the video
+encoding process. They are part of the actual image data.</li>
+<li><strong>Softcoded subtitles</strong> (or "soft" subs) are stored as
+separate, independent data tracks within the MKV container. These can be
+text-based formats (like SRT or ASS) or image-based formats (like
+PGS).</li>
+</ul>
+<p>Because hardcoded subtitles are embedded into the video stream
+itself, the MKV container treats them simply as video. It does not
+recognize them as subtitle data. Therefore, you can easily mux (combine)
+one or more softcoded subtitle tracks into the same MKV file alongside
+that video stream.</p>
+<h2 id="playback-behavior-and-overlapping">Playback Behavior and
+Overlapping</h2>
+<p>When you play an MKV file containing both types of subtitles, the
+media player handles them in specific ways:</p>
+<ul>
+<li><strong>Soft Subtitles Disabled:</strong> If you turn off subtitles
+in your media player, you will still see the hardcoded subtitles because
+they are physically part of the video.</li>
+<li><strong>Soft Subtitles Enabled:</strong> If you enable a softcoded
+subtitle track, the player will render those subtitles on top of the
+video.</li>
+</ul>
+<p>If both are active in the same language, they will overlay each
+other, often resulting in unreadable, overlapping text. However, if they
+are in different languages or serve different purposes, this setup can
+be highly functional.</p>
+<h2 id="practical-use-cases">Practical Use Cases</h2>
+<p>Having both subtitle types in a single MKV file is common in several
+scenarios:</p>
+<ul>
+<li><strong>Forced Subtitles + Full Translation:</strong> A movie might
+have hardcoded "forced" subtitles to translate occasional foreign
+dialogue (e.g., an alien language in a sci-fi film). The MKV file can
+also include softcoded subtitle tracks for the entire movie's dialogue
+in various languages.</li>
+<li><strong>Multi-Language Accessibility:</strong> A video might have
+hardcoded subtitles in the creator's native language for permanent
+accessibility, while softcoded tracks are added later to cater to
+international audiences.</li>
+<li><strong>Karaoke or Commentary:</strong> Hardcoded text can be used
+for styling-heavy elements like karaoke lyrics, while softcoded tracks
+are reserved for standard dialogue translation or director
+commentaries.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-files-have-hardcoded-and-softcoded-subtitles';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

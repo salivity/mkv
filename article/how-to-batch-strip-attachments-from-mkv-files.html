@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Batch Strip Attachments from MKV Files - mkv</title>
+    <meta name="description" content="MKV (Matroska) containers frequently bundle embedded attachments such as custom subtitle fonts, cover art, and extra metadata that needlessly inflate storage across large media libraries. Media processing tools batch-strip these embedded elements by remux">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-to-batch-strip-attachments-from-mkv-files">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How to Batch Strip Attachments from MKV Files - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-to-batch-strip-attachments-from-mkv-files" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="MKV (Matroska) containers frequently bundle embedded attachments such as custom subtitle fonts, cover art, and extra metadata that needlessly inflate storage across large media libraries. Media processing tools batch-strip these embedded elements by remux" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-to-batch-strip-attachments-from-mkv-files">How to Batch
+Strip Attachments from MKV Files</h1>
+<p>MKV (Matroska) containers frequently bundle embedded attachments such
+as custom subtitle fonts, cover art, and extra metadata that needlessly
+inflate storage across large media libraries. Media processing tools
+batch-strip these embedded elements by remuxing the container or
+modifying its header structure directly without re-encoding the
+underlying video and audio tracks. This guide outlines the core
+mechanics behind attachment removal, the standard command-line tools
+used, and how to automate the process across multiple files
+simultaneously.</p>
+<h3 id="why-mkv-files-contain-embedded-attachments">Why MKV Files
+Contain Embedded Attachments</h3>
+<p>The Matroska format allows arbitrary binary data to be embedded
+alongside media streams. The most common attachments include:</p>
+<ul>
+<li><strong>TrueType/OpenType Fonts (.ttf, .otf):</strong> Included to
+render styled Advanced SubStation Alpha (<code>.ass</code>) subtitles
+exactly as intended by the creator.</li>
+<li><strong>Cover Art and Poster Images (.jpg, .png):</strong> Metadata
+images used by media servers and software players.</li>
+<li><strong>XML/Text Metadata:</strong> Supplemental chapter data or
+production details.</li>
+</ul>
+<p>When dealing with large TV show seasons or entire film libraries,
+redundant or oversized font attachments and multi-megabyte image files
+can accumulate into gigabytes of wasted storage space.</p>
+<h3 id="the-mechanism-in-place-modification-vs-remuxing">The Mechanism:
+In-Place Modification vs. Remuxing</h3>
+<p>Media processing tools handle attachment stripping in one of two
+ways:</p>
+<ol type="1">
+<li><strong>In-Place Header Editing (Propedit):</strong> The tool parses
+the MKV container, locates the attachment references in the track header
+and payload table, and deletes or unlinks them directly without
+rewriting the video or audio streams. This method is nearly
+instantaneous because the bulk media data is untouched on the disk.</li>
+<li><strong>Container Remuxing (Stream Copying):</strong> The tool
+demultiplexes the input file, copies only the requested streams (video,
+audio, subtitles, chapters) into a new file, and drops the attachment
+tracks entirely. While slightly slower than in-place editing due to disk
+I/O, it produces a clean, defragmented container.</li>
+</ol>
+<p>Because neither method decodes or compresses the audio and video
+streams, the process produces zero quality loss and completes at the
+maximum read/write speed of your storage device.</p>
+<hr />
+<h3 id="core-tools-for-batch-stripping-mkv-attachments">Core Tools for
+Batch-Stripping MKV Attachments</h3>
+<h4 id="1-mkvtoolnix-mkvpropedit-and-mkvmerge">1. MKVToolNix
+(<code>mkvpropedit</code> and <code>mkvmerge</code>)</h4>
+<p>The official MKVToolNix suite provides the most reliable utilities
+for handling Matroska files.</p>
+<ul>
+<li><p><strong><code>mkvpropedit</code> (Fastest, In-Place):</strong> It
+can target attachments and delete them directly.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;video.mkv&quot;</span> <span class="at">--delete-attachment</span> 1</span></code></pre></div></li>
+<li><p><strong><code>mkvmerge</code> (Remuxing):</strong> The
+<code>--no-attachments</code> flag instructs the multiplexer to ignore
+all embedded files when creating a new output file.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-o</span> <span class="st">&quot;output.mkv&quot;</span> <span class="at">--no-attachments</span> <span class="st">&quot;input.mkv&quot;</span></span></code></pre></div></li>
+</ul>
+<h4 id="2-ffmpeg">2. FFmpeg</h4>
+<p>FFmpeg can strip attachments by utilizing stream mapping specifiers
+combined with stream copying (<code>-c copy</code>).</p>
+<ul>
+<li><p>In FFmpeg syntax, attachments are classified as the
+<code>t</code> stream type (e.g., <code>-map -0:t</code> tells FFmpeg to
+exclude all attachment streams from the output).</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> <span class="st">&quot;input.mkv&quot;</span> <span class="at">-map</span> 0 <span class="at">-map</span> <span class="at">-0:t</span> <span class="at">-c</span> copy <span class="st">&quot;output.mkv&quot;</span></span></code></pre></div></li>
+</ul>
+<hr />
+<h3 id="automating-batch-processing">Automating Batch Processing</h3>
+<p>To strip attachments from dozens or hundreds of files at once,
+command-line tools can be wrapped in simple shell scripts.</p>
+<h4 id="windows-powershell-using-mkvpropedit">Windows (PowerShell) Using
+<code>mkvpropedit</code></h4>
+<p>This script iterates through a folder and wipes all attachments from
+every <code>.mkv</code> file in place:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Get-ChildItem</span> <span class="op">-</span>Filter <span class="op">*.</span><span class="fu">mkv</span> <span class="op">|</span> <span class="fu">ForEach-Object</span> <span class="op">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    mkvpropedit <span class="va">$_</span><span class="op">.</span><span class="fu">FullName</span> <span class="op">--</span>delete-attachment <span class="st">&quot;mime-type:application/x-truetype-font&quot;</span> <span class="op">--</span>delete-attachment <span class="st">&quot;mime-type:image/jpeg&quot;</span> <span class="op">--</span>delete-attachment <span class="st">&quot;mime-type:image/png&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<h4 id="linuxmacos-bash-using-mkvmerge">Linux/macOS (Bash) Using
+<code>mkvmerge</code></h4>
+<p>This script remuxes all <code>.mkv</code> files in a directory to a
+new <code>cleaned</code> folder while stripping attachments:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> cleaned</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> file <span class="kw">in</span> <span class="pp">*</span>.mkv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="ex">mkvmerge</span> <span class="at">-o</span> <span class="st">&quot;cleaned/</span><span class="va">$file</span><span class="st">&quot;</span> <span class="at">--no-attachments</span> <span class="st">&quot;</span><span class="va">$file</span><span class="st">&quot;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div>
+<h3 id="storage-and-compatibility-considerations">Storage and
+Compatibility Considerations</h3>
+<ul>
+<li><strong>Subtitle Display:</strong> Removing embedded font files will
+cause media players to fall back to default system fonts. If styled
+subtitles depend on specific typography, visual formatting may alter
+slightly during playback.</li>
+<li><strong>Disk Space Gains:</strong> Stripping attachments from a
+single movie may only save 5 to 50 MB, but across a 1,000-episode series
+or full media library, batch removal routinely recovers tens of
+gigabytes of disk space without altering media quality.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-to-batch-strip-attachments-from-mkv-files';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

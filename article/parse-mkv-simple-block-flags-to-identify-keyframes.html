@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse MKV SimpleBlock Flags to Identify Keyframes - mkv</title>
+    <meta name="description" content="In Matroska (MKV) multimedia containers, the SimpleBlock element provides a compact way to store elementary stream data along with essential timing and synchronization flags. Media player demuxers inspect a single-byte flag field located within the header">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/parse-mkv-simple-block-flags-to-identify-keyframes">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Parse MKV SimpleBlock Flags to Identify Keyframes - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/parse-mkv-simple-block-flags-to-identify-keyframes" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="In Matroska (MKV) multimedia containers, the SimpleBlock element provides a compact way to store elementary stream data along with essential timing and synchronization flags. Media player demuxers inspect a single-byte flag field located within the header" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="parse-mkv-simpleblock-flags-to-identify-keyframes">Parse MKV
+SimpleBlock Flags to Identify Keyframes</h1>
+<p>In Matroska (MKV) multimedia containers, the <code>SimpleBlock</code>
+element provides a compact way to store elementary stream data along
+with essential timing and synchronization flags. Media player demuxers
+inspect a single-byte flag field located within the header of every
+<code>SimpleBlock</code> to determine whether a video packet contains a
+keyframe. By evaluating this byte using a bitwise mask, the player core
+identifies intra-coded frames (I-frames) directly at the container
+level, enabling efficient seeking, precise scrubbing, and quick
+synchronization without needing to fully decode the underlying video
+payload.</p>
+<h2 id="structure-of-the-mkv-simpleblock">Structure of the MKV
+SimpleBlock</h2>
+<p>An MKV <code>SimpleBlock</code> (EBML ID <code>0xA3</code>) is
+structured to minimize container overhead. When a demuxer encounters a
+<code>SimpleBlock</code>, it reads its compact header sequentially:</p>
+<ol type="1">
+<li><strong>Track Number:</strong> Encoded as an EBML Variable-Length
+Integer (VINT) to specify which track (audio, video, or subtitle) the
+data belongs to.</li>
+<li><strong>Relative Timecode:</strong> A 2-byte signed big-endian
+integer representing the block's timestamp offset relative to the parent
+<code>Cluster</code> timecode.</li>
+<li><strong>Flags Byte:</strong> A single 8-bit unsigned integer holding
+control data about the frame.</li>
+<li><strong>Frame Data:</strong> The raw codec bitstream payload (such
+as H.264, HEVC, or AV1 NAL units/packets).</li>
+</ol>
+<h2 id="the-flags-byte-layout">The Flags Byte Layout</h2>
+<p>The single byte of flags (located immediately after the 2-byte
+relative timecode) is partitioned into distinct bitfields that describe
+the frame’s characteristics:</p>
+<ul>
+<li><strong>Bit 7 (MSB, <code>0x80</code>):</strong> Keyframe indicator.
+A value of <code>1</code> indicates the frame is a keyframe (can be
+decoded independently), while <code>0</code> indicates an inter-frame
+(requires reference frames).</li>
+<li><strong>Bit 3 to 0:</strong> Reserved and Discardable flags (Bit 0
+determines if the frame is discardable).</li>
+<li><strong>Bit 2 to 1 (Lacing):</strong> Specifies whether the block
+uses no lacing (<code>00</code>), Xiph lacing (<code>01</code>), EBML
+lacing (<code>11</code>), or Fixed-size lacing (<code>10</code>).</li>
+<li><strong>Bit 4 (Invisible):</strong> Specifies if the frame should be
+decoded but not displayed (<code>1</code>).</li>
+</ul>
+<h2 id="demuxer-implementation-and-bitmasking-logic">Demuxer
+Implementation and Bitmasking Logic</h2>
+<p>Media player engines (such as FFmpeg's <code>libavformat</code>,
+VLC's demuxer module, or GStreamer) parse the <code>SimpleBlock</code>
+through a streamlined byte-reading process:</p>
+<ol type="1">
+<li><strong>Parse VINT:</strong> The parser reads the variable-length
+track number and calculates the byte offset where the timecode
+begins.</li>
+<li><strong>Skip Timecode:</strong> The parser advances two bytes past
+the 16-bit timecode field.</li>
+<li><strong>Extract Flag Byte:</strong> The parser reads the subsequent
+single byte.</li>
+<li><strong>Evaluate Mask:</strong> The engine performs a bitwise AND
+operation between the extracted byte and the hexadecimal constant
+<code>0x80</code>:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dt">uint8_t</span> flags <span class="op">=</span> stream_read_byte<span class="op">();</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">bool</span> is_keyframe <span class="op">=</span> <span class="op">(</span>flags <span class="op">&amp;</span> <span class="bn">0x80</span><span class="op">)</span> <span class="op">!=</span> <span class="dv">0</span><span class="op">;</span></span></code></pre></div>
+<p>If the bitwise condition evaluates to <code>true</code>, the demuxer
+tags the output container packet with a keyframe property (for instance,
+setting the <code>AV_PKT_FLAG_KEY</code> flag in FFmpeg).</p>
+<h2 id="simpleblock-vs-blockgroup-keyframe-handling">SimpleBlock vs.
+BlockGroup Keyframe Handling</h2>
+<p>Standard Matroska files can store data in either
+<code>SimpleBlock</code> or <code>BlockGroup</code> elements:</p>
+<ul>
+<li>In a <strong><code>BlockGroup</code></strong>, keyframe detection
+requires inspecting sub-elements: if no <code>ReferenceBlock</code>
+element is present inside the group, the frame is assumed to be an
+independent keyframe.</li>
+<li>In a <strong><code>SimpleBlock</code></strong>, the keyframe status
+is embedded directly in bit 7 of the flags byte, bypassing the need for
+nested XML-style EBML tags and reducing demuxing overhead.</li>
+</ul>
+<h2 id="importance-in-media-playback-and-seeking">Importance in Media
+Playback and Seeking</h2>
+<p>Parsing the <code>0x80</code> flag at the container level allows
+media players to execute fast seek operations. When a user seeks to a
+specific timestamp, the demuxer scans the Matroska <code>Cues</code>
+index to locate the nearest cluster, then parses
+<code>SimpleBlock</code> headers sequentially to find the first packet
+with the <code>0x80</code> bit set on the target video track. The player
+routes this packet directly to the video decoder pipeline to establish a
+valid decoding state before processing subsequent dependent frames
+(P-frames or B-frames).</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/parse-mkv-simple-block-flags-to-identify-keyframes';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Framerate Switching in Modern Media Centers - mkv</title>
+    <meta name="description" content="Auto-framerate switching is a critical media center feature that synchronizes a display&#39;s refresh rate with the native frame rate of a video file to eliminate motion judder. Modern media players—such as Kodi, Plex, and Infuse—achieve this by extracting co">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/auto-framerate-switching-in-modern-media-centers">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Auto Framerate Switching in Modern Media Centers - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/auto-framerate-switching-in-modern-media-centers" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Auto-framerate switching is a critical media center feature that synchronizes a display&#39;s refresh rate with the native frame rate of a video file to eliminate motion judder. Modern media players—such as Kodi, Plex, and Infuse—achieve this by extracting co" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="auto-framerate-switching-in-modern-media-centers">Auto Framerate
+Switching in Modern Media Centers</h1>
+<p>Auto-framerate switching is a critical media center feature that
+synchronizes a display's refresh rate with the native frame rate of a
+video file to eliminate motion judder. Modern media players—such as
+Kodi, Plex, and Infuse—achieve this by extracting container- and
+bitstream-level metadata from MKV (Matroska) files, querying the
+connected display's supported refresh rates via operating system APIs,
+and triggering a display mode switch before video playback begins.</p>
+<h3 id="1-metadata-extraction-from-the-mkv-container">1. Metadata
+Extraction from the MKV Container</h3>
+<p>When an MKV file is loaded, the media center's demuxer (often built
+on libraries like <code>FFmpeg</code> or <code>libmatroska</code>)
+parses the file's track headers. The player specifically inspects the
+<code>TrackEntry</code> element within the Segment Info:</p>
+<ul>
+<li><strong>DefaultDuration:</strong> Matroska stores the time duration
+per frame in nanoseconds within the <code>DefaultDuration</code> element
+of the video track. For example, a 23.976 fps video has a
+<code>DefaultDuration</code> of approximately <code>41708333</code>
+nanoseconds, while a true 24.000 fps video has <code>41666666</code>
+nanoseconds.</li>
+<li><strong>Bitstream Fallback:</strong> If <code>DefaultDuration</code>
+is missing or imprecise, the parser reads the underlying video codec's
+bitstream headers—such as the Video Usability Information (VUI)
+parameters in H.264, HEVC, or AV1 streams—to determine the precise
+timing (<code>num_units_in_tick</code> and
+<code>time_scale</code>).</li>
+</ul>
+<h3 id="2-querying-display-capabilities-edid">2. Querying Display
+Capabilities (EDID)</h3>
+<p>Once the frame rate is identified, the media center queries the
+operating system's display subsystem to find compatible display modes
+reported by the monitor or TV via Extended Display Identification Data
+(EDID).</p>
+<ul>
+<li><strong>Android / Android TV:</strong> The player queries the
+<code>Display.getSupportedModes()</code> API (available in Android 6.0+)
+or uses the <code>SurfaceView.setFrameRate()</code> API (introduced in
+Android 11).</li>
+<li><strong>Apple tvOS:</strong> The app uses <code>AVPlayer</code> and
+the <code>AVDisplayCriteria</code> API to request automatic switching
+for frame rate and dynamic range.</li>
+<li><strong>Windows:</strong> Players utilize DirectX, Direct3D, or
+vendor-specific GPU APIs (NVIDIA, AMD, Intel) to enumerate supported
+refresh rates.</li>
+<li><strong>Linux:</strong> Media centers query display servers using
+DRM/KMS (Direct Rendering Manager / Kernel Mode Setting) or X11/Wayland
+extensions to read available modes.</li>
+</ul>
+<h3 id="3-target-refresh-rate-matching">3. Target Refresh Rate
+Matching</h3>
+<p>The media center matches the parsed video frame rate to the closest
+optimal display refresh rate:</p>
+<ul>
+<li><strong>Exact Matching:</strong> 23.976 fps content is paired with a
+23.976 Hz (or 23.98 Hz) mode, whereas 24.000 fps content is mapped to an
+exact 24.000 Hz mode.</li>
+<li><strong>Integer Multiple Matching (Cadence):</strong> If an exact
+match is unavailable, the player targets an integer multiple to prevent
+telecine judder. For example, 24 fps content can be mapped to 120 Hz (a
+5:5 pulldown) or 25 fps content can be mapped to 50 Hz.</li>
+<li><strong>Fractional Precision Handling:</strong> High-end players
+ensure that fractional rates (23.976 fps, 29.97 fps, 59.94 fps) are
+strictly differentiated from integer rates (24.000 fps, 30.000 fps,
+60.000 fps) to prevent a repeated or dropped frame every 41
+seconds.</li>
+</ul>
+<h3 id="4-executing-the-display-mode-switch">4. Executing the Display
+Mode Switch</h3>
+<p>After selecting the target refresh rate, the player calls the
+OS-level display change command.</p>
+<p>Under legacy HDMI standards (HDMI 2.0 and older), this triggers a
+full HDMI clock resynchronization, leading to a temporary black screen
+("HDMI bonk") lasting 1 to 3 seconds. To prevent the audio or video from
+starting prematurely, the media center pauses playback buffers until the
+OS confirms the display mode change is complete.</p>
+<p>On setups supporting HDMI 2.1 Quick Media Switching (QMS) and
+Variable Refresh Rate (VRR), the display adjusts its refresh rate
+instantly without signal interruption or a blank screen.</p>
+<h3 id="5-clock-synchronization-during-playback">5. Clock
+Synchronization During Playback</h3>
+<p>After the switch occurs, the media engine synchronizes the audio
+clock and display refresh clock. Because quartz crystals on hardware
+clocks can experience slight drift, the media center relies on an
+internal master clock (usually audio) and applies micro-adjustments or
+audio-resampling algorithms to maintain continuous frame-to-refresh
+synchronization throughout the duration of the stream.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/auto-framerate-switching-in-modern-media-centers';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

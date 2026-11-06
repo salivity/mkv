@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Store Spatial Audio for VR Playback? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports storing 360-degree spatial audio formats required for virtual reality (VR) playback. Because MKV is an extensible, open-standard container, it can encapsulate virtually any audio codec, channel layout">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-store-spatial-audio-for-vr-playback">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Store Spatial Audio for VR Playback? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-store-spatial-audio-for-vr-playback" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports storing 360-degree spatial audio formats required for virtual reality (VR) playback. Because MKV is an extensible, open-standard container, it can encapsulate virtually any audio codec, channel layout" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-store-spatial-audio-for-vr-playback">Can MKV Store
+Spatial Audio for VR Playback?</h1>
+<p>The Matroska (MKV) multimedia container fully supports storing
+360-degree spatial audio formats required for virtual reality (VR)
+playback. Because MKV is an extensible, open-standard container, it can
+encapsulate virtually any audio codec, channel layout, and metadata
+configuration needed to deliver immersive sound fields. This article
+explains how MKV handles spatial audio formats, the technical
+requirements for ambisonics and object-based sound, and how VR players
+render this data into directional 3D audio.</p>
+<h3 id="container-flexibility-and-codec-support">Container Flexibility
+and Codec Support</h3>
+<p>MKV does not compress audio itself; instead, it acts as an envelope
+for different streams. For spatial audio, MKV can store both
+channel-based and object-based spatial audio codecs without structural
+limitations.</p>
+<p>Common spatial audio encodings stored in MKV include:</p>
+<ul>
+<li><strong>Ambisonics (B-Format &amp; HOA):</strong> First-Order
+Ambisonics (FOA) requires 4 audio channels, while Higher-Order
+Ambisonics (HOA) can scale to 9, 16, or 25 channels. MKV easily carries
+these uncompressed (PCM) or losslessly compressed (FLAC) multi-channel
+streams, as well as compressed formats like Opus.</li>
+<li><strong>Object-Based Audio:</strong> Formats such as Dolby Atmos
+(encapsulated within Dolby TrueHD or Enhanced AC-3) can be packed inside
+MKV tracks to deliver height and coordinate-based audio elements.</li>
+<li><strong>Discrete Multi-Channel Surround:</strong> Layouts such as
+5.1.4, 7.1.4, or 22.2 speaker arrays can be stored as discrete channel
+tracks within the file.</li>
+</ul>
+<h3 id="metadata-and-channel-mapping">Metadata and Channel Mapping</h3>
+<p>For 360-degree audio to function correctly in VR, the playback engine
+must know the channel ordering (such as ACN or FuMa) and normalization
+standards (such as SN3D or maxN).</p>
+<p>MKV handles this through advanced track headers:</p>
+<ul>
+<li><strong>Channel Configurations:</strong> Matroska allows explicit
+definitions of channel positions and track properties, letting creators
+map specific channels to spatial coordinate points.</li>
+<li><strong>Extensible Metadata:</strong> Custom tags and track
+descriptions can store normalization profiles and ambisonic order
+details directly inside the container.</li>
+<li><strong>Spherical Video Pairing:</strong> Alongside spatial audio,
+MKV stores the corresponding equirectangular or cubemap 360-degree video
+tracks, keeping sound and visuals precisely synchronized.</li>
+</ul>
+<h3 id="the-vr-playback-pipeline">The VR Playback Pipeline</h3>
+<p>Storing spatial audio in an MKV file is only the first step; proper
+reproduction depends on the VR media player software.</p>
+<ol type="1">
+<li><strong>Demuxing:</strong> The VR video player (such as Skybox VR,
+DeoVR, or VLC) reads the MKV file, demuxing the synchronized 360-degree
+video and multi-channel audio tracks.</li>
+<li><strong>Head Tracking Integration:</strong> The playback software
+receives real-time orientation data (yaw, pitch, and roll) from the VR
+headset.</li>
+<li><strong>Binaural Rendering:</strong> The audio engine applies a
+Head-Related Transfer Function (HRTF) to the decoded spatial audio
+stream. This adjusts the volume, delay, and frequency response for each
+ear according to where the user is looking, producing an accurate
+360-degree soundstage.</li>
+</ol>
+<p>While the MP4 format is often preferred for web streaming and
+platforms like YouTube VR, MKV remains a powerful and flexible choice
+for local VR playback, archival workflows, and high-fidelity,
+uncompressed spatial audio environments.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-store-spatial-audio-for-vr-playback';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>
