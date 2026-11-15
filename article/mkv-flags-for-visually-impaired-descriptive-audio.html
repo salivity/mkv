@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Flags for Visually Impaired Descriptive Audio - mkv</title>
+    <meta name="description" content="Marking an audio track as visually impaired descriptive audio in a Matroska (MKV) container involves setting specific metadata flags defined by the Matroska specification. This article details the exact Matroska element used to identify descriptive audio">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-flags-for-visually-impaired-descriptive-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Flags for Visually Impaired Descriptive Audio - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-flags-for-visually-impaired-descriptive-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Marking an audio track as visually impaired descriptive audio in a Matroska (MKV) container involves setting specific metadata flags defined by the Matroska specification. This article details the exact Matroska element used to identify descriptive audio" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-flags-for-visually-impaired-descriptive-audio">MKV Flags for
+Visually Impaired Descriptive Audio</h1>
+<p>Marking an audio track as visually impaired descriptive audio in a
+Matroska (MKV) container involves setting specific metadata flags
+defined by the Matroska specification. This article details the exact
+Matroska element used to identify descriptive audio tracks, how media
+players interpret these tags, and the specific commands required to
+apply them using standard tools like MKVToolNix and FFmpeg.</p>
+<h3 id="the-matroska-track-element-flagvisualimpaired">The Matroska
+Track Element: FlagVisualImpaired</h3>
+<p>In the Matroska specification, the primary flag for descriptive audio
+is the <strong><code>FlagVisualImpaired</code></strong> element (Element
+ID: <code>0x55EE</code>).</p>
+<ul>
+<li><strong>Type:</strong> Boolean (<code>0</code> for false,
+<code>1</code> for true)</li>
+<li><strong>Default Value:</strong> <code>0</code></li>
+<li><strong>Purpose:</strong> Set to <code>1</code> to indicate that the
+track contains audio descriptions suitable for visually impaired
+audiences.</li>
+</ul>
+<p>When modern media players (such as VLC, MPV, or Kodi) read an MKV
+container with <code>FlagVisualImpaired=1</code>, they identify the
+track as "Audio Description" (AD) or "Descriptive Video Service" (DVS)
+and present it accordingly in the audio selection menu.</p>
+<hr />
+<h3 id="setting-the-flag-using-mkvtoolnix">Setting the Flag Using
+MKVToolNix</h3>
+<p>MKVToolNix provides two ways to apply the visual impairment flag:
+lossless header editing with <code>mkvpropedit</code> or remuxing with
+<code>mkvmerge</code>.</p>
+<h4 id="using-mkvpropedit-no-remuxing-required">Using
+<code>mkvpropedit</code> (No Remuxing Required)</h4>
+<p>To modify an existing MKV file in-place without remuxing the entire
+file:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvpropedit</span> <span class="st">&quot;movie.mkv&quot;</span> <span class="at">--edit</span> track:a1 <span class="at">--set</span> flag-visual-impaired=1</span></code></pre></div>
+<p><em>(Replace <code>a1</code> with the specific audio track number,
+such as <code>a2</code> for the second audio track).</em></p>
+<h4 id="using-mkvmerge-during-remuxing">Using <code>mkvmerge</code>
+(During Remuxing)</h4>
+<p>To set the flag while creating a new MKV file:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvmerge</span> <span class="at">-o</span> <span class="st">&quot;output.mkv&quot;</span> <span class="at">--visual-impaired-flag</span> 1:1 <span class="st">&quot;input.mkv&quot;</span></span></code></pre></div>
+<p><em>(The syntax <code>1:1</code> specifies Track ID <code>1</code>
+and flag value <code>1</code> [true]).</em></p>
+<hr />
+<h3 id="setting-the-flag-using-ffmpeg">Setting the Flag Using
+FFmpeg</h3>
+<p>In FFmpeg, Matroska flags are mapped using the
+<code>-disposition</code> option. The disposition value corresponding to
+<code>FlagVisualImpaired</code> is <code>visual_impaired</code>.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-i</span> <span class="st">&quot;input.mkv&quot;</span> <span class="at">-map</span> 0 <span class="at">-c</span> copy <span class="at">-disposition:a:1</span> visual_impaired <span class="st">&quot;output.mkv&quot;</span></span></code></pre></div>
+<p><em>(The parameter <code>-disposition:a:1 visual_impaired</code>
+applies the flag to the second audio stream).</em></p>
+<hr />
+<h3 id="recommended-complementary-metadata">Recommended Complementary
+Metadata</h3>
+<p>For optimal compatibility across all media players and hardware
+devices, configure these complementary track properties alongside
+<code>FlagVisualImpaired</code>:</p>
+<ul>
+<li><strong><code>TrackName</code> / <code>Name</code>:</strong> Set to
+a descriptive title, such as <code>"English (Audio Description)"</code>
+or <code>"English (Descriptive Audio)"</code>.</li>
+<li><strong><code>Language</code>:</strong> Set the proper BCP 47 or ISO
+639-2 language code (e.g., <code>eng</code>).</li>
+<li><strong><code>FlagDefault</code>:</strong> Set to <code>0</code>
+unless the descriptive track is intended to be the default audio stream
+for all viewers.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/mkv-flags-for-visually-impaired-descriptive-audio';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

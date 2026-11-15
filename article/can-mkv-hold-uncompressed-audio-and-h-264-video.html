@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can MKV Hold Uncompressed Audio and H.264 Video? - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container format fully supports encapsulating uncompressed audio tracks alongside high-bitrate H.264 video streams. Because MKV is an open-standard, highly extensible multimedia container rather than a codec, it does not impose restrict">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/can-mkv-hold-uncompressed-audio-and-h-264-video">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Can MKV Hold Uncompressed Audio and H.264 Video? - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/can-mkv-hold-uncompressed-audio-and-h-264-video" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container format fully supports encapsulating uncompressed audio tracks alongside high-bitrate H.264 video streams. Because MKV is an open-standard, highly extensible multimedia container rather than a codec, it does not impose restrict" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="can-mkv-hold-uncompressed-audio-and-h264-video">Can MKV Hold
+Uncompressed Audio and H.264 Video?</h1>
+<p>The Matroska (MKV) container format fully supports encapsulating
+uncompressed audio tracks alongside high-bitrate H.264 video streams.
+Because MKV is an open-standard, highly extensible multimedia container
+rather than a codec, it does not impose restrictive limits on data rates
+or audio-video combinations. This article outlines how MKV handles
+uncompressed audio, its capability with high-bitrate H.264 video, and
+the practical playback considerations associated with this
+configuration.</p>
+<h3 id="matroska-container-architecture">Matroska Container
+Architecture</h3>
+<p>MKV is built upon the Extensible Binary Meta Language (EBML),
+allowing it to wrap virtually any combination of video, audio, and
+subtitle streams. It acts as an envelope that synchronizes and
+multiplexes independent streams without altering the underlying
+data.</p>
+<h3 id="high-bitrate-h264-video-support">High-Bitrate H.264 Video
+Support</h3>
+<p>H.264 (also known as AVC or MPEG-4 Part 10) is natively supported
+within the MKV specification. The container imposes no artificial
+ceiling on video bitrates, frame rates, or resolutions. Whether the
+stream is a standard 1080p encode at 10 Mbps or a visually lossless High
+4:4:4 Predictive profile running at several hundred megabits per second,
+MKV accurately stores the video frames, timing metadata, and keyframe
+indexes required for smooth playback and seeking.</p>
+<h3 id="encapsulating-uncompressed-audio">Encapsulating Uncompressed
+Audio</h3>
+<p>MKV has robust native support for raw and uncompressed audio
+formats:</p>
+<ul>
+<li><strong>Linear PCM (LPCM):</strong> Uncompressed pulse-code
+modulation data—including 16-bit, 24-bit, and 32-bit depths at sample
+rates ranging from 44.1 kHz to 192 kHz or higher—can be muxed directly
+into an MKV track.</li>
+<li><strong>Multi-Channel Configurations:</strong> Uncompressed audio in
+MKV is not limited to stereo; it easily accommodates multi-channel
+layouts such as 5.1 and 7.1 surround sound.</li>
+<li><strong>WAV / AIFF Direct Ingestion:</strong> Multiplexing tools
+like <code>mkvmerge</code> can ingest standard <code>.wav</code> files
+and embed the raw audio frames directly into the MKV file without any
+lossy re-encoding.</li>
+</ul>
+<h3 id="lossless-alternatives">Lossless Alternatives</h3>
+<p>While raw PCM is fully supported, uncompressed audio takes up
+substantial storage space. For this reason, users frequently pair
+high-bitrate H.264 video with lossless compression codecs inside MKV,
+such as:</p>
+<ul>
+<li><strong>FLAC (Free Lossless Audio Codec):</strong> Provides
+bit-perfect reconstruction of PCM audio at roughly half the file
+size.</li>
+<li><strong>Dolby TrueHD / DTS-HD Master Audio:</strong> Lossless
+surround formats commonly extracted from Blu-ray discs that preserve
+master-quality uncompressed sound with optimized container
+overhead.</li>
+</ul>
+<h3 id="playback-and-hardware-compatibility">Playback and Hardware
+Compatibility</h3>
+<p>Most modern software media players (such as VLC, MPV, and MPC-HC) and
+media servers (like Plex and Jellyfin) can parse MKV files containing
+uncompressed PCM and H.264 video without issue. However, older
+standalone hardware players, smart TVs, or legacy AV receivers might
+have firmware limitations regarding uncompressed LPCM within an MKV
+wrapper, even though the container itself supports it. In standard
+computing environments, the pairing functions seamlessly.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/can-mkv-hold-uncompressed-audio-and-h-264-video';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

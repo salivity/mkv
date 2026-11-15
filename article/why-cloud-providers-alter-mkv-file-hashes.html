@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Cloud Providers Alter MKV File Hashes - mkv</title>
+    <meta name="description" content="When you upload an MKV (Matroska) container to certain cloud backup and storage providers, the file&#39;s cryptographic hash (such as MD5 or SHA-256) may change upon download. This occurs because cloud platforms often parse, remux, or optimize media container">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-cloud-providers-alter-mkv-file-hashes">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why Cloud Providers Alter MKV File Hashes - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-cloud-providers-alter-mkv-file-hashes" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="When you upload an MKV (Matroska) container to certain cloud backup and storage providers, the file&#39;s cryptographic hash (such as MD5 or SHA-256) may change upon download. This occurs because cloud platforms often parse, remux, or optimize media container" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-cloud-providers-alter-mkv-file-hashes">Why Cloud Providers
+Alter MKV File Hashes</h1>
+<p>When you upload an MKV (Matroska) container to certain cloud backup
+and storage providers, the file's cryptographic hash (such as MD5 or
+SHA-256) may change upon download. This occurs because cloud platforms
+often parse, remux, or optimize media containers for streaming previews,
+metadata indexing, and storage efficiency. Although the underlying video
+and audio data usually remain bit-for-bit identical, the binary layout
+of the container is altered, resulting in a completely different file
+checksum.</p>
+<h2 id="ebml-restructuring-and-cue-relocation">EBML Restructuring and
+Cue Relocation</h2>
+<p>The MKV container is built on EBML (Extensible Binary Meta Language),
+a flexible binary format similar to XML. In an MKV file, metadata
+elements such as seek heads, tags, and Cue elements (the index used to
+jump to specific timestamps) can be stored anywhere in the
+container—often at the end of the file when created by desktop recording
+or ripping tools.</p>
+<p>Cloud providers that offer web-based playback rearrange these EBML
+elements so that the index appears at the beginning of the file. Moving
+index elements to the start allows the web player to buffer and seek
+immediately without downloading the entire file first. Shifting these
+bytes permanently changes the container's raw binary sequence, which
+changes the overall file hash.</p>
+<h2 id="automated-metadata-extraction-and-injection">Automated Metadata
+Extraction and Injection</h2>
+<p>Many consumer cloud platforms automatically generate thumbnails,
+catalog media properties (such as resolution, framerate, and audio
+tracks), and extract embedded subtitles. During this ingestion pipeline,
+the system may:</p>
+<ul>
+<li><strong>Normalize Tags:</strong> Overwrite or reformat custom and
+non-standard metadata tags into standardized formats.</li>
+<li><strong>Inject Platform Data:</strong> Embed proprietary cloud
+identifiers, streaming hints, or thumbnail track references directly
+into the container.</li>
+<li><strong>Strip Unknown Elements:</strong> Remove unrecognized custom
+tracks, attachments (like embedded fonts or cover art), or private EBML
+data blocks deemed non-essential for media playback.</li>
+</ul>
+<h2 id="void-element-and-padding-removal">Void Element and Padding
+Removal</h2>
+<p>Video creation software often inserts "EBML Void" elements into MKV
+files. These are dummy byte buffers designed to reserve space for future
+metadata updates without requiring the entire multi-gigabyte file to be
+rewritten.</p>
+<p>Cloud storage systems and content delivery networks (CDNs) often
+strip these empty padding blocks during backend ingestion to save
+storage space across millions of files. Eliminating zero-filled void
+elements reduces file size by a few kilobytes and alters the hash, even
+though the media streams are untouched.</p>
+<h2 id="harmless-remuxing-vs-transcoding">Harmless Remuxing vs.
+Transcoding</h2>
+<p>Hash modification does not necessarily mean your video has been
+compressed or downgraded. Cloud systems generally perform one of two
+operations:</p>
+<ul>
+<li><strong>Remuxing (Direct Stream Copy):</strong> The video, audio,
+and subtitle streams are unpacked from the original container and
+repackaged into a newly organized MKV or MP4 container. The original
+stream quality is 100% preserved, but the file hash changes.</li>
+<li><strong>Transcoding:</strong> The video and audio streams are
+re-encoded at lower bitrates to generate web preview copies. Most
+providers keep the original (or remuxed) high-resolution file for
+download and store low-resolution transcoded copies separately, though
+some sync clients mistakenly replace the source file with a processed
+version.</li>
+</ul>
+<h2 id="how-to-prevent-hash-alterations">How to Prevent Hash
+Alterations</h2>
+<p>If maintaining exact, bit-level integrity is required for your
+backups, use the following methods to prevent cloud providers from
+altering your MKV files:</p>
+<ul>
+<li><strong>Archive Before Uploading:</strong> Compress MKV files into
+<code>.zip</code>, <code>.7z</code>, or <code>.tar</code> archives.
+Cloud providers treat archive formats as static binary blobs and will
+not inspect or reorganize the internal media structure.</li>
+<li><strong>Use Client-Side Encryption:</strong> Tools like Rclone or
+Cryptomator encrypt files before they leave your computer, turning the
+MKV into unreadable ciphertext that the cloud provider cannot parse or
+modify.</li>
+<li><strong>Choose Raw Object Storage:</strong> Specialized cold storage
+and object storage services (such as AWS S3, Backblaze B2, or Wasabi)
+store data byte-for-byte without running consumer media ingestion
+pipelines.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/why-cloud-providers-alter-mkv-file-hashes';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

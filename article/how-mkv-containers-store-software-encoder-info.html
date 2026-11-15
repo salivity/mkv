@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Containers Store Software Encoder Info - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container stores custom software and encoder metadata within its header using a hierarchical binary format known as Extensible Binary Meta Language (EBML). By organizing data into distinct EBML master elements—specifically wi">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-containers-store-software-encoder-info">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Containers Store Software Encoder Info - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-containers-store-software-encoder-info" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container stores custom software and encoder metadata within its header using a hierarchical binary format known as Extensible Binary Meta Language (EBML). By organizing data into distinct EBML master elements—specifically wi" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-containers-store-software-encoder-info">How MKV
+Containers Store Software Encoder Info</h1>
+<p>The Matroska (MKV) multimedia container stores custom software and
+encoder metadata within its header using a hierarchical binary format
+known as Extensible Binary Meta Language (EBML). By organizing data into
+distinct EBML master elements—specifically within the Segment
+Information and Tags sections—MKV files systematically record the
+software used to multiplex the file, the front-end application that
+wrote it, and granular custom encoder settings.</p>
+<h3 id="the-ebml-header-and-segment-information">The EBML Header and
+Segment Information</h3>
+<p>Matroska files are structured like binary XML. At the root level,
+after the initial EBML header declaration, lies the Segment master
+element (<code>0x18538067</code>), which contains all file data and
+metadata. Inside the Segment element is the <strong>Info</strong>
+(Segment Information) element (<code>0x1549A966</code>), which acts as
+the general header for the entire presentation.</p>
+<p>The Info block contains standard UTF-8 string elements specifically
+designated for software tracking:</p>
+<ul>
+<li><strong><code>MuxingApp</code> (EBML ID
+<code>0x4D80</code>):</strong> Identifies the underlying software or
+library used to assemble and multiplex the container (e.g.,
+<code>libmatroska</code>, <code>mkvmerge</code>, or
+<code>FFmpeg</code>).</li>
+<li><strong><code>WritingApp</code> (EBML ID
+<code>0x5741</code>):</strong> Identifies the application, user
+interface, or higher-level tool used to generate the file (e.g.,
+<code>HandBrake</code>, <code>MakeMKV</code>, or custom rendering
+engines).</li>
+</ul>
+<p>These fields are structured as standard key-value pairs encoded in
+variable-length binary integers (VINTs) alongside their corresponding
+UTF-8 payload data.</p>
+<h3 id="custom-encoder-settings-and-ebml-tags">Custom Encoder Settings
+and EBML Tags</h3>
+<p>While <code>MuxingApp</code> and <code>WritingApp</code> store
+top-level application names, custom encoder parameters (such as x264,
+x265, or AV1 encoding settings) are stored using Matroska’s
+<strong>Tags</strong> system (<code>0x1254C367</code>).</p>
+<p>The Tags element contains one or more <code>Tag</code> structures,
+which further nest <code>SimpleTag</code> (<code>0x67C8</code>) elements
+containing:</p>
+<ul>
+<li><strong><code>TagName</code> (<code>0x45A3</code>):</strong> The
+identifier for the metadata field, often set to strings like
+<code>ENCODER</code> or <code>ENCODER_SETTINGS</code>.</li>
+<li><strong><code>TagString</code> (<code>0x4487</code>):</strong> The
+actual parameter string, which can hold extensive command-line flags,
+profile settings, rate-control methods, and preset definitions injected
+by the encoder.</li>
+</ul>
+<p>These tags can be targeted globally to the entire segment or mapped
+to a specific track UID, ensuring that distinct video and audio tracks
+retain independent encoder metadata.</p>
+<h3 id="track-specific-codec-headers">Track-Specific Codec Headers</h3>
+<p>In addition to general container tags, custom initialization data
+required by specific decoders or software encoders is stored inside the
+<strong>Tracks</strong> element (<code>0x1654AE6B</code>) under the
+<code>CodecPrivate</code> (<code>0x63A2</code>) field. While
+<code>CodecPrivate</code> primarily stores binary configuration records
+(such as AVC/H.264 SPS/PPS or HEVC parameter sets), some encoders insert
+custom identification headers directly into this binary field to ensure
+decoding libraries apply codec-specific optimizations.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-containers-store-software-encoder-info';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

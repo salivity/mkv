@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracting MKV Embedded Timecodes for Sync Checks - mkv</title>
+    <meta name="description" content="Video processing pipelines extract embedded timecodes from Matroska (MKV) containers to ensure frame-accurate synchronization across video, audio, and subtitle tracks. This process involves parsing the container&#39;s Extensible Binary Meta Language (EBML) st">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/extracting-mkv-embedded-timecodes-for-sync-checks">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Extracting MKV Embedded Timecodes for Sync Checks - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/extracting-mkv-embedded-timecodes-for-sync-checks" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Video processing pipelines extract embedded timecodes from Matroska (MKV) containers to ensure frame-accurate synchronization across video, audio, and subtitle tracks. This process involves parsing the container&#39;s Extensible Binary Meta Language (EBML) st" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="extracting-mkv-embedded-timecodes-for-sync-checks">Extracting
+MKV Embedded Timecodes for Sync Checks</h1>
+<p>Video processing pipelines extract embedded timecodes from Matroska
+(MKV) containers to ensure frame-accurate synchronization across video,
+audio, and subtitle tracks. This process involves parsing the
+container's Extensible Binary Meta Language (EBML) structure to access
+container-level Presentation Time Stamps (PTS), extracting dedicated
+SMPTE timecode tracks, or reading picture timing Supplemental
+Enhancement Information (SEI) payloads within the elementary video
+streams. These extracted values are then cross-referenced in automated
+Quality Control (QC) workflows to detect drift, frame drops, and latency
+mismatches.</p>
+<h3 id="mkv-timecode-architecture">MKV Timecode Architecture</h3>
+<p>The Matroska container format utilizes an EBML hierarchy where timing
+data exists at both the container layer and the elementary stream
+layer:</p>
+<ul>
+<li><strong>Segment Info (<code>TimestampScale</code>):</strong> Sets
+the global base time unit for the file, defaulting to 1,000,000
+nanoseconds (1 millisecond).</li>
+<li><strong>Cluster Timestamps:</strong> Each data block cluster has an
+absolute <code>Timestamp</code> element defining its starting point
+relative to the segment.</li>
+<li><strong>Block Timestamps:</strong> Individual video and audio frames
+inside <code>SimpleBlock</code> or <code>BlockGroup</code> elements
+carry relative offsets added to the cluster's base timestamp.</li>
+<li><strong>Tag and SMPTE Tracks:</strong> MKV supports dedicated
+timecode tracks or EBML metadata tags (such as standard SMPTE 12M
+timecodes like <code>HH:MM:SS:FF</code>) embedded explicitly by capture
+or editing systems.</li>
+</ul>
+<h3 id="methods-of-extraction-in-automated-pipelines">Methods of
+Extraction in Automated Pipelines</h3>
+<p>Pipelines employ specific programmatic methods depending on where the
+target timecode is located within the container.</p>
+<h4 id="1-container-demuxing-via-ffmpeg--libavformat">1. Container
+Demuxing via FFmpeg / Libavformat</h4>
+<p>Automated workers use <code>libavformat</code> or wrapper tools like
+<code>ffprobe</code> to read presentation timestamps (PTS) directly from
+packet headers without decoding the payload.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffprobe</span> <span class="at">-select_streams</span> v:0 <span class="at">-show_entries</span> packet=pts_time,dts_time <span class="at">-of</span> json input.mkv</span></code></pre></div>
+<p>For dedicated SMPTE timecode tracks or metadata tags, pipelines query
+container and stream metadata:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffprobe</span> <span class="at">-v</span> error <span class="at">-show_entries</span> format_tags=timecode:stream_tags=timecode <span class="at">-of</span> default=noprint_wrappers=1 input.mkv</span></code></pre></div>
+<h4 id="2-native-ebml-parsing-via-mkvtoolnix--libmatroska">2. Native
+EBML Parsing via MKVToolNix / Libmatroska</h4>
+<p>For low-level extraction without full media framework overhead,
+pipelines utilize tools like <code>mkvmerge</code> or
+<code>mkvextract</code> to dump raw timecode files (Timecode Format v2)
+directly from track headers:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">mkvextract</span> timestamps_v2 input.mkv 0:video_timecodes.txt 1:audio_timecodes.txt</span></code></pre></div>
+<p>This generates a per-frame millisecond timestamp list, allowing
+instant comparison between track durations.</p>
+<h4 id="3-sei-and-vanc-frame-level-decoding">3. SEI and VANC Frame-Level
+Decoding</h4>
+<p>When broadcast-grade SMPTE timecodes are embedded directly inside
+elementary video streams (such as H.264/AVC or H.265/HEVC payloads)
+rather than MKV track headers:</p>
+<ul>
+<li>The demuxer extracts raw Network Abstraction Layer (NAL) units.</li>
+<li>A decoder or lightweight bitstream filter parses
+<code>SEI payloadType 1</code> (Pic Timing) or User Data Unregistered
+SEI messages.</li>
+<li>Bitstream parsers extract the exact frame count, drop-frame flags,
+and reference clock values.</li>
+</ul>
+<h3 id="the-sync-verification-workflow">The Sync Verification
+Workflow</h3>
+<p>Once timecodes are extracted, the validation engine conducts
+automated checks:</p>
+<ol type="1">
+<li><strong>A/V Alignment Check:</strong> The pipeline compares the
+initial timestamp of Track 0 (Video) with Track 1 (Audio). A delta
+exceeding the tolerance threshold (typically ±5ms to ±15ms) triggers a
+desync flag.</li>
+<li><strong>Monotonicity and Jitter Analysis:</strong> The extracted PTS
+values are verified for strict linear progression. Non-monotonic
+timestamps or inconsistent frame intervals indicate missing frames or
+clock jitter.</li>
+<li><strong>Frame Rate Conformity:</strong> Pipelines compare calculated
+frame durations (<span class="math inline">\(1 / \text{frame
+rate}\)</span>) against actual timestamp increments to ensure variable
+refresh rates (VFR) have not been introduced unintentionally.</li>
+<li><strong>QC Discrepancy Logging:</strong> Any identified offset
+between stream-level SMPTE data, container PTS, and external reference
+files is logged to a central database or pipeline dashboard for
+automated correction or human review.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/extracting-mkv-embedded-timecodes-for-sync-checks';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

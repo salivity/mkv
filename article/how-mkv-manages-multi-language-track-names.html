@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Manages Multi-Language Track Names - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format manages multi-language display names for embedded tracks through a structured metadata architecture based on Extensible Binary Meta Language (EBML). Instead of relying solely on hardcoded, single-string track">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-manages-multi-language-track-names">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Manages Multi-Language Track Names - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-manages-multi-language-track-names" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format manages multi-language display names for embedded tracks through a structured metadata architecture based on Extensible Binary Meta Language (EBML). Instead of relying solely on hardcoded, single-string track" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-manages-multi-language-track-names">How MKV Manages
+Multi-Language Track Names</h1>
+<p>The Matroska (MKV) multimedia container format manages multi-language
+display names for embedded tracks through a structured metadata
+architecture based on Extensible Binary Meta Language (EBML). Instead of
+relying solely on hardcoded, single-string track titles, MKV utilizes a
+combination of native <code>TrackEntry</code> parameters, modern BCP 47
+language tags, and the specialized Matroska Tagging system. This
+structure enables media players to read, localize, and present distinct
+display names for audio, video, and subtitle tracks based on the end
+user's system language preferences.</p>
+<h3 id="the-track-header-vs-the-tagging-system">The Track Header vs. The
+Tagging System</h3>
+<p>In basic MKV implementations, each track contains a single
+<code>Name</code> element within its <code>TrackEntry</code> master
+element. This string defines the default label (e.g., "Director's
+Commentary"). However, the native <code>TrackEntry</code> element is
+limited because it can only hold a single <code>Name</code> string per
+track.</p>
+<p>To provide localized, multi-language display names for that same
+track, MKV relies on its integrated <strong>Tagging System</strong>
+(<code>Tags</code> master element).</p>
+<h3 id="how-matroska-tags-enable-localized-track-names">How Matroska
+Tags Enable Localized Track Names</h3>
+<p>The Matroska Tagging specification provides a hierarchical way to
+attach multilingual metadata to specific components of the file using
+Track Unique Identifiers (<code>TrackUID</code>).</p>
+<ol type="1">
+<li><strong>Targeting the Track:</strong> Under the <code>Tags</code>
+element, a <code>Tag</code> contains a <code>Targets</code> sub-element.
+The <code>TargetTypeValue</code> is set to <code>30</code> (which
+designates a track-level target), and <code>TargetTrackUID</code> is
+matched to the specific track's UID.</li>
+<li><strong>Assigning Localized Strings:</strong> Inside the
+<code>SimpleTag</code> element, the <code>TagName</code> is defined
+(typically as <code>TITLE</code>).</li>
+<li><strong>Specifying the Display Language:</strong> Each
+<code>SimpleTag</code> includes language identifiers—historically
+<code>TagLanguage</code> (ISO 639-2) and modernly
+<code>TagLanguageIETF</code> (BCP 47).</li>
+<li><strong>Multiple Translations:</strong> Authors can include multiple
+<code>SimpleTag</code> entries for the same <code>TagName</code> under
+the same track target, each carrying a different
+<code>TagLanguageIETF</code> and translated <code>TagString</code>.</li>
+</ol>
+<p>For example, a commentary track can have a <code>TagString</code> of
+"Director's Commentary" with an <code>en</code> (English) language tag,
+and a corresponding <code>SimpleTag</code> with "Commentaire du
+réalisateur" tagged as <code>fr</code> (French).</p>
+<h3 id="language-tag-modernization-bcp-47">Language Tag Modernization
+(BCP 47)</h3>
+<p>Older MKV specifications relied exclusively on three-letter ISO 639-2
+codes (<code>Language</code> and <code>TagLanguage</code>). Modern MKV
+specifications (v4 and later) introduced <code>LanguageIETF</code> and
+<code>TagLanguageIETF</code>.</p>
+<p>These elements use the IETF BCP 47 standard, which supports:</p>
+<ul>
+<li>Primary language subheaders (e.g., <code>es</code> for Spanish)</li>
+<li>Regional variants and dialects (e.g., <code>pt-BR</code> for
+Brazilian Portuguese vs. <code>pt-PT</code> for European
+Portuguese)</li>
+<li>Script variations (e.g., <code>zh-Hans</code> for Simplified Chinese
+vs. <code>zh-Hant</code> for Traditional Chinese)</li>
+</ul>
+<p>This precision ensures that multi-language display names accurately
+correspond to specific regional dialects.</p>
+<h3 id="player-resolution-and-fallback-behavior">Player Resolution and
+Fallback Behavior</h3>
+<p>When an MKV file is opened, a compatible media player determines
+which track name to display using a standardized fallback hierarchy:</p>
+<ol type="1">
+<li><strong>Exact Locale Match:</strong> The player queries the
+<code>Tags</code> structure for a <code>TITLE</code> tag whose
+<code>TagLanguageIETF</code> matches the user's interface language.</li>
+<li><strong>Primary Language Match:</strong> If an exact regional match
+(e.g., <code>fr-CA</code>) is missing, the player looks for the base
+language (<code>fr</code>).</li>
+<li><strong>Default Track Header:</strong> If no matching tag exists,
+the player falls back to the static <code>Name</code> string stored
+inside the <code>TrackEntry</code>.</li>
+<li><strong>Generic Fallback:</strong> If the <code>Name</code> element
+is empty, the player generates a generic label using the track type,
+codec, and the track's primary content language (e.g., "Audio 1 -
+Spanish [AC-3]").</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-manages-multi-language-track-names';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

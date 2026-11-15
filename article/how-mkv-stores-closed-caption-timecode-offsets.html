@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Closed Caption Timecode Offsets - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container manages timecode offsets for embedded closed captions and subtitles through a hierarchical, timestamp-based architecture defined by Extensible Binary Meta Language (EBML). Instead of relying on a single absolute timestamp per">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-closed-caption-timecode-offsets">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Closed Caption Timecode Offsets - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-closed-caption-timecode-offsets" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container manages timecode offsets for embedded closed captions and subtitles through a hierarchical, timestamp-based architecture defined by Extensible Binary Meta Language (EBML). Instead of relying on a single absolute timestamp per" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-closed-caption-timecode-offsets">How MKV Stores
+Closed Caption Timecode Offsets</h1>
+<p>The Matroska (MKV) container manages timecode offsets for embedded
+closed captions and subtitles through a hierarchical, timestamp-based
+architecture defined by Extensible Binary Meta Language (EBML). Instead
+of relying on a single absolute timestamp per caption event, MKV
+calculates presentation timing dynamically using global scaling
+parameters, cluster-level reference timestamps, block-level relative
+offsets, and track-level timing modifiers to maintain frame-accurate
+synchronization with audio and video streams.</p>
+<h3 id="the-segment-timestampscale">The Segment TimestampScale</h3>
+<p>At the root level of an MKV file, the
+<code>Segment Information</code> element defines a global parameter
+called <code>TimestampScale</code> (formerly
+<code>TimecodeScale</code>). This value defines the base time resolution
+for the entire file in nanoseconds, with the default setting typically
+being 1,000,000 nanoseconds (representing a 1-millisecond resolution).
+Every subsequent timestamp offset in the file is multiplied by this
+scaling factor to determine real-world presentation time.</p>
+<h3 id="cluster-base-timestamps">Cluster Base Timestamps</h3>
+<p>Data within an MKV container is partitioned into sequential
+containers known as <code>Clusters</code>. Each cluster represents a
+specific time range of the presentation and contains a mandatory
+<code>Timestamp</code> element. This element sets the absolute base
+presentation time for all media samples—including video frames, audio
+packets, and closed caption entries—stored within that specific
+cluster.</p>
+<h3 id="block-level-relative-timecode-offsets">Block-Level Relative
+Timecode Offsets</h3>
+<p>Closed caption data is packaged inside clusters using either
+<code>SimpleBlock</code> or <code>BlockGroup</code> elements:</p>
+<ul>
+<li><strong>Relative Timecodes:</strong> Inside each block header, the
+MKV specification stores a 16-bit signed integer representing the
+block's time offset relative to the parent Cluster’s base
+<code>Timestamp</code>.</li>
+<li><strong>Final Presentation Timestamp (PTS):</strong> The exact
+display time of a caption is calculated as:<br />
+<code>PTS = (Cluster Timestamp + Block Relative Offset) × TimestampScale</code></li>
+<li><strong>BlockDuration:</strong> While <code>SimpleBlock</code> is
+common for video and audio, subtitle and caption tracks frequently use
+<code>BlockGroup</code> elements because they support a child element
+named <code>BlockDuration</code>. This explicitly defines how long a
+caption remains visible before disappearing. If
+<code>BlockDuration</code> is omitted, the caption remains on screen
+until the next caption block arrives or the stream dictates an explicit
+clear command.</li>
+</ul>
+<h3 id="track-level-timecode-modifiers">Track-Level Timecode
+Modifiers</h3>
+<p>MKV allows track-specific timing adjustments within the
+<code>Track</code> headers:</p>
+<ul>
+<li><strong>TrackTimestampScale:</strong> A track can define a custom
+scaling multiplier to handle subtitle streams that run on a non-standard
+clock without altering the global segment scale.</li>
+<li><strong>CodecDelay / SeekPreRoll:</strong> For certain formats
+requiring decoder lead-in time, codec delay elements shift timestamps
+forward or backward to guarantee synchronization upon random seek
+operations.</li>
+</ul>
+<h3
+id="discrete-subtitle-tracks-vs-embedded-bitstream-captions">Discrete
+Subtitle Tracks vs. Embedded Bitstream Captions</h3>
+<p>The mechanism for storing timecode offsets varies depending on
+whether closed captions are stored as dedicated subtitle tracks or
+multiplexed within the video bitstream:</p>
+<ul>
+<li><strong>Discrete Caption Tracks (SRT, ASS/SSA, VobSub):</strong>
+Text-based caption files have their source timestamps converted during
+multiplexing. The container strips or normalizes the internal text
+timecodes and assigns each line to an MKV <code>BlockGroup</code> with
+corresponding relative offsets and durations.</li>
+<li><strong>Bitstream-Embedded Closed Captions (CEA-608 /
+CEA-708):</strong> Closed caption data embedded directly into video NAL
+units (such as SEI user data in H.264 or H.265) relies on the video
+frame's own block timestamp. In this scenario, the MKV container stores
+the timecode offset for the video frame, and the embedded caption
+decoder derives its synchronization directly from the underlying video
+Presentation Timestamp.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-closed-caption-timecode-offsets';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

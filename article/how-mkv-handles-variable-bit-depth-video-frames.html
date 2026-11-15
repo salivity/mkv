@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Handles Variable Bit Depth Video Frames - mkv</title>
+    <meta name="description" content="The Matroska (MKV) container handles variable bit depth video frames primarily by acting as a transparent passthrough for codec-level dynamic configuration changes or by utilizing multi-segment linking. While the MKV specification includes track-level met">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-handles-variable-bit-depth-video-frames">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Handles Variable Bit Depth Video Frames - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-handles-variable-bit-depth-video-frames" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) container handles variable bit depth video frames primarily by acting as a transparent passthrough for codec-level dynamic configuration changes or by utilizing multi-segment linking. While the MKV specification includes track-level met" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-handles-variable-bit-depth-video-frames">How MKV Handles
+Variable Bit Depth Video Frames</h1>
+<p>The Matroska (MKV) container handles variable bit depth video frames
+primarily by acting as a transparent passthrough for codec-level dynamic
+configuration changes or by utilizing multi-segment linking. While the
+MKV specification includes track-level metadata fields for bit depth,
+dynamic changes across individual frames within a single continuous
+track are governed by the elementary video stream rather than the
+container itself.</p>
+<h3 id="track-level-metadata-vs-bitstream-signaling">Track-Level
+Metadata vs. Bitstream Signaling</h3>
+<p>At the container level, an MKV file defines video properties inside
+the <code>TrackEntry</code> master element. Within this element, the
+<code>Video</code> sub-element contains fields such as
+<code>BitDepth</code> and <code>Colour</code> information.</p>
+<p>These container-level headers are generally static and define the
+baseline expectations for the entire track. MKV does not alter its
+primary track header per frame. When a video stream switches bit depth
+(for example, from 8-bit to 10-bit color), the MKV container stores each
+frame sequentially within standard <code>SimpleBlock</code> or
+<code>BlockGroup</code> elements without modifying the top-level track
+header on the fly.</p>
+<h3 id="in-band-dynamic-codec-switching">In-Band Dynamic Codec
+Switching</h3>
+<p>For variable bit depth to function within a single MKV track, the
+embedded video codec (such as AV1, HEVC/H.265, or VP9) must support
+in-band sequence parameter updates.</p>
+<ol type="1">
+<li><strong>Sequence Headers:</strong> The video encoder injects a new
+sequence header—such as a Sequence Parameter Set (SPS) in HEVC or a
+Sequence Header OBU in AV1—directly into the bitstream payload before
+the keyframe (I-frame) where the bit depth change occurs.</li>
+<li><strong>Container Passthrough:</strong> The MKV muxer places these
+updated packets into MKV blocks like any other frame data. The container
+does not need to parse or validate the bit depth change; it simply
+delivers the raw bitstream to the demuxer.</li>
+<li><strong>Decoder Reconfiguration:</strong> During playback, the
+demuxer splits the MKV container and sends the payload to the video
+decoder. The decoder reads the in-band sequence header, halts the
+current decoding pipeline, reallocates internal frame buffers to
+accommodate the new bit depth (e.g., switching from 8-bit YUV420p to
+10-bit YUV420p10), and resumes playback.</li>
+</ol>
+<h3 id="multi-segment-linking-and-ordered-chapters">Multi-Segment
+Linking and Ordered Chapters</h3>
+<p>When dealing with video segments that cannot be seamlessly switched
+within a single continuous elementary stream, MKV handles variable bit
+depth using Segment Linking and Ordered Chapters.</p>
+<ul>
+<li><strong>Segment Linking:</strong> MKV allows multiple distinct files
+(segments) to be logically chained together. Each segment contains its
+own independent <code>TrackEntry</code> with unique
+<code>BitDepth</code> definitions and codec initialization data
+(<code>CodecPrivate</code>).</li>
+<li><strong>Seamless Timeline Assembly:</strong> The master MKV file
+uses an ordered chapter table to instruct the player to switch between
+separate segments at specific timestamps. This enables a
+container-driven transition between an 8-bit segment and a 10-bit
+segment without requiring in-band bitstream reconfiguration.</li>
+</ul>
+<h3 id="playback-and-hardware-limitations">Playback and Hardware
+Limitations</h3>
+<p>Although MKV accommodates variable bit depth delivery through
+bitstream passthrough and segment linking, real-world playback depends
+heavily on decoder capabilities:</p>
+<ul>
+<li><strong>Hardware Decoders:</strong> Fixed-function hardware decoders
+often fail or drop frames during mid-stream bit depth changes because
+memory surfaces are allocated statically at playback
+initialization.</li>
+<li><strong>Software Fallbacks:</strong> Software decoders (such as
+FFmpeg/libavcodec) handle dynamic bit depth shifts more reliably by
+tearing down and reinitializing the rendering context when a sequence
+header change is detected.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-handles-variable-bit-depth-video-frames';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

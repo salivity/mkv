@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why MKV Files Micro-Stutter on 60Hz Displays - mkv</title>
+    <meta name="description" content="Micro-stutter during MKV video playback on a 60Hz display is primarily caused by frame rate cadence mismatch, audio-video clock drift, and display rendering conflicts. When a video file uses a non-standard or cinema-standard frame rate (such as 23.976, 24">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/why-mkv-files-micro-stutter-on-60-hz-displays">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Why MKV Files Micro-Stutter on 60Hz Displays - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/why-mkv-files-micro-stutter-on-60-hz-displays" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="Micro-stutter during MKV video playback on a 60Hz display is primarily caused by frame rate cadence mismatch, audio-video clock drift, and display rendering conflicts. When a video file uses a non-standard or cinema-standard frame rate (such as 23.976, 24" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="why-mkv-files-micro-stutter-on-60hz-displays">Why MKV Files
+Micro-Stutter on 60Hz Displays</h1>
+<p>Micro-stutter during MKV video playback on a 60Hz display is
+primarily caused by frame rate cadence mismatch, audio-video clock
+drift, and display rendering conflicts. When a video file uses a
+non-standard or cinema-standard frame rate (such as 23.976, 24, 25, or
+50 fps), the frames cannot be distributed evenly across a fixed 60Hz
+refresh cycle. This timing discrepancy forces the media player or
+graphics hardware to repeat or drop individual frames irregularly,
+resulting in visible micro-stutters and judder during camera pans and
+fast motion.</p>
+<h3 id="frame-rate-and-refresh-rate-cadence-judder">Frame Rate and
+Refresh Rate Cadence (Judder)</h3>
+<p>A 60Hz monitor refreshes its image exactly 60 times per second (once
+every 16.67 milliseconds). When playing a standard 24 fps or 23.976 fps
+film within an MKV container, 60 does not divide evenly by 24.</p>
+<p>To bridge this gap, video players use a technique called 3:2
+pulldown, where the first frame is displayed for 3 refresh cycles (50
+ms) and the next frame is displayed for 2 refresh cycles (33.33 ms).
+This asymmetric presentation creates an uneven visual cadence known as
+telecine judder. For non-standard frame rates (such as variable frame
+rate MKVs or custom captures like 23.981 fps), the cadence becomes even
+more erratic, leading to noticeable micro-stuttering as the system
+struggles to map irregular timestamps to fixed refresh intervals.</p>
+<h3 id="audio-video-synchronization-drift">Audio-Video Synchronization
+Drift</h3>
+<p>Media players generally tie overall playback speed to the master
+audio clock to prevent sound distortion. Because audio clocks and
+display refresh clocks run on separate hardware oscillators, they
+inevitably drift out of sync over time.</p>
+<p>When the video renderer detects that video presentation is lagging
+behind or leading the audio track, it corrects the offset by either
+dropping a video frame or holding a frame for an extra refresh cycle.
+These periodic one-frame corrections manifest as sudden, rhythmic
+micro-stutters every few seconds or minutes, depending on the severity
+of the timing drift.</p>
+<h3 id="window-compositor-and-v-sync-conflicts">Window Compositor and
+V-Sync Conflicts</h3>
+<p>Modern operating systems rely on desktop compositors (such as the
+Desktop Window Manager in Windows) to manage window rendering. The
+compositor enforces its own V-Sync timing on top of the media player’s
+internal render pipeline.</p>
+<p>If the media player’s presentation queue does not align perfectly
+with the compositor’s refresh cycle, backbuffer presentation calls can
+arrive slightly too late. When this happens, a frame miss occurs,
+forcing the screen to show the previous frame twice and dropping the new
+frame into the subsequent cycle.</p>
+<h3 id="variable-frame-rates-vfr-in-mkv-containers">Variable Frame Rates
+(VFR) in MKV Containers</h3>
+<p>MKV containers natively support Variable Frame Rate (VFR) tracks,
+often created by smartphones, screen recorders, or imperfect video
+encoding pipelines. Instead of maintaining a consistent time delta
+between frames, VFR files constantly shift timecodes. A fixed 60Hz
+monitor cannot adapt dynamically to these fluctuating intervals, causing
+continuous presentation stutter as the player attempts to interpolate or
+drop unpredictable frame intervals on the fly.</p>
+<h3 id="how-to-mitigate-micro-stutters">How to Mitigate
+Micro-Stutters</h3>
+<ul>
+<li><strong>Match Display Refresh Rate:</strong> Change the monitor
+refresh rate to an exact multiple of the video frame rate (e.g., 24Hz,
+48Hz, or 120Hz for 24 fps content).</li>
+<li><strong>Enable Variable Refresh Rate (VRR):</strong> Use G-Sync or
+FreeSync with compatible media players to allow the monitor to match the
+video's exact frame delivery time.</li>
+<li><strong>Use Frame Blending / Motion Interpolation:</strong> Use
+advanced video renderers with frame-blending algorithms (such as madVR's
+Smooth Motion or mpv's <code>interpolation</code> mode) to smooth out
+cadence mismatches on fixed 60Hz screens.</li>
+</ul></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/why-mkv-files-micro-stutter-on-60-hz-displays';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

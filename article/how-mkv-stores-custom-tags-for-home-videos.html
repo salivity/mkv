@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How MKV Stores Custom Tags for Home Videos - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container format stores custom user-defined tags through an extensible, XML-like binary metadata system embedded directly within the file architecture. Utilizing Extensible Binary Meta Language (EBML), MKV allows users to def">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/how-mkv-stores-custom-tags-for-home-videos">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="How MKV Stores Custom Tags for Home Videos - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/how-mkv-stores-custom-tags-for-home-videos" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container format stores custom user-defined tags through an extensible, XML-like binary metadata system embedded directly within the file architecture. Utilizing Extensible Binary Meta Language (EBML), MKV allows users to def" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="how-mkv-stores-custom-tags-for-home-videos">How MKV Stores
+Custom Tags for Home Videos</h1>
+<p>The Matroska (MKV) multimedia container format stores custom
+user-defined tags through an extensible, XML-like binary metadata system
+embedded directly within the file architecture. Utilizing Extensible
+Binary Meta Language (EBML), MKV allows users to define custom key-value
+pairs at various structural levels—ranging from the entire collection
+down to specific tracks or chapters—without requiring re-encoding or
+altering the underlying audio and video streams.</p>
+<h2 id="the-ebml-tagging-architecture">The EBML Tagging
+Architecture</h2>
+<p>At the core of MKV is EBML, a binary framework similar to XML. Within
+an MKV container, metadata is held inside the master <code>Tags</code>
+element. Unlike rigid container formats that rely on fixed, predefined
+metadata fields, the Matroska specification was designed to be
+inherently modular.</p>
+<p>An MKV file can contain multiple <code>Tag</code> elements, each
+housing two primary components:</p>
+<ul>
+<li><strong>Targets:</strong> Defines the scope of the metadata (e.g.,
+entire movie, specific season, episode, track, or chapter).</li>
+<li><strong>SimpleTag:</strong> Contains the actual metadata elements as
+key-value pairs.</li>
+</ul>
+<h2 id="hierarchical-structure-targets-and-simpletags">Hierarchical
+Structure: Targets and SimpleTags</h2>
+<p>To organize home video collections logically, the
+<code>Targets</code> element uses a numeric hierarchy called
+<code>TargetTypeValue</code>. This system allows media players and
+database managers to understand the context of the tags:</p>
+<ul>
+<li><strong>Level 70 (Collection):</strong> Groups multiple home video
+sets (e.g., "Smith Family Archives").</li>
+<li><strong>Level 60 (Edition / Issue):</strong> Groups specific eras or
+decades (e.g., "The 1990s").</li>
+<li><strong>Level 50 (Movie / Event):</strong> Defines a specific event
+(e.g., "Summer Vacation 2024").</li>
+<li><strong>Level 30 (Session / Chapter):</strong> Specific scenes
+within a video (e.g., "Cutting the Birthday Cake").</li>
+</ul>
+<p>Inside each <code>Tag</code>, one or more <code>SimpleTag</code>
+elements define the information using basic child elements:</p>
+<ul>
+<li><code>&lt;TagName&gt;</code>: The name of the metadata field (e.g.,
+<code>LOCATION</code>, <code>PEOPLE</code>).</li>
+<li><code>&lt;TagString&gt;</code>: The text value of the field (e.g.,
+<code>Yellowstone National Park</code>, <code>John Doe</code>).</li>
+<li><code>&lt;TagLanguage&gt;</code>: The language of the metadata
+string (e.g., <code>eng</code>).</li>
+<li><code>&lt;TagBinary&gt;</code>: Raw binary data for embedded assets,
+such as custom thumbnail images.</li>
+</ul>
+<h2 id="custom-and-user-defined-metadata">Custom and User-Defined
+Metadata</h2>
+<p>MKV does not restrict metadata names to strict standards. While
+standard official tags exist (such as <code>ARTIST</code>,
+<code>DATE_RELEASED</code>, and <code>COMMENT</code>), users can create
+entirely custom <code>TagName</code> entries to organize home
+videos.</p>
+<p>For home collections, you can store custom fields such as:</p>
+<ul>
+<li><code>CAMERA_MODEL</code>: Canon EOS R5</li>
+<li><code>RECORDING_LOCATION</code>: Grand Canyon, AZ</li>
+<li><code>PEOPLE_PRESENT</code>: Jane Doe, Mark Smith</li>
+<li><code>OCCASION</code>: 50th Anniversary</li>
+<li><code>DIGITIZED_FROM</code>: VHS-C Tape</li>
+</ul>
+<p>Furthermore, <code>SimpleTag</code> elements can be nested
+recursively. This allows for complex data structures, such as a parent
+tag <code>PEOPLE_PRESENT</code> containing nested child tags with
+specific roles or relationships.</p>
+<h2 id="how-tags-are-written-and-read">How Tags Are Written and
+Read</h2>
+<p>Custom tags can be written to MKV files using XML files imported via
+command-line utilities or graphical editors. Tools like
+<code>mkvpropedit</code> (part of the MKVToolNix suite) can inject or
+modify the EBML <code>Tags</code> element in place within milliseconds,
+without needing to rewrite the entire multi-gigabyte video file.</p>
+<p>Modern media software, cataloging tools, and operating system
+extensions parse these EBML elements, enabling automatic sorting,
+advanced filtering, and instant search retrieval based on user-defined
+parameters.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/how-mkv-stores-custom-tags-for-home-videos';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Raw YUV to MKV Using Command Line - mkv</title>
+    <meta name="description" content="It is entirely possible to generate an MKV (Matroska) file directly from raw YUV video frames using command-line tools like FFmpeg. Because raw YUV data contains pure uncompressed pixel information without any container headers or metadata, the conversion">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/convert-raw-yuv-to-mkv-using-command-line">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Convert Raw YUV to MKV Using Command Line - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/convert-raw-yuv-to-mkv-using-command-line" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="It is entirely possible to generate an MKV (Matroska) file directly from raw YUV video frames using command-line tools like FFmpeg. Because raw YUV data contains pure uncompressed pixel information without any container headers or metadata, the conversion" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="convert-raw-yuv-to-mkv-using-command-line">Convert Raw YUV to
+MKV Using Command Line</h1>
+<p>It is entirely possible to generate an MKV (Matroska) file directly
+from raw YUV video frames using command-line tools like FFmpeg. Because
+raw YUV data contains pure uncompressed pixel information without any
+container headers or metadata, the conversion tool cannot automatically
+detect video properties. To successfully create an MKV file, you must
+explicitly supply the video dimensions, frame rate, and pixel format
+through the command-line interface.</p>
+<h3 id="understanding-the-raw-yuv-input-requirements">Understanding the
+Raw YUV Input Requirements</h3>
+<p>Raw YUV files lack headers describing the stream. When working with
+command-line tools, you must define:</p>
+<ul>
+<li><strong>Pixel Format (<code>-pix_fmt</code>)</strong>: Defines the
+chroma subsampling (e.g., <code>yuv420p</code>, <code>yuv422p</code>,
+<code>yuv444p</code>).</li>
+<li><strong>Resolution (<code>-s</code> or
+<code>-video_size</code>)</strong>: The exact width and height of the
+video in pixels (e.g., <code>1920x1080</code>).</li>
+<li><strong>Framerate (<code>-r</code> or
+<code>-framerate</code>)</strong>: The playback speed in frames per
+second (e.g., <code>30</code>, <code>60</code>, <code>24</code>).</li>
+<li><strong>Input Format (<code>-f rawvideo</code>)</strong>: Informs
+the utility that the incoming file is an uncompressed raw stream.</li>
+</ul>
+<h3 id="method-1-wrapping-raw-yuv-into-mkv-without-re-encoding">Method
+1: Wrapping Raw YUV into MKV Without Re-encoding</h3>
+<p>If your goal is to store the uncompressed YUV stream directly inside
+the MKV container without any quality loss or compression overhead, use
+the stream copy option:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-f</span> rawvideo <span class="at">-pix_fmt</span> yuv420p <span class="at">-s</span> 1920x1080 <span class="at">-r</span> 30 <span class="at">-i</span> input.yuv <span class="at">-c:v</span> copy output.mkv</span></code></pre></div>
+<p>In this command:</p>
+<ul>
+<li><code>-c:v copy</code> instructs FFmpeg to copy the raw frames
+directly into the MKV container without running a compression
+codec.</li>
+<li>The resulting MKV file contains the raw video payload alongside
+standard playback metadata.</li>
+</ul>
+<h3 id="method-2-encoding-raw-yuv-to-mkv-using-a-video-codec">Method 2:
+Encoding Raw YUV to MKV Using a Video Codec</h3>
+<p>Raw video files are exceptionally large. To reduce file size while
+encapsulating the video in an MKV container, you can compress the stream
+using codecs like H.264 (AVC), H.265 (HEVC), or AV1:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-f</span> rawvideo <span class="at">-pix_fmt</span> yuv420p <span class="at">-s</span> 1920x1080 <span class="at">-r</span> 30 <span class="at">-i</span> input.yuv <span class="at">-c:v</span> libx264 <span class="at">-crf</span> 18 output.mkv</span></code></pre></div>
+<p>Key options used here:</p>
+<ul>
+<li><code>-c:v libx264</code>: Uses the x264 encoder to compress the
+frames.</li>
+<li><code>-crf 18</code>: Sets the Constant Rate Factor for visually
+lossless quality.</li>
+</ul>
+<h3 id="handling-10-bit-and-other-chroma-formats">Handling 10-bit and
+Other Chroma Formats</h3>
+<p>If the raw data uses higher bit depths or alternative color spaces
+(such as 10-bit <code>yuv420p10le</code>), update the
+<code>-pix_fmt</code> flag accordingly:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffmpeg</span> <span class="at">-f</span> rawvideo <span class="at">-pix_fmt</span> yuv420p10le <span class="at">-s</span> 3840x2160 <span class="at">-r</span> 60 <span class="at">-i</span> input.yuv <span class="at">-c:v</span> libx265 <span class="at">-crf</span> 20 output.mkv</span></code></pre></div>
+<p>Using these straightforward FFmpeg commands allows you to process any
+raw YUV stream directly into a standard, playable MKV container from the
+terminal.</p></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/convert-raw-yuv-to-mkv-using-command-line';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>

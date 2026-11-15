@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKV Support for AV1 10-Bit HDR and Multichannel Audio - mkv</title>
+    <meta name="description" content="The Matroska (MKV) multimedia container fully supports AV1 video encoded with 10-bit High Dynamic Range (HDR) alongside multichannel surround sound audio. Because MKV is an open and extensible format, it is engineered to multiplex virtually any combinatio">
+    <link rel="canonical" href="https://salivity.github.io/mkv/article/mkv-support-for-av-1-10-bit-hdr-and-multichannel-audio">
+    <link rel="search" type="application/opensearchdescription+xml" title="mkv" href="/mkv/opensearch.xml">
+    <link rel="icon" href="/mkv/favicon.ico">
+    <link rel="stylesheet" href="/mkv/css/style.css">
+    <link media="print" rel="stylesheet" href="/mkv/css/print.css">
+    <script src="/mkv/js/fuse.min.js"></script>
+    <script src="/mkv/js/script.js"></script>
+    <script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/4.1.3/tex-chtml.min.js" defer></script>
+    <script src="/monetize/monetize.js"></script>
+    <script src="/social/social.js"></script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MKV Support for AV1 10-Bit HDR and Multichannel Audio - mkv" />
+    <meta property="og:url" content="https://salivity.github.io/mkv/article/mkv-support-for-av-1-10-bit-hdr-and-multichannel-audio" />
+    <meta property="og:image" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:secure_url" content="https://salivity.github.io/mkv/images/open-graph/default.webp" />
+    <meta property="og:image:width" content="1120" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:description" content="The Matroska (MKV) multimedia container fully supports AV1 video encoded with 10-bit High Dynamic Range (HDR) alongside multichannel surround sound audio. Because MKV is an open and extensible format, it is engineered to multiplex virtually any combinatio" />
+    <link rel="manifest" href="/mkv/pwa/manifest.json" />
+</head>
+<body>
+    <header>
+        <a href="/mkv/" aria-label="Go To Home Page" title="Go To Home Page" id="logo">
+            <span>salivity.github.io/</span><span>mkv</span>
+        </a>
+        <nav>
+            <ul class="header-links">
+                <li><a href="/mkv/search" title="Search" aria-label="Go To Search Page"><svg class="svg-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14"></path></svg></a></li>
+                <li><a id="theme-toggle" title="Theme" href="javascript:void(0);" aria-label="Toggle Website Theme"></a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+    <div class="article-layout">
+        <aside id="profile-sidebar" class="profile-column" aria-label="Author Profile"></aside>
+        <div class="article-main-column">
+            <article><h1 id="mkv-support-for-av1-10-bit-hdr-and-multichannel-audio">MKV
+Support for AV1 10-Bit HDR and Multichannel Audio</h1>
+<p>The Matroska (MKV) multimedia container fully supports AV1 video
+encoded with 10-bit High Dynamic Range (HDR) alongside multichannel
+surround sound audio. Because MKV is an open and extensible format, it
+is engineered to multiplex virtually any combination of modern video
+codecs, high-bit-depth color metadata, and multi-stream audio tracks
+into a single file without compromising data integrity or playback
+synchronization.</p>
+<h3 id="av1-and-10-bit-hdr-compatibility-in-mkv">AV1 and 10-Bit HDR
+Compatibility in MKV</h3>
+<p>The Alliance for Open Media (AOMedia) developed the AV1 codec with
+native support for high-efficiency compression, 10-bit and 12-bit color
+depths, and advanced HDR formats. The Matroska specification integrates
+AV1 via the standard codec identifier <code>V_AV1</code>.</p>
+<p>When storing 10-bit HDR content, MKV holds both the core AV1
+bitstream and the necessary dynamic or static color metadata:</p>
+<ul>
+<li><strong>Color Primaries and Transfer Characteristics:</strong> MKV
+contains specific header elements for BT.2020 color spaces and transfer
+functions such as SMPTE ST 2084 (PQ) for HDR10/Dolby Vision or ARIB
+STD-B67 for Hybrid Log-Gamma (HLG).</li>
+<li><strong>Mastering Display Metadata:</strong> Static HDR parameters,
+including Mastering Display Color Primaries, white point coordinates,
+and maximum/minimum luminance values, are embedded directly into the
+container's <code>Colour</code> element or preserved within the AV1
+sequence headers.</li>
+</ul>
+<h3 id="multichannel-audio-support">Multichannel Audio Support</h3>
+<p>MKV is one of the most capable containers for multichannel and
+object-based audio. It can store surround sound configurations ranging
+from standard 5.1 and 7.1 setups up to complex spatial audio formats
+without requiring downmixing.</p>
+<p>Compatible multichannel audio codecs within an MKV file include:</p>
+<ul>
+<li><strong>Lossless Formats:</strong> Dolby TrueHD (with or without
+Dolby Atmos metadata), DTS-HD Master Audio, DTS:X, FLAC, and
+uncompressed multichannel LPCM.</li>
+<li><strong>Lossy Formats:</strong> Dolby Digital (AC-3), Dolby Digital
+Plus (E-AC-3, including Atmos extensions), DTS, multichannel AAC, and
+Opus (supporting native 5.1 and 7.1 mapping).</li>
+</ul>
+<h3 id="multiplexing-and-playback-requirements">Multiplexing and
+Playback Requirements</h3>
+<p>Creating an MKV file with 10-bit HDR AV1 and multichannel audio is
+supported across all modern multiplexing software, including MKVToolNix,
+FFmpeg, and HandBrake.</p>
+<p>For seamless playback, the end-user environment requires:</p>
+<ol type="1">
+<li><strong>Software/Hardware Decoding:</strong> A player (such as mpv,
+VLC, or Kodi) paired with a GPU or CPU capable of decoding 10-bit AV1
+video.</li>
+<li><strong>Display and Passthrough:</strong> An HDR-capable display
+(HDR10/Dolby Vision compliant) and an AV receiver or soundbar capable of
+decoding the chosen multichannel audio stream via HDMI passthrough
+(eARC) or PCM decoding.</li>
+</ol></article>
+        <div id='disqus_thread'></div>
+        <script>
+
+            var disqus_config = function () {
+                this.page.url =         'https://salivity.github.io/mkv/article/mkv-support-for-av-1-10-bit-hdr-and-multichannel-audio';  
+                //this.page.identifier =  PAGE_IDENTIFIER; 
+            };
+            
+            (function() {
+                var d = document, s = d.createElement('script');
+                s.src = 'https://salivity-github-io.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+    
+        </div>
+    </div>
+    
+    </main>
+    <footer>
+        <nav>
+            <ul class="social-links">
+            </ul>
+        </nav>
+        <nav>
+            <ul class="footer-links">
+                <li><a href="https://smvc.dev/contact">Contact</a></li>
+                <li><a href="/mkv/privacy-policy">Privacy Policy</a></li>
+                <li><a href="/mkv/terms-and-conditions">Terms and Conditions</a></li>
+            </ul>
+        </nav>
+        <div class="copyright">
+            Copyright &copy; <span id="current-year"></span>
+        </div>
+    </footer>
+</body>
+</html>
